@@ -3,8 +3,14 @@ load("//lua:providers.bzl", "LuaLibrary")
 hack_get_lua_path = """
 set -e
 
-test_binary_dir=$(dirname $TEST_BINARY)
-export LUA_PATH="?;?.lua;$test_binary_dir/?.lua"
+find .
+
+export LUA_PATH="?;?.lua;?/init.lua"
+
+if [ ! -z "$TEST_BINARY" ]; then
+    test_binary_dir=$(dirname $TEST_BINARY)
+    export LUA_PATH="$LUA_PATH;$test_binary_dir/?.lua"
+fi
 
 export LUA_PATH="$LUA_PATH;$(realpath ..)/?/?.lua"
 export LUA_PATH="$LUA_PATH;$(realpath ..)/?/init.lua"
@@ -37,7 +43,7 @@ def _luaunit_test_impl(ctx):
 
     default = DefaultInfo(
         executable = out_executable,
-        runfiles = ctx.runfiles(ctx.files.srcs + ctx.files.deps, transitive_files = depset(lua_toolchain.tool_files)),
+        runfiles = ctx.runfiles(ctx.files.srcs + ctx.files.data + ctx.files.deps, transitive_files = depset(lua_toolchain.tool_files)),
     )
 
     return [
@@ -52,6 +58,10 @@ luaunit_test = rule(
             doc = "runtime dependencies for test",
             providers = [LuaLibrary],
         ),
+        "data": attr.label_list(
+            doc = "extra files to be available at runtime",
+            allow_files = True,
+        ),
         "srcs": attr.label_list(
             doc = "test sources",
             mandatory = True,
@@ -60,6 +70,7 @@ luaunit_test = rule(
             default = "@lua_luaunit",
         ),
     },
+    toolchains = ["@com_github_michaelboulton_rules_lua//lua:toolchain_type"],
 )
 
 def busted_test_impl(ctx, lua_files, busted_run, extra_runfiles = None):
@@ -81,7 +92,8 @@ def busted_test_impl(ctx, lua_files, busted_run, extra_runfiles = None):
     # propagate dependencies
     dep_runfiles = [t[DefaultInfo].default_runfiles for t in [r for r in ctx.attr.deps + [ctx.attr._busted]]]
     runfiles = runfiles.merge_all(dep_runfiles)
-    runfiles = runfiles.merge(extra_runfiles)
+    if extra_runfiles:
+        runfiles = runfiles.merge(extra_runfiles)
 
     default = DefaultInfo(
         executable = out_executable,
@@ -115,6 +127,8 @@ def _busted_test_impl(ctx):
             base=${{base/.lua/}}
             modname=${{base//\\//.}}
 
+            find .
+
             {lua} -- {busted_dir}/bin/busted . \
                 --verbose \
                 -Xoutput --color --output=utfTerminal \
@@ -136,8 +150,13 @@ busted_test = rule(
             doc = "Whether this is a 'standalone' test or a normal test that sould be called with the busted cli",
             default = False,
         ),
+        "data": attr.label_list(
+            doc = "extra files to be available at runtime",
+            allow_files = True,
+        ),
         "srcs": attr.label_list(
             doc = "test sources",
+            allow_files = True,
             mandatory = True,
         ),
         "_busted": attr.label(
@@ -145,4 +164,5 @@ busted_test = rule(
             default = "@lua_busted//:lua_busted",
         ),
     },
+    toolchains = ["@com_github_michaelboulton_rules_lua//lua:toolchain_type"],
 )

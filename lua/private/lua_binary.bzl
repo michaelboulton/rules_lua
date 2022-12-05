@@ -24,13 +24,16 @@ def _lua_binary_impl(ctx):
         is_executable = True,
     )
 
+    runfiles = ctx.runfiles(files = ctx.files.deps + ctx.files.data + ctx.files.tool)
+
+    # propagate dependencies
+    dep_runfiles = [t[DefaultInfo].default_runfiles for t in [r for r in ctx.attr.deps]]
+    runfiles = runfiles.merge_all(dep_runfiles)
+
     default = DefaultInfo(
         files = depset(lua_toolchain.tool_files + ctx.files.tool),
         executable = out_executable,
-        runfiles = ctx.runfiles(
-            lua_toolchain.tool_files + ctx.files.tool + ctx.files.deps + ctx.files.data,
-            transitive_files = depset(lua_toolchain.tool_files),
-        ),
+        runfiles = runfiles,
     )
 
     return [

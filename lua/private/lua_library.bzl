@@ -1,22 +1,17 @@
 load("//lua:providers.bzl", "LuaLibrary")
 
 def _lua_library_impl(ctx):
-    if ctx.attr.strip_prefix == None:
+    if not ctx.attr.strip_prefix:
         lua_files = ctx.files.srcs
     else:
         lua_files = []
         for file in ctx.files.srcs:
-            lua_files.append(ctx.actions.declare_file(file.short_path.replace(ctx.attr.strip_prefix.removesuffix("/") + "/", "")))
-        ctx.actions.run_shell(
-            outputs = lua_files,
-            inputs = ctx.files.srcs,
-            command = "\n".join(
-                ["cp {src} {dest}".format(
-                    src = src.path,
-                    dest = dest.path,
-                ) for src, dest in zip(ctx.files.srcs, lua_files)],
-            ),
-        )
+            suffix_removed = ctx.attr.strip_prefix.removesuffix("/")
+            slash_replaced = file.short_path.replace(suffix_removed + "/", "")
+            lua_files.append(ctx.actions.declare_file(slash_replaced))
+
+        for src, dest in zip(ctx.files.srcs, lua_files):
+            ctx.actions.symlink(output = dest, target_file = src)
 
     runfiles = ctx.runfiles(files = ctx.files.deps)
 

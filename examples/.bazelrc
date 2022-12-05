@@ -1,0 +1,22 @@
+test --flaky_test_attempts=1
+test --test_output=errors
+
+
+build --sandbox_default_allow_network=false
+common --incompatible_allow_tags_propagation
+test --incompatible_exclusive_test_sandboxed
+build --incompatible_strict_action_env
+build --modify_execution_info=PackageTar=+no-remote
+startup --host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1
+build --experimental_remote_merkle_tree_cache
+build --incompatible_remote_results_ignore_disk
+build --incompatible_default_to_explicit_init_py
+build --noexperimental_check_output_files
+build --incompatible_remote_build_event_upload_respect_no_cache
+build --bes_upload_mode=fully_async
+build --experimental_reuse_sandbox_directories
+build --nolegacy_external_runfiles
+
+try-import %workspace%/.bazelrc.user
+
+build --incompatible_disallow_empty_glob

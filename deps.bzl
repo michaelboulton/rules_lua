@@ -1,6 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", _http_archive = "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
-load("//lua:defs.bzl", "github_dependency", "luarocks_dependency")
+load("//lua:defs.bzl", _github_dependency = "github_dependency", _luarocks_dependency = "luarocks_dependency")
 
 def http_archive(name, **kwargs):
     maybe(_http_archive, name = name, **kwargs)
@@ -46,15 +46,6 @@ def rules_lua_dependencies():
         url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
     )
 
-    maybe(
-        github_dependency,
-        name = "lua_luaunit",
-        dependency = "luaunit",
-        tag = "LUAUNIT_V3_4",
-        user = "bluebird75",
-        version = "3.4-1",
-    )
-
     http_archive(
         name = "luarocks",
         sha256 = "ffafd83b1c42aa38042166a59ac3b618c838ce4e63f4ace9d961a5679ef58253",
@@ -65,9 +56,23 @@ def rules_lua_dependencies():
         build_file = "@com_github_michaelboulton_rules_lua//lua:luarocks.BUILD.bazel",
     )
 
+def luarocks_dependency(name, **kwargs):
+    maybe(_luarocks_dependency, name = name, **kwargs)
+
+def github_dependency(name, **kwargs):
+    maybe(_github_dependency, name = name, **kwargs)
+
+def luaunit_test_dependencies():
+    github_dependency(
+        name = "lua_luaunit",
+        dependency = "luaunit",
+        tag = "LUAUNIT_V3_4",
+        user = "bluebird75",
+        version = "3.4-1",
+    )
+
 def busted_test_dependencies():
-    maybe(
-        luarocks_dependency,
+    luarocks_dependency(
         name = "lua_busted",
         dependency = "busted",
         sha256 = "251a848525c743b3ead74d77a125551946fc57ddd20441109d2c9ed912d8ccd4",
@@ -86,8 +91,7 @@ def busted_test_dependencies():
         ],
     )
 
-    maybe(
-        luarocks_dependency,
+    luarocks_dependency(
         name = "lua_penlight",
         sha256 = "fa028f7057cad49cdb84acdd9fe362f090734329ceca8cc6abb2d95d43b91835",
         dependency = "penlight",
@@ -96,8 +100,7 @@ def busted_test_dependencies():
         deps = ["@lua_luafilesystem"],
     )
 
-    maybe(
-        luarocks_dependency,
+    luarocks_dependency(
         name = "lua_luafilesystem",
         dependency = "luafilesystem",
         sha256 = "576270a55752894254c2cba0d49d73595d37ec4ea8a75e557fdae7aff80e19cf",
@@ -105,8 +108,7 @@ def busted_test_dependencies():
         version = "1.8.0-1",
     )
 
-    maybe(
-        luarocks_dependency,
+    luarocks_dependency(
         name = "lua_luasystem",
         dependency = "luasystem",
         sha256 = "d1c706d48efc7279d33f5ea123acb4d27e2ee93e364bedbe07f2c9c8d0ad3d24",
@@ -114,8 +116,7 @@ def busted_test_dependencies():
         version = "0.2.1-0",
     )
 
-    maybe(
-        luarocks_dependency,
+    luarocks_dependency(
         name = "lua_lua_cliargs",
         sha256 = "3c79981292aab72dbfba9eb5c006bb37c5f42ee73d7062b15fdd840c00b70d63",
         dependency = "lua_cliargs",
@@ -123,8 +124,7 @@ def busted_test_dependencies():
         version = "3.0-2",
     )
 
-    maybe(
-        luarocks_dependency,
+    luarocks_dependency(
         name = "lua_say",
         dependency = "say",
         user = "lunarmodules",
@@ -132,8 +132,7 @@ def busted_test_dependencies():
         sha256 = "90a1c0253ec38d6628007eef0b424d0707d0f3e0442fce478a627111eb02bb07",
     )
 
-    maybe(
-        luarocks_dependency,
+    luarocks_dependency(
         name = "lua_luassert",
         sha256 = "146a7b2ec8e0cadf7dbca6dc993debcd2090e0e4fdf5c632d9f4ec20670357dd",
         dependency = "luassert",
@@ -141,8 +140,7 @@ def busted_test_dependencies():
         version = "1.9.0-1",
     )
 
-    maybe(
-        luarocks_dependency,
+    luarocks_dependency(
         name = "lua_ansicolors",
         sha256 = "df6126501af3b9b944019164a08aed91377d82e6845c24432769140f12c815d6",
         dependency = "ansicolors",
@@ -150,8 +148,7 @@ def busted_test_dependencies():
         version = "1.0.2-3",
     )
 
-    maybe(
-        luarocks_dependency,
+    luarocks_dependency(
         name = "lua_dkjson",
         dependency = "dkjson",
         sha256 = "e4ba15f2a85f84ffc7f628157a4ad16b2b04ba05eb44a2e5956fa46bd104125e",
@@ -159,8 +156,7 @@ def busted_test_dependencies():
         version = "2.6-1",
     )
 
-    maybe(
-        github_dependency,
+    github_dependency(
         name = "lua_term",
         dependency = "lua-term",
         tag = "0.07",
@@ -168,8 +164,7 @@ def busted_test_dependencies():
         version = "0.7-1",
     )
 
-    maybe(
-        github_dependency,
+    github_dependency(
         name = "lua_mediator",
         dependency = "mediator_lua",
         tag = "v1.1.2-0",

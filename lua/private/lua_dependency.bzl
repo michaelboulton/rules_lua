@@ -1,6 +1,7 @@
 load("//lua:providers.bzl", "LuaLibrary")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain", "use_cpp_toolchain")
+load(":lua_tests.bzl", "hack_get_lua_path")
 
 GITHUB_TEMPLATE = "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz"
 GITHUB_PREFIX_TEMPLATE = "{dependency}-{short_tag}"
@@ -233,9 +234,7 @@ def _luarocks_library_impl(ctx):
     ctx.actions.run_shell(
         outputs = [lua_files] + all_out_binaries,
         inputs = [ctx.file.srcrock] + ctx.files.data + lua_toolchain.tool_files + ctx.files._luarocks + ctx.files._luarocks_libs + ctx.files.deps + cc_toolchain.all_files.to_list(),
-        command = """
-        set -e
-
+        command = (hack_get_lua_path + """
         real_include=$(realpath $(dirname {lua})/include)
 
         export LUA_PATH="?;?.lua;$(realpath $(pwd)/..)/?.lua{extra_lua_paths}"
@@ -264,7 +263,7 @@ def _luarocks_library_impl(ctx):
         for out_binary in {out_binaries_paths}; do
             cp {outpath}/bin/$(basename $out_binary) $out_binary
         done
-        """.format(
+        """).format(
             extra_lua_paths = ";$(pwd)/{}/?.lua".format(paths.join(ctx.var["BINDIR"], "external")),
             lua = lua_path,
             name = ctx.attr.name,

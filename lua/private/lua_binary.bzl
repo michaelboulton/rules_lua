@@ -11,17 +11,20 @@ if [ ! -z "$TEST_BINARY" ]; then
     export LUA_PATH="$LUA_PATH;$test_binary_dir/?.lua"
 fi
 
+export LUA_PATH="$LUA_PATH;$(realpath ..)/?.lua"
 export LUA_PATH="$LUA_PATH;$(realpath ..)/?/?.lua"
 export LUA_PATH="$LUA_PATH;$(realpath ..)/?/init.lua"
 
-for d in $(ls -d ../lua*/lua*); do
-    d=$(realpath $d)
-    # FIXME get lua version
-    export LUA_PATH="$LUA_PATH;$d/lib/lua/5.1/?.lua"
-    export LUA_CPATH="$LUA_CPATH;$d/lib/lua/5.1/?.so"
-    export LUA_PATH="$LUA_PATH;$d/share/lua/5.1/?.lua"
-    export LUA_PATH="$LUA_PATH;$d/share/lua/5.1/?/init.lua"
-done
+if ls -d ../lua* 2>/dev/null ; then
+    for d in $(ls -d ../lua*/lua*); do
+        d=$(realpath $d)
+        # FIXME get lua version
+        export LUA_PATH="$LUA_PATH;$d/lib/lua/5.1/?.lua"
+        export LUA_CPATH="$LUA_CPATH;$d/lib/lua/5.1/?.so"
+        export LUA_PATH="$LUA_PATH;$d/share/lua/5.1/?.lua"
+        export LUA_PATH="$LUA_PATH;$d/share/lua/5.1/?/init.lua"
+    done
+fi
 """
 
 def _lua_binary_impl(ctx):
@@ -33,9 +36,6 @@ def _lua_binary_impl(ctx):
         out_executable,
         (hack_get_lua_path + """
         set -e
-
-        export LUA_PATH="?;?.lua;$(realpath $(pwd)/..)/?.lua"
-
         {lua} {src} {args} $@
         """).format(
             lua = lua_toolchain.tool_files[0].short_path,

@@ -3,23 +3,43 @@
 load("@aspect_bazel_lib//lib:docs.bzl", "stardoc_with_diff_test", "update_docs")
 
 stardoc_with_diff_test(
-    name = "rules",
+    name = "lua_rules",
     bzl_library_target = "//lua:defs",
 )
 
 stardoc_with_diff_test(
-    name = "toolchain",
+    name = "lua_toolchain",
     bzl_library_target = "//lua:toolchain",
 )
 
 stardoc_with_diff_test(
-    name = "dependencies",
+    name = "lua_dependencies",
     bzl_library_target = "//lua:repositories",
 )
 
 stardoc_with_diff_test(
-    name = "providers",
+    name = "lua_providers",
     bzl_library_target = "//lua:providers",
+)
+
+stardoc_with_diff_test(
+    name = "fennel_rules",
+    bzl_library_target = "//fennel:defs",
+)
+
+stardoc_with_diff_test(
+    name = "fennel_toolchain",
+    bzl_library_target = "//fennel:toolchain",
+)
+
+stardoc_with_diff_test(
+    name = "fennel_dependencies",
+    bzl_library_target = "//fennel:repositories",
+)
+
+stardoc_with_diff_test(
+    name = "fennel_providers",
+    bzl_library_target = "//fennel:providers",
 )
 
 update_docs(name = "update")

@@ -1,0 +1,42 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+bzl_library(
+    name = "toolchains_repo",
+    srcs = ["toolchains_repo.bzl"],
+    visibility = ["//fennel:__subpackages__"],
+)
+
+bzl_library(
+    name = "versions",
+    srcs = ["versions.bzl"],
+    visibility = ["//fennel:__subpackages__"],
+)
+
+bzl_library(
+    name = "fennel_library",
+    srcs = ["fennel_library.bzl"],
+    visibility = ["//fennel:__subpackages__"],
+    deps = [
+        "//fennel:providers",
+        "//fennel:toolchain",
+        "//lua:providers",
+        "@bazel_skylib//lib:paths",
+    ],
+)
+
+bzl_library(
+    name = "fennel_test",
+    srcs = ["fennel_test.bzl"],
+    visibility = ["//fennel:__subpackages__"],
+    deps = [
+        "//fennel:providers",
+        "//lua/private:lua_binary",
+        "//lua/private:lua_tests",
+    ],
+)
+
+exports_files([
+    "init_luaunit.lua",
+    "aniseed_preprocessor.sh",
+    "init_aniseed_tests.lua",
+])

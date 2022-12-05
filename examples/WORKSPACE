@@ -38,6 +38,17 @@ busted_test_dependencies()
 
 luaunit_test_dependencies()
 
+load("@com_github_michaelboulton_rules_lua//fennel:repositories.bzl", "fennel_register_toolchains")
+
+fennel_register_toolchains(
+    name = "fennel",
+    version = "1.2.1",
+)
+
+load("@com_github_michaelboulton_rules_lua//fennel:deps.bzl", "aniseed_dependencies")
+
+aniseed_dependencies()
+
 load("@com_github_michaelboulton_rules_lua//lua:defs.bzl", "github_dependency", "luarocks_dependency")
 
 luarocks_dependency(

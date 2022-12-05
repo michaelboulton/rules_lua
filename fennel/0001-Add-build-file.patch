@@ -1,0 +1,252 @@
+From 114339b765749dc71afae7f8609873e2b3a01088 Mon Sep 17 00:00:00 2001
+From: Michael Boulton <michaelboulton@gmail.com>
+Date: Sun, 13 Nov 2022 13:56:23 +0000
+Subject: [PATCH] Add build file
+
+---
+ fnl/aniseed/BUILD.bazel      | 11 +++++++
+ fnl/aniseed/autoload.fnl     | 34 +--------------------
+ fnl/aniseed/fennel.fnl       |  4 +--
+ fnl/aniseed/fs.fnl           | 59 +++++++++++++++---------------------
+ fnl/aniseed/macros.fnl       | 13 +++++---
+ fnl/aniseed/test.fnl         | 30 +++++++++---------
+ lua/aniseed/deps/BUILD.bazel |  5 +++
+ scripts/internal/BUILD.bazel |  1 +
+ 8 files changed, 69 insertions(+), 88 deletions(-)
+ create mode 100644 fnl/aniseed/BUILD.bazel
+ create mode 100644 lua/aniseed/deps/BUILD.bazel
+ create mode 100644 scripts/internal/BUILD.bazel
+
+diff --git a/fnl/aniseed/BUILD.bazel b/fnl/aniseed/BUILD.bazel
+new file mode 100644
+index 0000000..4a76f9c
+--- /dev/null
++++ b/fnl/aniseed/BUILD.bazel
+@@ -0,0 +1,11 @@
++filegroup(
++	name = "aniseed_macros",
++	srcs = ["macros.fnl"],
++	visibility = ["//visibility:public"],
++)
++
++filegroup(
++	name = "aniseed",
++	srcs = ["test.fnl", "string.fnl", "fs.fnl", "core.fnl", "autoload.fnl", "view.fnl", "fennel.fnl", "compile.fnl"],
++	visibility = ["//visibility:public"],
++)
+diff --git a/fnl/aniseed/fennel.fnl b/fnl/aniseed/fennel.fnl
+index 6bbf0b1..bcdf05a 100644
+--- a/fnl/aniseed/fennel.fnl
++++ b/fnl/aniseed/fennel.fnl
+@@ -1,5 +1,5 @@
+ (module aniseed.fennel
+-  {autoload {nvim aniseed.nvim
++  {autoload {;; nvim aniseed.nvim
+              str aniseed.string
+              a aniseed.core
+              fs aniseed.fs}})
+@@ -12,7 +12,7 @@
+         ;; For macros embedded from other tools under your lua dir.
+         lua-suffix (.. fs.path-sep "lua" fs.path-sep "?.fnl")
+
+-        rtps (nvim.list_runtime_paths)
++        rtps ["."]
+         fnl-paths (a.map #(.. $ fnl-suffix) rtps)
+         lua-paths (a.map #(.. $ lua-suffix) rtps)]
+     (tset compiler :macro-path (str.join ";" (a.concat fnl-paths lua-paths)))))
+@@ -20,7 +20,7 @@
+ (def- state {:compiler-loaded? false})
+
+ (defn impl []
+-  (let [compiler (require :aniseed.deps.fennel)]
++  (let [compiler (require :fennel)]
+     (when (not (. state :compiler-loaded?))
+       (tset state :compiler-loaded? true)
+       (sync-rtp compiler))
+
+diff --git a/fnl/aniseed/fs.fnl b/fnl/aniseed/fs.fnl
+index f9116c6..8740f27 100644
+--- a/fnl/aniseed/fs.fnl
++++ b/fnl/aniseed/fs.fnl
+@@ -1,40 +1,31 @@
+-(module aniseed.fs
+-  {autoload {nvim aniseed.nvim
+-             a aniseed.core}})
++(module aniseed.fs {autoload {;;nvim aniseed.nvim
++                              a aniseed.core}})
+ 
+-(defn basename [path]
+-  (nvim.fn.fnamemodify path ":h"))
++;; (defn basename [path]
++;;   (nvim.fn.fnamemodify path ":h"))
++;; 
++;; (defn mkdirp [dir]
++;;   (nvim.fn.mkdir dir "p"))
+ 
+-(defn mkdirp [dir]
+-  (nvim.fn.mkdir dir "p"))
++;; (defn relglob [dir expr]
++;;   "Glob all files under dir matching the expression and return the paths
++;;   relative to the dir argument."
++;;   (let [dir-len (a.inc (string.len dir))]
++;;     (->> (nvim.fn.globpath dir expr true true)
++;;          (a.map #(string.sub $1 dir-len)))))
++;; 
++;; (defn glob-dir-newer? [a-dir b-dir expr b-dir-path-fn]
++;;   "Returns true if a-dir has newer changes than b-dir. All paths from a-dir are mapped through b-dir-path-fn before comparing to b-dir."
++;;   (var newer? false)
++;;   (each [_ path (ipairs (relglob a-dir expr))]
++;;     (when (> (nvim.fn.getftime (.. a-dir path))
++;;              (nvim.fn.getftime (.. b-dir (b-dir-path-fn path))))
++;;       (set newer? true)))
++;;   newer?)
+ 
+-(defn relglob [dir expr]
+-  "Glob all files under dir matching the expression and return the paths
+-  relative to the dir argument."
+-  (let [dir-len (a.inc (string.len dir))]
+-    (->> (nvim.fn.globpath dir expr true true)
+-         (a.map #(string.sub $1 dir-len)))))
+-
+-(defn glob-dir-newer? [a-dir b-dir expr b-dir-path-fn]
+-  "Returns true if a-dir has newer changes than b-dir. All paths from a-dir are mapped through b-dir-path-fn before comparing to b-dir."
+-  (var newer? false)
+-  (each [_ path (ipairs (relglob a-dir expr))]
+-    (when (> (nvim.fn.getftime (.. a-dir path))
+-             (nvim.fn.getftime (.. b-dir (b-dir-path-fn path))))
+-      (set newer? true)))
+-  newer?)
+-
+-(defn macro-file-path? [path]
+-  "Check if the path is a specially treated Aniseed / Fennel macros file.
++(defn macro-file-path? [path] "Check if the path is a specially treated Aniseed / Fennel macros file.
+   We preserve these and don't try to compile them to Lua since you can't
+   do that."
+-  (a.string? (string.match path "macros?.fnl$")))
++      (a.string? (string.match path :macros?.fnl$)))
+ 
+-(def path-sep
+-  ;; https://github.com/nvim-lua/plenary.nvim/blob/8bae2c1fadc9ed5bfcfb5ecbd0c0c4d7d40cb974/lua/plenary/path.lua#L20-L31
+-  (let [os (string.lower jit.os)]
+-    (if (or (= :linux os)
+-            (= :osx os)
+-            (= :bsd os))
+-      "/"
+-      "\\")))
++(def path-sep (if (= (package.config:sub 1 1) "/") "/" "\\"))
+diff --git a/fnl/aniseed/macros.fnl b/fnl/aniseed/macros.fnl
+index f2fbcb7..047c506 100644
+--- a/fnl/aniseed/macros.fnl
++++ b/fnl/aniseed/macros.fnl
+@@ -3,6 +3,10 @@
+ 
+ ;; Automatically loaded through require-macros for all Aniseed based evaluations.
+ 
++(fn local-require [name]
++  `(local ,name
++          (require (.. (: ... :match "(.+)%.[^.]+") "." ,(tostring name)))))
++
+ (fn nil? [x]
+   (= :nil (type x)))
+ 
+@@ -65,7 +69,7 @@
+ (fn module [mod-name mod-fns mod-base]
+   (let [;; So we can check for existing values and know if we're in an interactive eval.
+         ;; If the module doesn't exist we're compiling and can skip interactive tooling.
+-        existing-mod (. package.loaded (tostring mod-name))
++        existing-mod false
+ 
+         ;; Determine if we're in an interactive eval or not.
+ 
+@@ -125,7 +129,7 @@
+               (fn [bind arg]
+                 (=> (ensure-sym bind) `(,mod-fn ,(tostring arg))))
+               args)))
+-         mod-fns)
++        mod-fns)
+ 
+       ;; Only require autoload if it's used.
+       (when (contains? mod-fns autoload-sym)
+@@ -197,8 +201,8 @@
+   `(def ,name (or (. ,mod-sym ,(tostring name)) ,value)))
+ 
+ (fn deftest [name ...]
+-  `(let [tests# (or (. ,mod-sym :aniseed/tests
+-                       ) {})]
++  `(let [tests# (or (. ,mod-sym :aniseed/tests)
++                    {})]
+      (tset tests# ,(tostring name) (fn [,(sym :t)] ,...))
+      (tset ,mod-sym :aniseed/tests tests#)))
+ 
+@@ -295,4 +299,5 @@
+  :wrap-last-expr wrap-last-expr
+  :wrap-module-body wrap-module-body
+  :deftest deftest
++ :local-require local-require
+  :time time}
+diff --git a/fnl/aniseed/test.fnl b/fnl/aniseed/test.fnl
+index 58f7cb1..019a401 100644
+--- a/fnl/aniseed/test.fnl
++++ b/fnl/aniseed/test.fnl
+@@ -1,8 +1,8 @@
+ (module aniseed.test
+   {autoload {a aniseed.core
+              fs aniseed.fs
+-             str aniseed.string
+-             nvim aniseed.nvim}})
++             str aniseed.string}})
++             ;;nvim aniseed.nvim}})
+ 
+ (defn ok? [{: tests : tests-passed}]
+   (= tests tests-passed))
+@@ -85,16 +85,16 @@
+               :assertions-passed 0}))
+       (display-results "[total]")))
+ 
+-(defn suite []
+-  (let [sep fs.path-sep]
+-    (->> (nvim.fn.globpath (.. "test" sep "fnl") "**/*-test.fnl" false true)
+-         (a.run!
+-           (fn [path]
+-             (-> path
+-                 (string.match (.. "^test" sep "fnl" sep "(.-).fnl$"))
+-                 (string.gsub sep ".")
+-                 (require))))))
+-
+-  (if (ok? (run-all))
+-    (nvim.ex.q)
+-    (nvim.ex.cq)))
++;; (defn suite []
++;;   (let [sep fs.path-sep]
++;;     (->> (nvim.fn.globpath (.. "test" sep "fnl") "**/*-test.fnl" false true)
++;;          (a.run!
++;;            (fn [path]
++;;              (-> path
++;;                  (string.match (.. "^test" sep "fnl" sep "(.-).fnl$"))
++;;                  (string.gsub sep ".")
++;;                  (require))))))
++;; 
++;;   (if (ok? (run-all))
++;;     (nvim.ex.q)
++;;     (nvim.ex.cq)))
+diff --git a/lua/aniseed/deps/BUILD.bazel b/lua/aniseed/deps/BUILD.bazel
+new file mode 100644
+index 0000000..fca595f
+--- /dev/null
++++ b/lua/aniseed/deps/BUILD.bazel
+@@ -0,0 +1,5 @@
++filegroup(
++	name = "vendored_fennel",
++	srcs = ["fennel.lua"],
++	visibility = ["//visibility:public"],
++)
+diff --git a/scripts/internal/BUILD.bazel b/scripts/internal/BUILD.bazel
+new file mode 100644
+index 0000000..a36aeb2
+--- /dev/null
++++ b/scripts/internal/BUILD.bazel
+@@ -0,0 +1 @@
++exports_files(["compile.fnl"])
+-- 
+2.38.1
+

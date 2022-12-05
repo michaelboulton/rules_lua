@@ -1,7 +1,7 @@
 load("//lua:providers.bzl", "LuaLibrary")
 load(":lua_binary.bzl", "hack_get_lua_path")
 
-def _luaunit_test_impl(ctx):
+def luaunit_test_impl(ctx, srcs):
     lua_toolchain = ctx.toolchains["//lua:toolchain_type"].lua_info
 
     out_executable = ctx.actions.declare_file(ctx.attr.name + "_test")
@@ -9,15 +9,16 @@ def _luaunit_test_impl(ctx):
         out_executable,
         (hack_get_lua_path + """
         set -e
+
         {lua} {src} $@
         """).format(
             lua = lua_toolchain.tool_files[0].short_path,
-            src = " ".join([i.short_path for i in ctx.files.srcs]),
+            src = " ".join([i.short_path for i in srcs]),
         ),
         is_executable = True,
     )
 
-    runfiles = ctx.runfiles(files = ctx.files.srcs + ctx.files.deps + lua_toolchain.tool_files + ctx.files.data)
+    runfiles = ctx.runfiles(files = srcs + ctx.files.deps + lua_toolchain.tool_files + ctx.files.data)
 
     # propagate dependencies
     dep_runfiles = [t[DefaultInfo].default_runfiles for t in [r for r in ctx.attr.deps + [ctx.attr._luaunit]]]
@@ -31,6 +32,9 @@ def _luaunit_test_impl(ctx):
     return [
         default,
     ]
+
+def _luaunit_test_impl(ctx):
+    return luaunit_test_impl(ctx, ctx.files.srcs)
 
 luaunit_test = rule(
     implementation = _luaunit_test_impl,

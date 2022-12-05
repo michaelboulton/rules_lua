@@ -1,7 +1,7 @@
 load("//lua:providers.bzl", "LuaLibrary")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain", "use_cpp_toolchain")
-load(":lua_tests.bzl", "hack_get_lua_path")
+load(":lua_binary.bzl", "hack_get_lua_path")
 
 GITHUB_TEMPLATE = "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz"
 GITHUB_PREFIX_TEMPLATE = "{dependency}-{short_tag}"

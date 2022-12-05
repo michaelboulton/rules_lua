@@ -1,27 +1,5 @@
 load("//lua:providers.bzl", "LuaLibrary")
-
-hack_get_lua_path = """
-set -e
-
-export LUA_PATH="?;?.lua;?/init.lua"
-
-if [ ! -z "$TEST_BINARY" ]; then
-    test_binary_dir=$(dirname $TEST_BINARY)
-    export LUA_PATH="$LUA_PATH;$test_binary_dir/?.lua"
-fi
-
-export LUA_PATH="$LUA_PATH;$(realpath ..)/?/?.lua"
-export LUA_PATH="$LUA_PATH;$(realpath ..)/?/init.lua"
-
-for d in $(ls -d ../lua*/lua*); do
-    d=$(realpath $d)
-    # FIXME get lua version
-    export LUA_PATH="$LUA_PATH;$d/lib/lua/5.1/?.lua"
-    export LUA_CPATH="$LUA_CPATH;$d/lib/lua/5.1/?.so"
-    export LUA_PATH="$LUA_PATH;$d/share/lua/5.1/?.lua"
-    export LUA_PATH="$LUA_PATH;$d/share/lua/5.1/?/init.lua"
-done
-"""
+load(":lua_binary.bzl", "hack_get_lua_path")
 
 def _luaunit_test_impl(ctx):
     lua_toolchain = ctx.toolchains["//lua:toolchain_type"].lua_info

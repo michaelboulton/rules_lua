@@ -1,5 +1,28 @@
 load("//lua:providers.bzl", "LuaLibrary")
-load(":lua_tests.bzl", "hack_get_lua_path")
+
+# Looks for lua dependencies for a lua binary (incl. tests!) and sets the lua path appropriately
+hack_get_lua_path = """
+set -e
+
+export LUA_PATH="?;?.lua;?/init.lua"
+
+if [ ! -z "$TEST_BINARY" ]; then
+    test_binary_dir=$(dirname $TEST_BINARY)
+    export LUA_PATH="$LUA_PATH;$test_binary_dir/?.lua"
+fi
+
+export LUA_PATH="$LUA_PATH;$(realpath ..)/?/?.lua"
+export LUA_PATH="$LUA_PATH;$(realpath ..)/?/init.lua"
+
+for d in $(ls -d ../lua*/lua*); do
+    d=$(realpath $d)
+    # FIXME get lua version
+    export LUA_PATH="$LUA_PATH;$d/lib/lua/5.1/?.lua"
+    export LUA_CPATH="$LUA_CPATH;$d/lib/lua/5.1/?.so"
+    export LUA_PATH="$LUA_PATH;$d/share/lua/5.1/?.lua"
+    export LUA_PATH="$LUA_PATH;$d/share/lua/5.1/?/init.lua"
+done
+"""
 
 def _lua_binary_impl(ctx):
     out_executable = ctx.actions.declare_file(ctx.attr.name + "_exec")

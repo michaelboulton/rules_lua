@@ -32,9 +32,11 @@ load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_depende
 
 rules_foreign_cc_dependencies()
 
-load("@com_github_michaelboulton_rules_lua//:deps.bzl", "busted_test_dependencies")
+load("@com_github_michaelboulton_rules_lua//:deps.bzl", "busted_test_dependencies", "luaunit_test_dependencies")
 
 busted_test_dependencies()
+
+luaunit_test_dependencies()
 
 load("@com_github_michaelboulton_rules_lua//lua:defs.bzl", "github_dependency", "luarocks_dependency")
 

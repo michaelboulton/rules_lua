@@ -29,19 +29,25 @@ def _luaunit_test_impl(ctx):
     out_executable = ctx.actions.declare_file(ctx.attr.name + "_test")
     ctx.actions.write(
         out_executable,
-        """
+        (hack_get_lua_path + """
         set -e
         {lua} {src} $@
-        """.format(
+        """).format(
             lua = lua_toolchain.tool_files[0].short_path,
             src = " ".join([i.short_path for i in ctx.files.srcs]),
         ),
         is_executable = True,
     )
 
+    runfiles = ctx.runfiles(files = ctx.files.srcs + ctx.files.deps + lua_toolchain.tool_files + ctx.files.data)
+
+    # propagate dependencies
+    dep_runfiles = [t[DefaultInfo].default_runfiles for t in [r for r in ctx.attr.deps + [ctx.attr._luaunit]]]
+    runfiles = runfiles.merge_all(dep_runfiles)
+
     default = DefaultInfo(
         executable = out_executable,
-        runfiles = ctx.runfiles(ctx.files.srcs + ctx.files.data + ctx.files.deps, transitive_files = depset(lua_toolchain.tool_files)),
+        runfiles = runfiles,
     )
 
     return [
@@ -63,6 +69,7 @@ luaunit_test = rule(
         "srcs": attr.label_list(
             doc = "test sources",
             mandatory = True,
+            allow_files = True,
         ),
         "_luaunit": attr.label(
             default = "@lua_luaunit",

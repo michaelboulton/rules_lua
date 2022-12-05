@@ -1,0 +1,18 @@
+load("@com_github_michaelboulton_rules_lua//lua:defs.bzl", "lua_library", "luaunit_test")
+
+lua_library(
+    name = "inspect_input",
+    srcs = [":inspect_input.lua"],
+)
+
+luaunit_test(
+    name = "test_inspect_input",
+    srcs = [
+        ":inspect_input_test.lua",
+    ],
+    deps = [
+        ":inspect_input",
+        "@lua_inspect",
+        "@lua_luaunit",
+    ],
+)

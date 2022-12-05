@@ -7,4 +7,19 @@ stardoc_with_diff_test(
     bzl_library_target = "//lua:defs",
 )
 
+stardoc_with_diff_test(
+    name = "toolchain",
+    bzl_library_target = "//lua:toolchain",
+)
+
+stardoc_with_diff_test(
+    name = "dependencies",
+    bzl_library_target = "//lua:repositories",
+)
+
+stardoc_with_diff_test(
+    name = "providers",
+    bzl_library_target = "//lua:providers",
+)
+
 update_docs(name = "update")

@@ -1,8 +1,6 @@
 """This module implements the language-specific toolchain rule.
 """
 
-load("@rules_foreign_cc//foreign_cc:providers.bzl", "ForeignCcDepsInfo")
-
 LuaInfo = provider(
     doc = "Information about how to invoke the tool executable.",
     fields = {

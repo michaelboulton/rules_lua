@@ -9,7 +9,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 load("//lua/private:toolchains_repo.bzl", "PLATFORMS", "system_toolchains_repo", "toolchains_repo")
 load("//lua/private:versions.bzl", "LUAJIT_VERSIONS", "LUA_VERSIONS")
-load("@com_github_michaelboulton_rules_lua//lua:toolchain.bzl", "lua_toolchain")
+load("//lua:toolchain.bzl", "lua_toolchain")
 
 ########
 # Remaining content of the file is only used to support toolchains.
@@ -45,6 +45,7 @@ def lua_register_toolchains(name = "lua", version = "v5.1.1", **kwargs):
     - create a repository exposing toolchains for each platform like "lua_platforms"
     - register a toolchain pointing at each platform
     Users can avoid this macro and do these steps themselves, if they want more control.
+
     Args:
         name: base name for all created repos, like "lua1_14"
         **kwargs: passed to each node_repositories call
@@ -84,6 +85,7 @@ def luajit_register_toolchains(name = "lua", version = "v2.1", **kwargs):
     - create a repository exposing toolchains for each platform like "lua_platforms"
     - register a toolchain pointing at each platform
     Users can avoid this macro and do these steps themselves, if they want more control.
+
     Args:
         name: base name for all created repos, like "lua1_14"
         **kwargs: passed to each node_repositories call

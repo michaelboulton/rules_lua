@@ -3,8 +3,6 @@ load("//lua:providers.bzl", "LuaLibrary")
 hack_get_lua_path = """
 set -e
 
-find .
-
 export LUA_PATH="?;?.lua;?/init.lua"
 
 if [ ! -z "$TEST_BINARY" ]; then

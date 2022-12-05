@@ -125,8 +125,6 @@ def _busted_test_impl(ctx):
             base=${{base/.lua/}}
             modname=${{base//\\//.}}
 
-            find .
-
             {lua} -- {busted_dir}/bin/busted . \
                 --verbose \
                 -Xoutput --color --output=utfTerminal \

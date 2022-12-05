@@ -1,0 +1,29 @@
+From 91030a81fe8f5600b58385191191758c8f88d527 Mon Sep 17 00:00:00 2001
+From: Michael Boulton <michaelboulton@gmail.com>
+Date: Thu, 10 Nov 2022 13:43:13 +0000
+Subject: [PATCH] Add install target v5.1.1
+
+---
+ makefile | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/makefile b/makefile
+index d57ecbad..14d3ed01 100644
+--- a/makefile
++++ b/makefile
+@@ -58,7 +58,11 @@ ALL_T= $(CORE_T) $(LUA_T) $(LUAC_T)
+ ALL_O= $(CORE_O) $(LUA_O) $(LUAC_O) $(AUX_O) $(LIB_O)
+ ALL_A= $(CORE_T)
+ 
+-all:	$(ALL_T)
++all:	$(LUA_T)
++
++install: $(LUA_T)
++	mkdir -p $(PREFIX)/bin
++	cp $(LUA_T) $(PREFIX)/bin/
+ 
+ o:	$(ALL_O)
+ 
+-- 
+2.38.1
+

@@ -1,7 +1,9 @@
 """This module implements the language-specific toolchain rule.
 """
 
-MylangInfo = provider(
+load("@rules_foreign_cc//foreign_cc:providers.bzl", "ForeignCcDepsInfo")
+
+LuaInfo = provider(
     doc = "Information about how to invoke the tool executable.",
     fields = {
         "target_tool_path": "Path to the tool executable for the target platform.",
@@ -18,7 +20,7 @@ def _to_manifest_path(ctx, file):
     else:
         return ctx.workspace_name + "/" + file.short_path
 
-def _mylang_toolchain_impl(ctx):
+def _lua_toolchain_impl(ctx):
     if ctx.attr.target_tool and ctx.attr.target_tool_path:
         fail("Can only set one of target_tool or target_tool_path but both were set.")
     if not ctx.attr.target_tool and not ctx.attr.target_tool_path:
@@ -31,16 +33,18 @@ def _mylang_toolchain_impl(ctx):
         tool_files = ctx.attr.target_tool.files.to_list()
         target_tool_path = _to_manifest_path(ctx, tool_files[0])
 
+    tool_files.extend(ctx.files.dev_files)
+
     # Make the $(tool_BIN) variable available in places like genrules.
     # See https://docs.bazel.build/versions/main/be/make-variables.html#custom_variables
     template_variables = platform_common.TemplateVariableInfo({
-        "MYLANG_BIN": target_tool_path,
+        "lua_BIN": target_tool_path,
     })
     default = DefaultInfo(
         files = depset(tool_files),
         runfiles = ctx.runfiles(files = tool_files),
     )
-    mylanginfo = MylangInfo(
+    lua_info = LuaInfo(
         target_tool_path = target_tool_path,
         tool_files = tool_files,
     )
@@ -48,18 +52,19 @@ def _mylang_toolchain_impl(ctx):
     # Export all the providers inside our ToolchainInfo
     # so the resolved_toolchain rule can grab and re-export them.
     toolchain_info = platform_common.ToolchainInfo(
-        mylanginfo = mylanginfo,
+        lua_info = lua_info,
         template_variables = template_variables,
         default = default,
     )
+
     return [
         default,
         toolchain_info,
         template_variables,
     ]
 
-mylang_toolchain = rule(
-    implementation = _mylang_toolchain_impl,
+lua_toolchain = rule(
+    implementation = _lua_toolchain_impl,
     attrs = {
         "target_tool": attr.label(
             doc = "A hermetically downloaded executable target for the target platform.",
@@ -70,8 +75,15 @@ mylang_toolchain = rule(
             doc = "Path to an existing executable for the target platform.",
             mandatory = False,
         ),
+        "dev_files": attr.label_list(
+            doc = "lua output libs and include directories",
+            allow_files = True,
+            # TODO: Providing CCINFO would be nice
+            # providers = [CcInfo],
+            # mandatory = True,
+        ),
     },
-    doc = """Defines a mylang compiler/runtime toolchain.
+    doc = """Defines a lua compiler/runtime toolchain.
 
 For usage see https://docs.bazel.build/versions/main/toolchains.html#defining-toolchains.
 """,

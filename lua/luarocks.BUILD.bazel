@@ -1,0 +1,15 @@
+load("@com_github_michaelboulton_rules_lua//lua:defs.bzl", "lua_binary", "lua_library")
+
+lua_library(
+    name = "luarocks_lib",
+    visibility = ["//visibility:public"],
+    srcs = glob(["src/luarocks/**/*.lua"], allow_empty = False),
+    strip_prefix = "src/luarocks",
+)
+
+lua_binary(
+    name = "luarocks",
+    tool = "src/bin/luarocks",
+    visibility = ["//visibility:public"],
+    deps = [":luarocks_lib"],
+)

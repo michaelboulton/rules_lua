@@ -1,0 +1,70 @@
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "make")
+
+filegroup(
+    name = "lua_srcs",
+    srcs = glob(["*.h", "*.c", "makefile"], allow_empty = False),
+)
+
+make(
+    name = "lua_make",
+    visibility = ["//visibility:public"],
+    lib_source = ":lua_srcs",
+    out_binaries = ["lua"],
+    args = ["-j8"],
+    targets = ["", "install"],
+)
+
+## TODO: find an easier way to do this
+filegroup(
+    name = "lua_group",
+    srcs = [":lua_make"],
+    output_group = "lua",
+)
+
+genrule(
+    name = "lua_binary",
+    outs = ["lua"],
+    srcs = [":lua_group"],
+    cmd = """cp $< $@""",
+    visibility = ["//visibility:public"],
+)
+
+# FIXME: Remove this hack somehow as well - headers should be in the output of lua_make, so why aren't they?? And data_dirs????
+
+filegroup(
+    name = "install_tree_group",
+    srcs = [":lua_make"],
+    output_group = "gen_dir",
+)
+
+genrule(
+    name = "install_tree",
+    outs = [
+        "lua_make/include/lua.hpp",
+        "lua_make/include/lualib.h",
+        "lua_make/include/luajit.h",
+        "lua_make/include/luaconf.h",
+        "lua_make/include/lauxlib.h",
+        "lua_make/include/lua.h",
+    ],
+    srcs = [":install_tree_group"],
+    cmd = """
+    for s in $(OUTS); do
+        base=$$(basename $$s)
+        cp $$(find . -name $$base) $$s
+    done
+    """,
+)
+
+filegroup(
+    name = "includes",
+    visibility = ["//visibility:public"],
+    srcs = [
+        "lua_make/include/lua.hpp",
+        "lua_make/include/lualib.h",
+        "lua_make/include/luajit.h",
+        "lua_make/include/luaconf.h",
+        "lua_make/include/lauxlib.h",
+        "lua_make/include/lua.h",
+    ],
+)

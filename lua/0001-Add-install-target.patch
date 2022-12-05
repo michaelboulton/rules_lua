@@ -1,0 +1,20 @@
+add 'install' target
+
+diff --git a/makefile b/makefile
+index d46e650c..3e710bbf 100644
+--- a/makefile
++++ b/makefile
+@@ -134,6 +134,10 @@ echo:
+
+ $(ALL_O): makefile ltests.h
+
++install: $(LUA_T)
++	mkdir -p $(PREFIX)/bin
++	cp $(LUA_T) $(PREFIX)/bin/
++
+ # DO NOT EDIT
+ # automatically made with 'gcc -MM l*.c'
+
+--
+2.38.0
+

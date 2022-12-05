@@ -1,0 +1,75 @@
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "make")
+
+filegroup(
+    name = "lua_srcs",
+    srcs = glob(["dynasm/*", "src/**", "etc/**", "Makefile"]),
+)
+
+# FIXME: For this and lua, find the cquery command to list the output inc dirs, and include them in the toolchain.
+
+make(
+    name = "lua_make",
+    lib_source = ":lua_srcs",
+    visibility = ["//visibility:public"],
+    out_binaries = ["lua"],
+    out_data_dirs = ["share"],
+    args = ["-j10"],
+    targets = ["", "install"],
+    out_static_libs = ["libluajit-5.1.a"],
+    out_shared_libs = ["libluajit-5.1.so.2.1.0"],
+)
+
+## TODO: find an easier way to do this
+filegroup(
+    name = "lua_bin_group",
+    srcs = [":lua_make"],
+    output_group = "lua",
+)
+
+genrule(
+    name = "lua_binary",
+    outs = ["lua"],
+    srcs = [":lua_bin_group"],
+    cmd = """cp $< $@""",
+    visibility = ["//visibility:public"],
+)
+
+# FIXME: Remove this hack somehow as well - headers should be in the output of lua_make, so why aren't they?? And data_dirs????
+
+filegroup(
+    name = "install_tree_group",
+    srcs = [":lua_make"],
+    output_group = "gen_dir",
+)
+
+genrule(
+    name = "install_tree",
+    outs = [
+        "include/lua.hpp",
+        "include/lualib.h",
+        "include/luajit.h",
+        "include/luaconf.h",
+        "include/lauxlib.h",
+        "include/lua.h",
+    ],
+    srcs = [":install_tree_group"],
+    cmd = """
+    for s in $(OUTS); do
+        base=$$(basename $$s)
+        cp $$(find . -name $$base) $$s
+    done
+    """,
+)
+
+filegroup(
+    name = "includes",
+    visibility = ["//visibility:public"],
+    srcs = [
+        "include/lua.hpp",
+        "include/lualib.h",
+        "include/luajit.h",
+        "include/luaconf.h",
+        "include/lauxlib.h",
+        "include/lua.h",
+    ],
+)

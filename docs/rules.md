@@ -2,6 +2,28 @@
 
 Public API re-exports
 
+<a id="busted_test"></a>
+
+## busted_test
+
+<pre>
+busted_test(<a href="#busted_test-name">name</a>, <a href="#busted_test-data">data</a>, <a href="#busted_test-deps">deps</a>, <a href="#busted_test-srcs">srcs</a>, <a href="#busted_test-standalone">standalone</a>)
+</pre>
+
+
+
+**ATTRIBUTES**
+
+
+| Name  | Description | Type | Mandatory | Default |
+| :------------- | :------------- | :------------- | :------------- | :------------- |
+| <a id="busted_test-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
+| <a id="busted_test-data"></a>data |  extra files to be available at runtime   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
+| <a id="busted_test-deps"></a>deps |  runtime dependencies for test   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
+| <a id="busted_test-srcs"></a>srcs |  test sources   | <a href="https://bazel.build/concepts/labels">List of labels</a> | required |  |
+| <a id="busted_test-standalone"></a>standalone |  Whether this is a 'standalone' test or a normal test that sould be called with the busted cli   | Boolean | optional | False |
+
+
 <a id="lua_binary"></a>
 
 ## lua_binary
@@ -71,7 +93,7 @@ install a luarocks dependency from a rockspec or .src.rock file
 ## luaunit_test
 
 <pre>
-luaunit_test(<a href="#luaunit_test-name">name</a>, <a href="#luaunit_test-deps">deps</a>, <a href="#luaunit_test-srcs">srcs</a>)
+luaunit_test(<a href="#luaunit_test-name">name</a>, <a href="#luaunit_test-data">data</a>, <a href="#luaunit_test-deps">deps</a>, <a href="#luaunit_test-srcs">srcs</a>)
 </pre>
 
 
@@ -82,6 +104,7 @@ luaunit_test(<a href="#luaunit_test-name">name</a>, <a href="#luaunit_test-deps"
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="luaunit_test-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
+| <a id="luaunit_test-data"></a>data |  extra files to be available at runtime   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
 | <a id="luaunit_test-deps"></a>deps |  runtime dependencies for test   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
 | <a id="luaunit_test-srcs"></a>srcs |  test sources   | <a href="https://bazel.build/concepts/labels">List of labels</a> | required |  |
 

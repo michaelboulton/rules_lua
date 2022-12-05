@@ -1,4 +1,4 @@
-maths_mod = require("src.busted_test.maths")
+maths_mod = require("lua.busted_test.maths")
 
 describe("Adding numbers", function()
     it("Can add 2", function()

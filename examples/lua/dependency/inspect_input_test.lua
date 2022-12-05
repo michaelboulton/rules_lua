@@ -1,5 +1,5 @@
 local lu = require('luaunit')
-local mod = require("src.dependency.inspect_input")
+local mod = require("lua.dependency.inspect_input")
 
 TestSuite = {}
 

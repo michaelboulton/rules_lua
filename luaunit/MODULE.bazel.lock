@@ -2801,7 +2801,7 @@
     },
     "@@rules_lua~override//lua:defs.bzl%lua_dependency": {
       "general": {
-        "bzlTransitiveDigest": "iMyhyy4qoMrzIJ/ruOI2ithMKNw2uq1tely8StWfDUg=",
+        "bzlTransitiveDigest": "QVWuhf4rAxAQ7ILBTVDx3NzCKdsqwEzTohTh9KgeLLk=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
@@ -2810,6 +2810,7 @@
             "ruleClassName": "external_repository",
             "attributes": {
               "name": "rules_lua~override~lua_dependency~lua_luaunit",
+              "unmangled_name": "lua_luaunit",
               "external_dependency_template": "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz",
               "external_dependency_strip_template": "",
               "dependency": "luaunit",

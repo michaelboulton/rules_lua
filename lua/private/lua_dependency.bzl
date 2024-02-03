@@ -40,8 +40,13 @@ luarocks_library(
     deps = {deps},
     data = [":all_files"],
     extra_cflags = [{extra_cflags}],
+)
 
-)""".format(
+alias(
+    name = "{unmangled_name}",
+    actual = "{name}",
+)
+""".format(
         deps = str([str(i) for i in rctx.attr.deps]),
         rockspec_path = rockspec_path,
         **fmt_vars
@@ -51,11 +56,12 @@ luarocks_library(
 
 def _get_fmt_vars(rctx):
     fmt_vars = dict(
-        name = rctx.attr.name,  # FIXME: Need to somehow consistently get the name aliased here.
+        name = rctx.attr.name,
         version = rctx.attr.version,
         user = rctx.attr.user,
         dependency = rctx.attr.dependency,
         extra_cflags = ", ".join(['"{}"'.format(c) for c in rctx.attr.extra_cflags]),
+        unmangled_name = rctx.attr.unmangled_name  # FIXME: Need to somehow consistently get the name aliased here.
     )
 
     if hasattr(rctx.attr, "extra_fmt_vars"):
@@ -167,6 +173,9 @@ external_repository = repository_rule(
             doc = "name of dependency",
             mandatory = True,
         ),
+        "unmangled_name": attr.string(
+            mandatory = True,
+        ),
         "user": attr.string(
             doc = "user on luarocks that uploaded the dependency",
             mandatory = True,
@@ -228,6 +237,7 @@ def github_dependency(dependency, tag, name = None, **kwargs):
 
     external_repository(
         name = name,
+        unmangled_name = name,
         external_dependency_template = GITHUB_TEMPLATE,
         external_dependency_strip_template = strip_template,
         dependency = dependency,

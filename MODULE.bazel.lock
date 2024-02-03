@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "46d4faa576ca60b16e7c0f28d238e99f5d0e45474544f371d21baf1df570593f",
+  "moduleFileHash": "f3e696a6d345673c45917b38cd56c58c67301aec24d61c11264b59c729a5adfd",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -42,7 +42,7 @@
               "tagName": "@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
               "attributeValues": {
                 "build_file": "@com_github_michaelboulton_rules_lua//lua:luarocks.BUILD.bazel",
-                "sha256": "ffafd83b1c42aa38042166a59ac3b618c238ce4e63f4ace9d961a5679ef58253",
+                "sha256": "bca6e4ecc02c203e070acdb5f586045d45c078896f6236eb46aa33ccd9b94edb",
                 "strip_prefix": "luarocks-3.9.2",
                 "urls": [
                   "https://luarocks.org/releases/luarocks-3.9.2.tar.gz"

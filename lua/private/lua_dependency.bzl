@@ -39,7 +39,13 @@ luarocks_library(
     srcrock = "{rockspec_path}",
     deps = {deps},
     data = [":all_files"],
-)""".format(deps = str([str(i) for i in rctx.attr.deps]), rockspec_path = rockspec_path, **fmt_vars)
+    extra_cflags = [{extra_cflags}],
+
+)""".format(
+        deps = str([str(i) for i in rctx.attr.deps]),
+        rockspec_path = rockspec_path,
+        **fmt_vars
+    )
 
     return build_content
 
@@ -49,6 +55,7 @@ def _get_fmt_vars(rctx):
         version = rctx.attr.version,
         user = rctx.attr.user,
         dependency = rctx.attr.dependency,
+        extra_cflags = ", ".join(['"{}"'.format(c) for c in rctx.attr.extra_cflags]),
     )
 
     if hasattr(rctx.attr, "extra_fmt_vars"):
@@ -87,6 +94,7 @@ luarocks_library(
     srcrock = ":{dependency}-{version}.src.rock",
     deps = {deps},
     out_binaries = {out_binaries},
+    extra_cflags = [{extra_cflags}],
 )""".format(
             deps = str([str(i) for i in rctx.attr.deps]),
             out_binaries = str([str(i) for i in rctx.attr.out_binaries]),
@@ -101,6 +109,9 @@ luarocks_repository = repository_rule(
     _luarocks_repository_impl,
     doc = "Fetch a dependency from luarocks",
     attrs = {
+        "extra_cflags": attr.string_list(
+            doc = "extra CFLAGS to pass to compilation",
+        ),
         "dependency": attr.string(
             doc = "name of dependency on luarocks",
             mandatory = True,
@@ -180,6 +191,9 @@ external_repository = repository_rule(
             doc = "lua deps",
             providers = [LuaLibrary],
         ),
+        "extra_cflags": attr.string_list(
+            doc = "extra CFLAGS to pass to compilation",
+        ),
     },
 )
 
@@ -248,7 +262,7 @@ def _luarocks_library_impl(ctx):
         {lua} {luarocks} config --scope project variables.CC {compiler}
         {lua} {luarocks} config --scope project variables.LD {linker}
         {lua} {luarocks} config --scope project gcc_rpath 'false'
-        {lua} {luarocks} config --scope project variables.CFLAGS -- "-fPIC -std=c++14"
+        {lua} {luarocks} config --scope project variables.CFLAGS -- "-fPIC {extra_cflags}"
 
         if ! [[ "{src}" =~ .*.rockspec ]]; then
             {lua} {luarocks} unpack {src}
@@ -274,6 +288,7 @@ def _luarocks_library_impl(ctx):
             luarocks = "external/luarocks/src/bin/luarocks",
             outpath = lua_files.path,
             out_binaries_paths = " ".join([o.path for o in all_out_binaries]),
+            extra_cflags = " ".join(ctx.attr.extra_cflags),
         ),
     )
 
@@ -330,6 +345,9 @@ luarocks_library = rule(
             default = "@luarocks//:luarocks_lib",
         ),
         "_cc_toolchain": attr.label(default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")),
+        "extra_cflags": attr.string_list(
+            doc = "extra CFLAGS to pass to compilation",
+        ),
     },
     toolchains = [
         "@com_github_michaelboulton_rules_lua//lua:toolchain_type",

@@ -24,6 +24,7 @@ bzl_library(
         ":toolchain",
         "//lua/private:toolchains_repo",
         "//lua/private:versions",
+        "@bazel_tools//tools/build_defs/repo:cache.bzl",
         "@bazel_tools//tools/build_defs/repo:git.bzl",
         "@bazel_tools//tools/build_defs/repo:git_worker.bzl",  # Transitive dependency but stardoc fails without it here
         "@bazel_tools//tools/build_defs/repo:http.bzl",

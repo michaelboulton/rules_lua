@@ -4,10 +4,6 @@ load("@com_github_michaelboulton_rules_lua//lua:repositories.bzl", "luajit_regis
 
 luajit_register_toolchains()
 
-load("@com_github_michaelboulton_rules_lua//:deps.bzl", "busted_test_dependencies")
-
-busted_test_dependencies()
-
 load("@com_github_michaelboulton_rules_lua//fennel:repositories.bzl", "fennel_register_toolchains")
 
 fennel_register_toolchains(

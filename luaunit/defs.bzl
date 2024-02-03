@@ -1,6 +1,6 @@
 load("@rules_lua//lua:providers.bzl", "LuaLibrary")
-load("@rules_lua//private:lua_binary.bzl", "hack_get_lua_path")
-load("@rules_lua//fennel:fennel_library.bzl", "COMMON_ATTRS", "compile_fennel")
+load("@rules_lua//lua/private:lua_binary.bzl", "hack_get_lua_path")
+load("@rules_lua//fennel/private:fennel_library.bzl", "COMMON_ATTRS", "compile_fennel")
 
 def luaunit_test_impl(ctx, srcs):
     lua_toolchain = ctx.toolchains["//lua:toolchain_type"].lua_info

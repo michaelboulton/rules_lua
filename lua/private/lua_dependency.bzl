@@ -383,11 +383,33 @@ _luarocks_tag = tag_class(
         ),
     },
 )
+_luaunit_tag = tag_class(
+    doc = "get a version of luaunit",
+    attrs = {
+        "version": attr.string(
+            doc = "version of dependency",
+            default = "3.4-1",
+        ),
+        "tag": attr.string(
+            doc = "tag to fetch",
+            default = "LUAUNIT_v3_4",
+        ),
+    },
+)
 
 def _lua_dependency_impl(mctx):
     #    artifacts = []
     #    for mod in mctx.modules:
     #        artifacts += [_to_artifact(artifact) for artifact in mod.tags.artifact]
+
+    if mctx.luaunit:
+        github_dependency(
+            name = "lua_luaunit",
+            dependency = "luaunit",
+            tag = mctx.luaunit.tag,
+            user = "bluebird75",
+            version = mctx.luaunit.version,
+        )
 
     for m in mctx.luarocks:
         _luarocks_repository_impl(mctx)
@@ -396,5 +418,6 @@ lua_dependendency = module_extension(
     implementation = _lua_dependency_impl,
     tag_classes = {
         "luarocks": _luarocks_tag,
+        "luaunit": _luaunit_tag,
     },
 )

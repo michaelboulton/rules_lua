@@ -60,15 +60,6 @@ def luarocks_dependency(name, **kwargs):
 def github_dependency(name, **kwargs):
     maybe(_github_dependency, name = name, **kwargs)
 
-def luaunit_test_dependencies():
-    github_dependency(
-        name = "lua_luaunit",
-        dependency = "luaunit",
-        tag = "LUAUNIT_V3_4",
-        user = "bluebird75",
-        version = "3.4-1",
-    )
-
 def busted_test_dependencies():
     luarocks_dependency(
         name = "lua_busted",

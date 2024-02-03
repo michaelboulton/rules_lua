@@ -355,3 +355,46 @@ luarocks_library = rule(
     ],
     doc = "install a luarocks dependency from a rockspec or .src.rock file",
 )
+
+_luarocks_tag = tag_class(
+    doc = "Fetch a dependency from luarocks",
+    attrs = {
+        "extra_cflags": attr.string_list(
+            doc = "extra CFLAGS to pass to compilation",
+        ),
+        "sha256": attr.string(
+            doc = "sha256 of dependency",
+            # mandatory = True,
+        ),
+        "dependency": attr.string(
+            doc = "name of dependency on luarocks",
+            mandatory = True,
+        ),
+        "user": attr.string(
+            doc = "user on luarocks that uploaded the dependency",
+            mandatory = True,
+        ),
+        "version": attr.string(
+            doc = "version of dependency",
+            mandatory = True,
+        ),
+        "out_binaries": attr.string_list(
+            doc = "List of binaries which should be produced",
+        ),
+    },
+)
+
+def _lua_dependency_impl(mctx):
+    #    artifacts = []
+    #    for mod in mctx.modules:
+    #        artifacts += [_to_artifact(artifact) for artifact in mod.tags.artifact]
+
+    for m in mctx.luarocks:
+        _luarocks_repository_impl(mctx)
+
+lua_dependendency = module_extension(
+    implementation = _lua_dependency_impl,
+    tag_classes = {
+        "luarocks": _luarocks_tag,
+    },
+)

@@ -71,7 +71,7 @@ def _fennel_register_toolchains(name, version, **kwargs):
         sha256 = FENNEL_VERSIONS[version],
         dependency = "fennel",
         user = "technomancy",
-        version = "1.2.1-1",
+        version = "{}-1".format(version),
         out_binaries = ["fennel"],
     )
 

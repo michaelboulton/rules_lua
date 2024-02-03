@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "0a889129fe702e1af42d8013dd8e5080de8a12efa0def9572c74460ab2c6fb72",
+  "moduleFileHash": "c6799b34b6ce67b760b7aaa8d357cf8a3d416bb7b59c2bdfa3241e26acb9b912",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -2789,7 +2789,7 @@
     },
     "@@rules_lua~override//fennel:repositories.bzl%fennel_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "09W2RVhSEBONtZUh3UuG1sMvhO4+GY8KRmcGrlJX4qA=",
+        "bzlTransitiveDigest": "+THzaWmmxOoVwofWYOHeQOfFpv3SwsVUtrAxBI0UblE=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {

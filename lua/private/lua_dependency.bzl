@@ -383,19 +383,43 @@ _luarocks_tag = tag_class(
         ),
     },
 )
-_luaunit_tag = tag_class(
-    doc = "get a version of luaunit",
+_github_tag = tag_class(
+    doc = "Fetch a dependency from a url. Expects there to be a .rockspec file in the top level, or in the path specified by rockspec_path",
     attrs = {
+        "dependency": attr.string(
+            doc = "name of dependency",
+            mandatory = True,
+        ),
+        "user": attr.string(
+            doc = "user on luarocks that uploaded the dependency",
+            mandatory = True,
+        ),
         "version": attr.string(
             doc = "version of dependency",
-            default = "3.4-1",
+            mandatory = True,
         ),
-        "tag": attr.string(
-            doc = "tag to fetch",
-            default = "LUAUNIT_v3_4",
+        "external_dependency_template": attr.string(
+            doc = "template to download from git",
+        ),
+        "external_dependency_strip_template": attr.string(
+            doc = "strip prefix of dependency archive, if present",
+        ),
+        "extra_fmt_vars": attr.string_dict(
+            doc = "any extra things to pass to format external_dependency_template.",
+        ),
+        "rockspec_path": attr.string(
+            doc = "Possible sub-path to rockspec path in the downloaded content. Defaults to the top level",
+        ),
+        "deps": attr.label_list(
+            doc = "lua deps",
+            providers = [LuaLibrary],
+        ),
+        "extra_cflags": attr.string_list(
+            doc = "extra CFLAGS to pass to compilation",
         ),
     },
 )
+
 _busted_tag = tag_class(
     doc = "get a version of busted",
     attrs = {},
@@ -405,15 +429,6 @@ def _lua_dependency_impl(mctx):
     #    artifacts = []
     #    for mod in mctx.modules:
     #        artifacts += [_to_artifact(artifact) for artifact in mod.tags.artifact]
-
-    if mctx.luaunit:
-        github_dependency(
-            name = "lua_luaunit",
-            dependency = "luaunit",
-            tag = mctx.luaunit.tag,
-            user = "bluebird75",
-            version = mctx.luaunit.version,
-        )
 
     if mctx.busted:
         # TODO: There should be something which parses rockspecs use luarocks, or recursively, instead of defining all of these
@@ -519,12 +534,14 @@ def _lua_dependency_impl(mctx):
 
     for m in mctx.luarocks:
         _luarocks_repository_impl(mctx)
+    for m in mctx.github:
+        github_dependency(mctx)
 
 lua_dependendency = module_extension(
     implementation = _lua_dependency_impl,
     tag_classes = {
         "luarocks": _luarocks_tag,
-        "luaunit": _luaunit_tag,
         "busted": _busted_tag,
+        "github": _github_tag,
     },
 )

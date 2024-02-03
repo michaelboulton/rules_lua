@@ -13,6 +13,6 @@ luaunit_test(
     deps = [
         ":inspect_input",
         "@lua_inspect",
-        "@lua_luaunit",
+        # "@lua_luaunit",
     ],
 )

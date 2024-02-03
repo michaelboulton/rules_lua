@@ -19,7 +19,7 @@ _fennel_luaunit_test = rule(
     implementation = _fennel_luaunit_test_impl,
     attrs = dict(
         _luaunit = attr.label(
-            default = "@lua_luaunit",
+            #            default = "@lua_luaunit",
         ),
         data = attr.label_list(
             doc = "extra files required to build the luarocks library",
@@ -35,7 +35,7 @@ _fennel_luaunit_test = rule(
 )
 
 def fennel_luaunit_test(deps = [], **kwargs):
-    deps = deps + ["@lua_luaunit"]
+    deps = deps  #+ ["@lua_luaunit"]
     _fennel_luaunit_test(deps = deps, **kwargs)
 
 def _aniseed_test_impl(ctx):
@@ -179,7 +179,7 @@ _fennel_busted_test = rule(
         ),
         _busted = attr.label(
             allow_files = True,
-            default = "@lua_busted//:lua_busted",
+            #            default = "@lua_busted//:lua_busted",
         ),
         **COMMON_ATTRS
     ),

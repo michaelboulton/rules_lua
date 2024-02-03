@@ -1,0 +1,18 @@
+module(
+    name = "rules_lua_luaunit",
+    repo_name = "com_github_michaelboulton_rules_lua_luaunit",
+)
+
+bazel_dep(name = "rules_lua", version = "0.0.0")
+local_path_override(
+    module_name = "rules_lua",
+    path = "..",
+)
+
+lua_deps = use_extension("@rules_lua//lua:defs.bzl", "lua_dependency")
+lua_deps.github(
+    dependency = "luaunit",
+    tag = "3.4-1",
+    user = "bluebird75",
+    version = "LUAUNIT_v3_4",
+)

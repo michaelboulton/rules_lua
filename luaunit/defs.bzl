@@ -58,7 +58,7 @@ luaunit_test = rule(
             #            default = "@lua_luaunit",
         ),
     },
-    toolchains = ["@com_github_michaelboulton_rules_lua//lua:toolchain_type"],
+    toolchains = ["@rules_lua//lua:toolchain_type"],
 )
 
 def _fennel_luaunit_test_impl(ctx):
@@ -86,8 +86,8 @@ _fennel_luaunit_test = rule(
     ),
     doc = "fennel luaunit test",
     toolchains = [
-        "//fennel:toolchain_type",
-        "//lua:toolchain_type",
+        "@rules_lua//fennel:toolchain_type",
+        "@rules_lua//lua:toolchain_type",
     ],
 )
 

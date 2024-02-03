@@ -47,19 +47,7 @@ fennel_repositories = repository_rule(
     attrs = _ATTRS,
 )
 
-# Wrapper macro around everything above, this is the primary API
-def fennel_register_toolchains(name, version = "1.2.1", **kwargs):
-    """Convenience macro for users which does typical setup.
-
-    - create a repository exposing toolchains for each platform like "fennel_platforms"
-    - register a toolchain pointing at each platform
-    Users can avoid this macro and do these steps themselves, if they want more control.
-
-    Args:
-        name: base name for all created repos, like "fennel1_14"
-        **kwargs: passed to each node_repositories call
-    """
-
+def _fennel_register_toolchains(name, version, **kwargs):
     if version not in FENNEL_VERSIONS:
         fail("Unrecognised fennel version {}".format(version))
 
@@ -92,9 +80,47 @@ def fennel_register_toolchains(name, version = "1.2.1", **kwargs):
         version = version,
         **kwargs
     )
-    native.register_toolchains("@{}_toolchains//:fennel_toolchain".format(name))
 
     toolchains_repo(
         name = name + "_toolchains",
         user_repository_name = name,
     )
+
+    return "@{}_toolchains//:fennel_toolchain".format(name)
+
+# Wrapper macro around everything above, this is the primary API
+def fennel_register_toolchains(name, version = "1.2.1", **kwargs):
+    """Convenience macro for users which does typical setup.
+
+    - create a repository exposing toolchains for each platform like "fennel_platforms"
+    - register a toolchain pointing at each platform
+    Users can avoid this macro and do these steps themselves, if they want more control.
+
+    Args:
+        name: base name for all created repos, like "fennel1_14"
+        **kwargs: passed to each node_repositories call
+    """
+
+    native.register_toolchains(_fennel_register_toolchains(name, version, **kwargs))
+
+_fennel_tag = tag_class(
+    doc = "initialise fennel toolchain",
+    attrs = {
+        "version": attr.string(
+            default = "1.2.1",
+            doc = "version of SDK",
+        ),
+    },
+)
+
+def _lua_toolchains_extension(mctx):
+    if mctx.fennel:
+        name = "fennel_{}".format(mctx.fennel.version)
+        return _fennel_register_toolchains(name, mctx.fennel.versions)
+
+lua_toolchains = module_extension(
+    implementation = _lua_dependency_impl,
+    tag_classes = {
+        "fennel": _fennel_tag,
+    },
+)

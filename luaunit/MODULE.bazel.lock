@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "08ba4606eea96dc7dbf13437b1c14e81ecc8cc752637044ab7334491d2522424",
+  "moduleFileHash": "bef875d949ca75a257d09916459009d91d1ef3cef91bcf2927aea9dc445f738b",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -14,7 +14,7 @@
   },
   "localOverrideHashes": {
     "bazel_tools": "922ea6752dc9105de5af957f7a99a6933c0a6a712d23df6aad16a9c399f7e787",
-    "rules_lua": "f3e696a6d345673c45917b38cd56c58c67301aec24d61c11264b59c729a5adfd"
+    "rules_lua": "e654fd79ad4d1efc486bf07f0244672bbe658de1e548e17bf468eca5419b4a4f"
   },
   "moduleDepGraph": {
     "<root>": {
@@ -23,7 +23,9 @@
       "key": "<root>",
       "repoName": "com_github_michaelboulton_rules_lua_luaunit",
       "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [],
+      "toolchainsToRegister": [
+        "@lua_v5.1.1_toolchains//:x86_64-unknown-linux-gnu_toolchain"
+      ],
       "extensionUsages": [
         {
           "extensionBzlFile": "@rules_lua//lua:defs.bzl",
@@ -57,29 +59,27 @@
           "hasNonDevUseExtension": true
         },
         {
-          "extensionBzlFile": "@rules_lua//fennel:repositories.bzl",
-          "extensionName": "fennel_toolchains",
+          "extensionBzlFile": "@rules_lua//lua:repositories.bzl",
+          "extensionName": "lua_toolchains",
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
             "line": 20,
-            "column": 34
+            "column": 31
           },
-          "imports": {
-            "fennel_1.2.1": "fennel_1.2.1"
-          },
+          "imports": {},
           "devImports": [],
           "tags": [
             {
-              "tagName": "fennel",
+              "tagName": "lua",
               "attributeValues": {
-                "version": "1.2.1"
+                "version": "v5.1.1"
               },
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 21,
-                "column": 25
+                "line": 24,
+                "column": 19
               }
             }
           ],
@@ -129,7 +129,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@rules_lua~override//:MODULE.bazel",
-                "line": 24,
+                "line": 25,
                 "column": 13
               }
             }
@@ -139,6 +139,7 @@
         }
       ],
       "deps": {
+        "platforms": "platforms@0.0.8",
         "bazel_skylib": "bazel_skylib@1.5.0",
         "aspect_bazel_lib": "aspect_bazel_lib@2.3.0",
         "rules_foreign_cc": "rules_foreign_cc@0.10.1",
@@ -273,7 +274,7 @@
         "rules_license": "rules_license@0.0.7",
         "rules_proto": "rules_proto@5.3.0-21.7",
         "rules_python": "rules_python@0.20.0",
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "com_google_protobuf": "protobuf@21.7",
         "zlib": "zlib@1.3",
         "build_bazel_apple_support": "apple_support@1.5.0",
@@ -289,8 +290,36 @@
       "toolchainsToRegister": [],
       "extensionUsages": [],
       "deps": {
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "bazel_tools": "bazel_tools@_"
+      }
+    },
+    "platforms@0.0.8": {
+      "name": "platforms",
+      "version": "0.0.8",
+      "key": "platforms@0.0.8",
+      "repoName": "platforms",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [],
+      "deps": {
+        "rules_license": "rules_license@0.0.7",
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_"
+      },
+      "repoSpec": {
+        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {
+          "name": "platforms",
+          "urls": [
+            "https://github.com/bazelbuild/platforms/releases/download/0.0.8/platforms-0.0.8.tar.gz"
+          ],
+          "integrity": "sha256-gVBAZgU4ns7LbaB8vLUJ1WN6OrmiS8abEQFTE2fYnXQ=",
+          "strip_prefix": "",
+          "remote_patches": {},
+          "remote_patch_strip": 0
+        }
       }
     },
     "bazel_skylib@1.5.0": {
@@ -305,7 +334,7 @@
       ],
       "extensionUsages": [],
       "deps": {
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
       },
@@ -452,7 +481,7 @@
       ],
       "deps": {
         "bazel_skylib": "bazel_skylib@1.5.0",
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "io_bazel_stardoc": "stardoc@0.5.4",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
@@ -521,7 +550,7 @@
       ],
       "deps": {
         "bazel_skylib": "bazel_skylib@1.5.0",
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "rules_python": "rules_python@0.20.0",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
@@ -572,7 +601,7 @@
         }
       ],
       "deps": {
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
       },
@@ -671,7 +700,7 @@
         }
       ],
       "deps": {
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "rules_cc": "rules_cc@0.0.9",
         "bazel_skylib": "bazel_skylib@1.5.0",
         "rules_proto": "rules_proto@5.3.0-21.7",
@@ -817,7 +846,7 @@
         }
       ],
       "deps": {
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "bazel_skylib": "bazel_skylib@1.5.0",
         "rules_proto": "rules_proto@5.3.0-21.7",
         "com_google_protobuf": "protobuf@21.7",
@@ -837,34 +866,6 @@
           "remote_patches": {
             "https://bcr.bazel.build/modules/rules_python/0.20.0/patches/module_dot_bazel_version.patch": "sha256-LICe/Q+KxbOIQCbb59g0QHBg2KTof3wHiISxAZsoHx4="
           },
-          "remote_patch_strip": 0
-        }
-      }
-    },
-    "platforms@0.0.7": {
-      "name": "platforms",
-      "version": "0.0.7",
-      "key": "platforms@0.0.7",
-      "repoName": "platforms",
-      "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [],
-      "extensionUsages": [],
-      "deps": {
-        "rules_license": "rules_license@0.0.7",
-        "bazel_tools": "bazel_tools@_",
-        "local_config_platform": "local_config_platform@_"
-      },
-      "repoSpec": {
-        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
-        "ruleClassName": "http_archive",
-        "attributes": {
-          "name": "platforms",
-          "urls": [
-            "https://github.com/bazelbuild/platforms/releases/download/0.0.7/platforms-0.0.7.tar.gz"
-          ],
-          "integrity": "sha256-OlYcmee9vpFzqmU/1Xn+hJ8djWc5V4CrR3Cx84FDHVE=",
-          "strip_prefix": "",
-          "remote_patches": {},
           "remote_patch_strip": 0
         }
       }
@@ -963,7 +964,7 @@
       "toolchainsToRegister": [],
       "extensionUsages": [],
       "deps": {
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "rules_cc": "rules_cc@0.0.9",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
@@ -1017,7 +1018,7 @@
       ],
       "deps": {
         "bazel_skylib": "bazel_skylib@1.5.0",
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
       },
@@ -1108,7 +1109,7 @@
       "extensionUsages": [],
       "deps": {
         "rules_cc": "rules_cc@0.0.9",
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
       },
@@ -1142,7 +1143,7 @@
         "rules_proto": "rules_proto@5.3.0-21.7",
         "com_google_protobuf": "protobuf@21.7",
         "com_google_absl": "abseil-cpp@20211102.0",
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
       },
@@ -1258,7 +1259,7 @@
       "extensionUsages": [],
       "deps": {
         "com_google_absl": "abseil-cpp@20211102.0",
-        "platforms": "platforms@0.0.7",
+        "platforms": "platforms@0.0.8",
         "rules_cc": "rules_cc@0.0.9",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
@@ -2749,6 +2750,48 @@
             "rules_java~7.1.0",
             "remote_java_tools",
             "rules_java~7.1.0~toolchains~remote_java_tools"
+          ]
+        ]
+      }
+    },
+    "@@rules_lua~override//lua:repositories.bzl%lua_toolchains": {
+      "general": {
+        "bzlTransitiveDigest": "eHfVd0Anux4wtMmbDzDQC+4N7mTX05bKCQqAnhMU7iQ=",
+        "accumulatedFileDigests": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "lua_git": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:git.bzl",
+            "ruleClassName": "git_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~lua_git",
+              "remote": "https://github.com/lua/lua.git",
+              "build_file": "@@rules_lua~override//lua:lua.BUILD.bazel",
+              "patch_args": [
+                "-p",
+                "1"
+              ],
+              "commit": "98194db4295726069137d13b8d24fca8cbf892b6",
+              "shallow_since": "1149874274 -0300",
+              "patches": [
+                "@@rules_lua~override//lua:0001-Add-install-target-v5.1.1.patch"
+              ]
+            }
+          },
+          "lua_v5.1.1_toolchains": {
+            "bzlFile": "@@rules_lua~override//lua/private:toolchains_repo.bzl",
+            "ruleClassName": "toolchains_repo",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~lua_v5.1.1_toolchains",
+              "user_repository_name": "lua_v5.1.1"
+            }
+          }
+        },
+        "recordedRepoMappingEntries": [
+          [
+            "rules_lua~override",
+            "bazel_tools",
+            "bazel_tools"
           ]
         ]
       }

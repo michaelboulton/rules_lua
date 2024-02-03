@@ -51,6 +51,17 @@ def lua_register_toolchains(name = "lua", version = "v5.1.1", **kwargs):
         **kwargs: passed to each node_repositories call
     """
 
+    _lua_register_toolchains(name, version, **kwargs)
+
+    for platform in PLATFORMS.keys():
+        lua_repositories(
+            name = name + "_" + platform,
+            platform = platform,
+            **kwargs
+        )
+        native.register_toolchains("@{}_toolchains//:{}_toolchain".format(name, platform))
+
+def _lua_register_toolchains(name, version, **kwargs):
     if version not in LUA_VERSIONS:
         fail("Unknown lua version {}".format(version))
 
@@ -61,14 +72,6 @@ def lua_register_toolchains(name = "lua", version = "v5.1.1", **kwargs):
         patch_args = ["-p", "1"],
         **LUA_VERSIONS[version]
     )
-
-    for platform in PLATFORMS.keys():
-        lua_repositories(
-            name = name + "_" + platform,
-            platform = platform,
-            **kwargs
-        )
-        native.register_toolchains("@{}_toolchains//:{}_toolchain".format(name, platform))
 
     toolchains_repo(
         name = name + "_toolchains",
@@ -140,3 +143,41 @@ def lua_register_system_toolchain(lua_path, name = "lua"):
         name = name + "_toolchains",
         user_repository_name = name,
     )
+
+_fennel_tag = tag_class(
+    doc = "initialise fennel toolchain",
+    attrs = {
+        "version": attr.string(
+            default = "1.2.1",
+            doc = "version of SDK",
+        ),
+    },
+)
+
+_lua_tag = tag_class(
+    doc = "initialise lua toolchain",
+    attrs = {
+        "version": attr.string(
+            default = "v5.1.1",
+            doc = "version of SDK",
+        ),
+    },
+)
+
+def _lua_toolchains_extension(mctx):
+    for mod in mctx.modules:
+        for lua in mod.tags.lua:
+            name = "lua_{}".format(lua.version)
+            _lua_register_toolchains(name, lua.version)
+
+#    if mctx.fennel:
+#        name = "fennel_{}".format(mctx.fennel.version)
+#        _fennel_register_toolchains(name, mctx.fennel.version)
+
+lua_toolchains = module_extension(
+    implementation = _lua_toolchains_extension,
+    tag_classes = {
+        "fennel": _fennel_tag,
+        "lua": _lua_tag,
+    },
+)

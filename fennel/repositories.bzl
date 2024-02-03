@@ -102,25 +102,3 @@ def fennel_register_toolchains(name, version = "1.2.1", **kwargs):
     """
 
     native.register_toolchains(_fennel_register_toolchains(name, version, **kwargs))
-
-_fennel_tag = tag_class(
-    doc = "initialise fennel toolchain",
-    attrs = {
-        "version": attr.string(
-            default = "1.2.1",
-            doc = "version of SDK",
-        ),
-    },
-)
-
-def _lua_toolchains_extension(mctx):
-    if mctx.fennel:
-        name = "fennel_{}".format(mctx.fennel.version)
-        return _fennel_register_toolchains(name, mctx.fennel.versions)
-
-lua_toolchains = module_extension(
-    implementation = _lua_dependency_impl,
-    tag_classes = {
-        "fennel": _fennel_tag,
-    },
-)

@@ -15,6 +15,5 @@ aniseed_test(
         "@lua_luasec",
         "@lua_luassert",
         "@lua_stdlib",
-        "@lua_xml",
     ],
 )

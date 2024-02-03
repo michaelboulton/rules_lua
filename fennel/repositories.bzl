@@ -102,3 +102,26 @@ def fennel_register_toolchains(name, version = "1.2.1", **kwargs):
     """
 
     native.register_toolchains(_fennel_register_toolchains(name, version, **kwargs))
+
+_fennel_tag = tag_class(
+    doc = "initialise fennel toolchain",
+    attrs = {
+        "version": attr.string(
+            default = "1.2.1",
+            doc = "version of SDK",
+        ),
+    },
+)
+
+def _fennel_toolchains_extension(mctx):
+    for mod in mctx.modules:
+        for fennel in mod.tags.fennel:
+            name = "fennel_{}".format(fennel.version)
+            _fennel_register_toolchains(name, fennel.version)
+
+fennel_toolchains = module_extension(
+    implementation = _fennel_toolchains_extension,
+    tag_classes = {
+        "fennel": _fennel_tag,
+    },
+)

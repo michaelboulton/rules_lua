@@ -144,16 +144,6 @@ def lua_register_system_toolchain(lua_path, name = "lua"):
         user_repository_name = name,
     )
 
-_fennel_tag = tag_class(
-    doc = "initialise fennel toolchain",
-    attrs = {
-        "version": attr.string(
-            default = "1.2.1",
-            doc = "version of SDK",
-        ),
-    },
-)
-
 _lua_tag = tag_class(
     doc = "initialise lua toolchain",
     attrs = {
@@ -170,14 +160,9 @@ def _lua_toolchains_extension(mctx):
             name = "lua_{}".format(lua.version)
             _lua_register_toolchains(name, lua.version)
 
-#    if mctx.fennel:
-#        name = "fennel_{}".format(mctx.fennel.version)
-#        _fennel_register_toolchains(name, mctx.fennel.version)
-
 lua_toolchains = module_extension(
     implementation = _lua_toolchains_extension,
     tag_classes = {
-        "fennel": _fennel_tag,
         "lua": _lua_tag,
     },
 )

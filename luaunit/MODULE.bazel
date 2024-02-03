@@ -12,10 +12,10 @@ local_path_override(
 lua_deps = use_extension("@rules_lua//lua:defs.bzl", "lua_dependency")
 lua_deps.github(
     dependency = "luaunit",
-    tag = "3.4-1",
+    tag = "LUAUNIT_V3_4",
     user = "bluebird75",
-    version = "LUAUNIT_v3_4",
 )
+use_repo(lua_deps, "lua_luaunit")
 
 lua_toolchains = use_extension("@rules_lua//lua:repositories.bzl", "lua_toolchains")
 lua_toolchains.lua(version = "v5.1.1")
@@ -23,8 +23,8 @@ use_repo(lua_toolchains, "lua_v5.1.1_toolchains")
 
 register_toolchains("@lua_v5.1.1_toolchains//:x86_64-unknown-linux-gnu_toolchain")
 
-fennel_toolchains = use_extension("@rules_lua//fennel:repositories.bzl", "fennel_toolchains")
-fennel_toolchains.fennel(version = "1.2.1")
-use_repo(fennel_toolchains, "fennel_1.2.1_toolchains")
-
-register_toolchains("@fennel_1.2.1_toolchains//:fennel_toolchain")
+#fennel_toolchains = use_extension("@rules_lua//fennel:repositories.bzl", "fennel_toolchains")
+#fennel_toolchains.fennel(version = "1.2.1")
+#use_repo(fennel_toolchains, "fennel_1.2.1_toolchains")
+#
+#register_toolchains("@fennel_1.2.1_toolchains//:fennel_toolchain")

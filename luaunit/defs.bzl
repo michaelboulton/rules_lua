@@ -3,7 +3,7 @@ load("@rules_lua//lua/private:lua_binary.bzl", "hack_get_lua_path")
 load("@rules_lua//fennel/private:fennel_library.bzl", "COMMON_ATTRS", "compile_fennel")
 
 def luaunit_test_impl(ctx, srcs):
-    lua_toolchain = ctx.toolchains["//lua:toolchain_type"].lua_info
+    lua_toolchain = ctx.toolchains["@rules_lua//lua:toolchain_type"].lua_info
 
     out_executable = ctx.actions.declare_file(ctx.attr.name + "_test")
     ctx.actions.write(
@@ -55,7 +55,7 @@ luaunit_test = rule(
             allow_files = True,
         ),
         "_luaunit": attr.label(
-            #            default = "@lua_luaunit",
+            default = "@lua_luaunit",
         ),
     },
     toolchains = ["@rules_lua//lua:toolchain_type"],

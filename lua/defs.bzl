@@ -6,7 +6,7 @@ load("//lua/private:lua_tests.bzl", _busted_test = "busted_test")
 load(
     "//lua/private:lua_dependency.bzl",
     _github_dependency = "github_dependency",
-    _lua_dependendency = "lua_dependendency",
+    _lua_dependency = "lua_dependency",
     _luarocks_dependency = "luarocks_dependency",
     _luarocks_library = "luarocks_library",
 )
@@ -17,4 +17,4 @@ luarocks_dependency = _luarocks_dependency
 luarocks_library = _luarocks_library
 github_dependency = _github_dependency
 busted_test = _busted_test
-lua_dependendency = _lua_dependendency
+lua_dependency = _lua_dependency

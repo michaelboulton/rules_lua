@@ -4,7 +4,7 @@ These are needed for local dev, and users must install them as well.
 See https://docs.bazel.build/versions/main/skylark/deploying.html#dependencies
 """
 
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 load("//lua/private:toolchains_repo.bzl", "PLATFORMS", "system_toolchains_repo", "toolchains_repo")
@@ -54,18 +54,13 @@ def lua_register_toolchains(name = "lua", version = "v5.1.1", **kwargs):
     _lua_register_toolchains(name, version, **kwargs)
 
     for platform in PLATFORMS.keys():
-        lua_repositories(
-            name = name + "_" + platform,
-            platform = platform,
-            **kwargs
-        )
         native.register_toolchains("@{}_toolchains//:{}_toolchain".format(name, platform))
 
 def _lua_register_toolchains(name, version, **kwargs):
     if version not in LUA_VERSIONS:
         fail("Unknown lua version {}".format(version))
 
-    new_git_repository(
+    git_repository(
         name = "lua_git",
         remote = "https://github.com/lua/lua.git",
         build_file = "@com_github_michaelboulton_rules_lua//lua:lua.BUILD.bazel",
@@ -77,6 +72,13 @@ def _lua_register_toolchains(name, version, **kwargs):
         name = name + "_toolchains",
         user_repository_name = name,
     )
+
+    for platform in PLATFORMS.keys():
+        lua_repositories(
+            name = name + "_" + platform,
+            platform = platform,
+            **kwargs
+        )
 
 # Wrapper macro around everything above, this is the primary API
 def luajit_register_toolchains(name = "lua", version = "v2.1", **kwargs):
@@ -97,7 +99,7 @@ def luajit_register_toolchains(name = "lua", version = "v2.1", **kwargs):
     if version not in LUAJIT_VERSIONS:
         fail("Unknown lua version {}".format(version))
 
-    new_git_repository(
+    git_repository(
         name = "lua_git",
         shallow_since = "1664877857 +0200",
         patch_args = ["-p", "1"],

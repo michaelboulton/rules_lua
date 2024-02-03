@@ -51,7 +51,7 @@ luarocks_library(
 
 def _get_fmt_vars(rctx):
     fmt_vars = dict(
-        name = rctx.attr.name,
+        name = rctx.attr.name,  # FIXME: Need to somehow consistently get the name aliased here.
         version = rctx.attr.version,
         user = rctx.attr.user,
         dependency = rctx.attr.dependency,
@@ -151,7 +151,11 @@ def luarocks_dependency(dependency, name = None, **kwargs):
 def _external_repository_impl(rctx):
     fmt_vars = _get_fmt_vars(rctx)
 
-    build_content = _download_rockspec(rctx, rctx.attr.external_dependency_template.format(**fmt_vars), fmt_vars)
+    build_content = _download_rockspec(
+        rctx,
+        rctx.attr.external_dependency_template.format(**fmt_vars),
+        fmt_vars,
+    )
 
     rctx.file("BUILD.bazel", build_content)
 
@@ -211,22 +215,24 @@ def github_dependency(dependency, tag, name = None, **kwargs):
     if name == None:
         name = "lua_{}".format(dependency)
 
-    if kwargs.get("external_dependency_template"):
+    if kwargs.pop("external_dependency_template", None):
         fail("cannot specify external_dependency_template with github_dependency")
 
     strip_template = kwargs.pop("external_dependency_strip_template", GITHUB_PREFIX_TEMPLATE)
 
-    extra_fmt_vars = kwargs.pop("extra_fmt_vars", {})
-    extra_fmt_vars.update(
+    extra_fmt_vars = dict(
         short_tag = tag.removeprefix("v"),
         tag = tag,
     )
+    extra_fmt_vars.update(kwargs.pop("extra_fmt_vars", {}))
+
     external_repository(
         name = name,
         external_dependency_template = GITHUB_TEMPLATE,
         external_dependency_strip_template = strip_template,
         dependency = dependency,
         extra_fmt_vars = extra_fmt_vars,
+        version = kwargs.pop("version", tag),
         **kwargs
     )
 
@@ -383,41 +389,45 @@ _luarocks_tag = tag_class(
         ),
     },
 )
+
+_github_tag_attrs = {
+    "dependency": attr.string(
+        doc = "name of dependency",
+        mandatory = True,
+    ),
+    "user": attr.string(
+        doc = "username on github that uploaded the dependency",
+        mandatory = True,
+    ),
+    "tag": attr.string(
+        doc = "tag on github",
+        mandatory = True,
+        # TODO: Allow hash as well
+    ),
+    "external_dependency_template": attr.string(
+        doc = "template to download from git",
+    ),
+    "external_dependency_strip_template": attr.string(
+        doc = "strip prefix of dependency archive, if present",
+    ),
+    "extra_fmt_vars": attr.string_dict(
+        doc = "any extra things to pass to format external_dependency_template.",
+    ),
+    "rockspec_path": attr.string(
+        doc = "Possible sub-path to rockspec path in the downloaded content. Defaults to the top level",
+    ),
+    "deps": attr.label_list(
+        doc = "lua deps",
+        providers = [LuaLibrary],
+    ),
+    "extra_cflags": attr.string_list(
+        doc = "extra CFLAGS to pass to compilation",
+    ),
+}
+
 _github_tag = tag_class(
     doc = "Fetch a dependency from a url. Expects there to be a .rockspec file in the top level, or in the path specified by rockspec_path",
-    attrs = {
-        "dependency": attr.string(
-            doc = "name of dependency",
-            mandatory = True,
-        ),
-        "user": attr.string(
-            doc = "user on luarocks that uploaded the dependency",
-            mandatory = True,
-        ),
-        "version": attr.string(
-            doc = "version of dependency",
-            mandatory = True,
-        ),
-        "external_dependency_template": attr.string(
-            doc = "template to download from git",
-        ),
-        "external_dependency_strip_template": attr.string(
-            doc = "strip prefix of dependency archive, if present",
-        ),
-        "extra_fmt_vars": attr.string_dict(
-            doc = "any extra things to pass to format external_dependency_template.",
-        ),
-        "rockspec_path": attr.string(
-            doc = "Possible sub-path to rockspec path in the downloaded content. Defaults to the top level",
-        ),
-        "deps": attr.label_list(
-            doc = "lua deps",
-            providers = [LuaLibrary],
-        ),
-        "extra_cflags": attr.string_list(
-            doc = "extra CFLAGS to pass to compilation",
-        ),
-    },
+    attrs = _github_tag_attrs,
 )
 
 _busted_tag = tag_class(
@@ -429,7 +439,12 @@ def _lua_dependency_impl(mctx):
     #    artifacts = []
     #    for mod in mctx.modules:
     #        artifacts += [_to_artifact(artifact) for artifact in mod.tags.artifact]
+    for mod in mctx.modules:
+        for github in mod.tags.github:
+            p = {k: getattr(github, k) for k in _github_tag_attrs}
+            github_dependency(**p)
 
+    return
     if mctx.busted:
         # TODO: There should be something which parses rockspecs use luarocks, or recursively, instead of defining all of these
         luarocks_dependency(
@@ -537,7 +552,7 @@ def _lua_dependency_impl(mctx):
     for m in mctx.github:
         github_dependency(mctx)
 
-lua_dependendency = module_extension(
+lua_dependency = module_extension(
     implementation = _lua_dependency_impl,
     tag_classes = {
         "luarocks": _luarocks_tag,

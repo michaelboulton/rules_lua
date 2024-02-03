@@ -1,42 +1,7 @@
 load("//lua:providers.bzl", "LuaLibrary")
-load("//lua/private:lua_tests.bzl", "busted_test_impl", "luaunit_test_impl")
+load("//lua/private:lua_tests.bzl", "busted_test_impl")
 load("//lua/private:lua_binary.bzl", "hack_get_lua_path")
-load("@bazel_skylib//lib:paths.bzl", "paths")
 load(":fennel_library.bzl", "COMMON_ATTRS", "compile_fennel")
-
-def _fennel_luaunit_test_impl(ctx):
-    # Do this to ensure fennel is valid, and to get the runfiles in a nice format
-    # We don't use the defaultinfo
-    _, lua_provider, _, runfiles = compile_fennel(
-        ctx,
-        ctx.files.srcs,
-    )
-
-    return luaunit_test_impl(ctx, lua_provider.lua_files)
-
-_fennel_luaunit_test = rule(
-    test = True,
-    implementation = _fennel_luaunit_test_impl,
-    attrs = dict(
-        _luaunit = attr.label(
-            #            default = "@lua_luaunit",
-        ),
-        data = attr.label_list(
-            doc = "extra files required to build the luarocks library",
-            allow_files = True,
-        ),
-        **COMMON_ATTRS
-    ),
-    doc = "fennel luaunit test",
-    toolchains = [
-        "//fennel:toolchain_type",
-        "//lua:toolchain_type",
-    ],
-)
-
-def fennel_luaunit_test(deps = [], **kwargs):
-    deps = deps  #+ ["@lua_luaunit"]
-    _fennel_luaunit_test(deps = deps, **kwargs)
 
 def _aniseed_test_impl(ctx):
     _, lua_provider, _, runfiles = compile_fennel(

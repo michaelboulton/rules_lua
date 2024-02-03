@@ -1,5 +1,6 @@
 load("@rules_lua//lua:providers.bzl", "LuaLibrary")
 load("@rules_lua//private:lua_binary.bzl", "hack_get_lua_path")
+load("@rules_lua//fennel:fennel_library.bzl", "COMMON_ATTRS", "compile_fennel")
 
 def luaunit_test_impl(ctx, srcs):
     lua_toolchain = ctx.toolchains["//lua:toolchain_type"].lua_info
@@ -59,3 +60,37 @@ luaunit_test = rule(
     },
     toolchains = ["@com_github_michaelboulton_rules_lua//lua:toolchain_type"],
 )
+
+def _fennel_luaunit_test_impl(ctx):
+    # Do this to ensure fennel is valid, and to get the runfiles in a nice format
+    # We don't use the defaultinfo
+    _, lua_provider, _, runfiles = compile_fennel(
+        ctx,
+        ctx.files.srcs,
+    )
+
+    return luaunit_test_impl(ctx, lua_provider.lua_files)
+
+_fennel_luaunit_test = rule(
+    test = True,
+    implementation = _fennel_luaunit_test_impl,
+    attrs = dict(
+        _luaunit = attr.label(
+            #            default = "@lua_luaunit",
+        ),
+        data = attr.label_list(
+            doc = "extra files required to build the luarocks library",
+            allow_files = True,
+        ),
+        **COMMON_ATTRS
+    ),
+    doc = "fennel luaunit test",
+    toolchains = [
+        "//fennel:toolchain_type",
+        "//lua:toolchain_type",
+    ],
+)
+
+def fennel_luaunit_test(deps = [], **kwargs):
+    deps = deps  #+ ["@lua_luaunit"]
+    _fennel_luaunit_test(deps = deps, **kwargs)

@@ -1,0 +1,7 @@
+bazel_dep(name = "rules_lua", version = "0.0.0", repo_name = "com_github_michaelboulton_rules_lua")
+local_path_override(
+    module_name = "rules_lua",
+    path = "..",
+)
+
+bazel_dep(name = "bazel_skylib", version = "1.5.0")

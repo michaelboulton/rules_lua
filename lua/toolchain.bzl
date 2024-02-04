@@ -4,7 +4,8 @@
 LuaInfo = provider(
     doc = "Information about how to invoke the tool executable.",
     fields = {
-        "target_tool_path": "Path to the tool executable for the target platform.",
+        "target_tool": "label of generated lua path. Should prefer this over target_tool_path",
+        "target_tool_path": "absolute path to the tool executable for the target platform. should only be used if using system lua",
         "tool_files": """Files required in runfiles to make the tool executable available.
 
 May be empty if the target_tool_path points to a locally installed tool binary.""",
@@ -44,6 +45,7 @@ def _lua_toolchain_impl(ctx):
     )
     lua_info = LuaInfo(
         target_tool_path = target_tool_path,
+        target_tool = ctx.attr.target_tool,
         tool_files = tool_files,
     )
 

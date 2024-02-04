@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "25a68500fb65d03fe22ef12c368f327f80d8e6184142bad36e0d13df9ea057b1",
+  "moduleFileHash": "232d1c781c95ae3b0bb797eefdc472bf146f95dcc17c05c86c5ef65bf31c0a91",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -84,6 +84,42 @@
                 "file": "@@//:MODULE.bazel",
                 "line": 22,
                 "column": 19
+              }
+            }
+          ],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "//:MODULE.bazel",
+          "extensionName": "_repo_rules",
+          "usingModule": "<root>",
+          "location": {
+            "file": "@@//:MODULE.bazel",
+            "line": 0,
+            "column": 0
+          },
+          "imports": {
+            "luarocks": "luarocks"
+          },
+          "devImports": [],
+          "tags": [
+            {
+              "tagName": "@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+              "attributeValues": {
+                "build_file": "@com_github_michaelboulton_rules_lua//lua:luarocks.BUILD.bazel",
+                "sha256": "bca6e4ecc02c203e070acdb5f586045d45c078896f6236eb46aa33ccd9b94edb",
+                "strip_prefix": "luarocks-3.9.2",
+                "urls": [
+                  "https://luarocks.org/releases/luarocks-3.9.2.tar.gz"
+                ],
+                "name": "luarocks"
+              },
+              "devDependency": false,
+              "location": {
+                "file": "@@//:MODULE.bazel",
+                "line": 35,
+                "column": 13
               }
             }
           ],
@@ -1287,6 +1323,29 @@
     }
   },
   "moduleExtensions": {
+    "//:MODULE.bazel%_repo_rules": {
+      "general": {
+        "bzlTransitiveDigest": "nSp+oEsTv5DYy1r8s+aEwKWUHoJDhXelRNB5mFkZmdU=",
+        "accumulatedFileDigests": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "luarocks": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "build_file": "@@[unknown repo 'com_github_michaelboulton_rules_lua' requested from @@]//lua:luarocks.BUILD.bazel",
+              "sha256": "bca6e4ecc02c203e070acdb5f586045d45c078896f6236eb46aa33ccd9b94edb",
+              "strip_prefix": "luarocks-3.9.2",
+              "urls": [
+                "https://luarocks.org/releases/luarocks-3.9.2.tar.gz"
+              ],
+              "name": "_main~_repo_rules~luarocks"
+            }
+          }
+        },
+        "recordedRepoMappingEntries": []
+      }
+    },
     "@@apple_support~1.5.0//crosstool:setup.bzl%apple_cc_configure_extension": {
       "general": {
         "bzlTransitiveDigest": "pMLFCYaRPkgXPQ8vtuNkMfiHfPmRBy6QJfnid4sWfv0=",
@@ -3977,7 +4036,7 @@
     },
     "@@rules_lua~override//lua:defs.bzl%lua_dependency": {
       "general": {
-        "bzlTransitiveDigest": "K/VRb9qj/MeJpyR+luPYXflzIIFB8unSYxbktCvvYHM=",
+        "bzlTransitiveDigest": "fbChd5fp0Ax4fIAnNtoCggwDBHIkR838v8whaVlhGf0=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {

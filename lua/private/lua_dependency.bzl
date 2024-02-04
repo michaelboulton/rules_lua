@@ -274,7 +274,7 @@ def _luarocks_library_impl(ctx):
 
     ctx.actions.run_shell(
         outputs = [lua_files] + all_out_binaries,
-        inputs = [ctx.file.srcrock] + ctx.files.data + lua_toolchain.tool_files + ctx.files._luarocks + ctx.files._luarocks_libs + ctx.files.deps + cc_toolchain.all_files.to_list(),
+        inputs = [ctx.file.srcrock] + ctx.files.data + lua_toolchain.tool_files + [ctx.executable._luarocks] + ctx.files._luarocks + ctx.files._luarocks_libs + ctx.files.deps + cc_toolchain.all_files.to_list(),
         command = (hack_get_lua_path + """
         real_include=$(realpath $(dirname {lua})/include)
 
@@ -308,11 +308,11 @@ def _luarocks_library_impl(ctx):
             extra_lua_paths = ";$(pwd)/{}/?.lua".format(paths.join(ctx.var["BINDIR"], "external")),
             lua = lua_path,
             name = ctx.attr.name,
+            lexec = ctx.executable._luarocks.path,
             src = ctx.file.srcrock.path,
             compiler = cc_toolchain.compiler_executable,
             linker = cc_toolchain.ld_executable,
-            # FIXME: some wy to find this programatically?
-            luarocks = "external/luarocks/src/bin/luarocks",
+            luarocks = ctx.files._luarocks[0].short_path,
             outpath = lua_files.path,
             out_binaries_paths = " ".join([o.path for o in all_out_binaries]),
             extra_cflags = " ".join(ctx.attr.extra_cflags),
@@ -324,6 +324,7 @@ def _luarocks_library_impl(ctx):
     # propagate dependencies
     dep_runfiles = [t[DefaultInfo].default_runfiles for t in [r for r in ctx.attr.deps]]
     runfiles = runfiles.merge_all(dep_runfiles)
+    runfiles = runfiles.merge(ctx.attr._luarocks.data_runfiles)
 
     default = DefaultInfo(
         files = depset([lua_files] + all_out_binaries),
@@ -366,6 +367,8 @@ luarocks_library = rule(
         "_luarocks": attr.label(
             doc = "luarocks",
             default = "@luarocks//:luarocks",
+            cfg = "exec",
+            executable = True,
         ),
         "_luarocks_libs": attr.label(
             doc = "luarocks libs",

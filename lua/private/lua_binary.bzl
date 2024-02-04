@@ -1,4 +1,5 @@
 load("//lua:providers.bzl", "LuaLibrary")
+load("@bazel_skylib//lib:paths.bzl", "paths")
 
 # Looks for lua dependencies for a lua binary (incl. tests!) and sets the lua path appropriately
 hack_get_lua_path = """
@@ -32,14 +33,14 @@ def _lua_binary_impl(ctx):
 
     lua_toolchain = ctx.toolchains["//lua:toolchain_type"].lua_info
 
+    lua_path = lua_toolchain.target_tool[DefaultInfo].files_to_run.executable.short_path
+
     ctx.actions.write(
         out_executable,
         (hack_get_lua_path + """
-        set -e
-        {lua} {src} {args} $@
+{lua} {src} {args} $@
         """).format(
-            lua = lua_toolchain.tool_files[0].short_path,
-            lua_long = lua_toolchain.tool_files[0].path,
+            lua = lua_path,
             src = ctx.file.tool.short_path,
             deps = [i.short_path for i in ctx.files.deps],
             args = " ".join(ctx.attr.args),
@@ -47,14 +48,13 @@ def _lua_binary_impl(ctx):
         is_executable = True,
     )
 
-    runfiles = ctx.runfiles(files = ctx.files.deps + ctx.files.data + ctx.files.tool)
+    runfiles = ctx.runfiles(files = ctx.files.deps + ctx.files.data + ctx.files.tool + lua_toolchain.tool_files)
 
     # propagate dependencies
     dep_runfiles = [t[DefaultInfo].default_runfiles for t in [r for r in ctx.attr.deps]]
     runfiles = runfiles.merge_all(dep_runfiles)
 
     default = DefaultInfo(
-        files = depset(lua_toolchain.tool_files + ctx.files.tool),
         executable = out_executable,
         runfiles = runfiles,
     )

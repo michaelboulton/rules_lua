@@ -263,7 +263,7 @@ def _luarocks_library_impl(ctx):
 
     cc_toolchain = find_cpp_toolchain(ctx)
 
-    lua_path = paths.join(ctx.var["BINDIR"], ctx.var["lua_BIN"])
+    lua_path = lua_toolchain.target_tool[DefaultInfo].files_to_run.executable.short_path
 
     out_binaries = {}
     all_out_binaries = []
@@ -274,22 +274,31 @@ def _luarocks_library_impl(ctx):
 
     ctx.actions.run_shell(
         outputs = [lua_files] + all_out_binaries,
-        inputs = [ctx.file.srcrock] + ctx.files.data + lua_toolchain.tool_files + [ctx.executable._luarocks] + ctx.files._luarocks + ctx.files._luarocks_libs + ctx.files.deps + cc_toolchain.all_files.to_list(),
+        inputs = [ctx.file.srcrock, ctx.executable._luarocks] +
+                 ctx.files.data +
+                 lua_toolchain.tool_files +
+                 ctx.files._luarocks +
+                 ctx.files._luarocks_libs +
+                 ctx.files.deps +
+                 cc_toolchain.all_files.to_list(),
         command = (hack_get_lua_path + """
-        real_include=$(realpath $(dirname {lua})/include)
-
         export LUA_PATH="?;?.lua;$(realpath $(pwd)/..)/?.lua{extra_lua_paths}"
         export LUA_INCDIR=$(pwd)/include
 
-        {lua} {luarocks} init --output .
-        {lua} {luarocks} config --scope project variables.LUA_INCDIR $real_include
+        set -ex
+        fd runfiles
+
+        find
+
+        {luarocks} init --output .
+        {luarocks} config --scope project variables.LUA_INCDIR $real_include
         # FIXME does this need to be a toolchain too?
-        {lua} {luarocks} config --scope project variables.UNZIP /bin/unzip
-        {lua} {luarocks} config --scope project variables.MD5SUM /bin/md5sum
-        {lua} {luarocks} config --scope project variables.CC {compiler}
-        {lua} {luarocks} config --scope project variables.LD {linker}
-        {lua} {luarocks} config --scope project gcc_rpath 'false'
-        {lua} {luarocks} config --scope project variables.CFLAGS -- "-fPIC {extra_cflags}"
+        {luarocks} config --scope project variables.UNZIP /bin/unzip
+        {luarocks} config --scope project variables.MD5SUM /bin/md5sum
+        {luarocks} config --scope project variables.CC {compiler}
+        {luarocks} config --scope project variables.LD {linker}
+        {luarocks} config --scope project gcc_rpath 'false'
+        {luarocks} config --scope project variables.CFLAGS -- "-fPIC {extra_cflags}"
 
         if ! [[ "{src}" =~ .*.rockspec ]]; then
             {lua} {luarocks} unpack {src}
@@ -312,7 +321,7 @@ def _luarocks_library_impl(ctx):
             src = ctx.file.srcrock.path,
             compiler = cc_toolchain.compiler_executable,
             linker = cc_toolchain.ld_executable,
-            luarocks = ctx.files._luarocks[0].short_path,
+            luarocks = ctx.executable._luarocks.path,
             outpath = lua_files.path,
             out_binaries_paths = " ".join([o.path for o in all_out_binaries]),
             extra_cflags = " ".join(ctx.attr.extra_cflags),

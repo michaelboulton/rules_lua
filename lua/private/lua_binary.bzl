@@ -1,9 +1,26 @@
 load("//lua:providers.bzl", "LuaLibrary")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 
+# Bash helper function for looking up runfiles.
+# See windows_utils.bzl for the cmd.exe equivalent.
+# Vendored from
+# https://github.com/bazelbuild/bazel/blob/master/tools/bash/runfiles/runfiles.bash
+BASH_RLOCATION_FUNCTION = r"""
+# --- begin runfiles.bash initialization v2 ---
+set -uo pipefail; f=bazel_tools/tools/bash/runfiles/runfiles.bash
+source "${RUNFILES_DIR:-/dev/null}/$f" 2>/dev/null || \
+source "$(grep -sm1 "^$f " "${RUNFILES_MANIFEST_FILE:-/dev/null}" | cut -f2- -d' ')" 2>/dev/null || \
+source "$0.runfiles/$f" 2>/dev/null || \
+source "$(grep -sm1 "^$f " "$0.runfiles_manifest" | cut -f2- -d' ')" 2>/dev/null || \
+source "$(grep -sm1 "^$f " "$0.exe.runfiles_manifest" | cut -f2- -d' ')" 2>/dev/null || \
+{ echo>&2 "ERROR: cannot find $f"; exit 1; }; f=; set -e
+# --- end runfiles.bash initialization v2 ---
+"""
+
 # Looks for lua dependencies for a lua binary (incl. tests!) and sets the lua path appropriately
 hack_get_lua_path = """
 set -e
+set +u
 
 export LUA_PATH="?;?.lua;?/init.lua"
 
@@ -50,11 +67,18 @@ def _lua_binary_impl(ctx):
 
     lua_path = lua_toolchain.target_tool[DefaultInfo].files_to_run.executable.short_path
 
+    def _to_rloc_file(file):
+        if file.short_path.startswith("../"):
+            return file.short_path[3:]
+        else:
+            return ctx.workspace_name + "/" + file.short_path
+
     ctx.actions.write(
         out_executable,
-        hack_get_lua_path + _lua_path_for_deps(ctx) + ("""
-{lua} {src} {args} $@
-        """).format(
+        BASH_RLOCATION_FUNCTION + hack_get_lua_path + _lua_path_for_deps(ctx) + """
+$(rlocation {lua_rloc}) {src} {args} $@
+        """.format(
+            lua_rloc = _to_rloc_file(lua_toolchain.target_tool[DefaultInfo].files_to_run.executable),
             lua = lua_path,
             src = ctx.file.tool.short_path,
             deps = [i.short_path for i in ctx.files.deps],
@@ -63,11 +87,12 @@ def _lua_binary_impl(ctx):
         is_executable = True,
     )
 
-    runfiles = ctx.runfiles(files = ctx.files.deps + ctx.files.data + ctx.files.tool + lua_toolchain.tool_files)
+    runfiles = ctx.runfiles(files = ctx.files.deps + ctx.files.data + ctx.files.tool + lua_toolchain.tool_files + ctx.files._runfiles_lib)
 
     # propagate dependencies
     dep_runfiles = [t[DefaultInfo].default_runfiles for t in [r for r in ctx.attr.deps]]
     runfiles = runfiles.merge_all(dep_runfiles)
+    runfiles = runfiles.merge(ctx.attr._runfiles_lib[DefaultInfo].default_runfiles)
 
     default = DefaultInfo(
         executable = out_executable,
@@ -93,6 +118,9 @@ lua_binary = rule(
             doc = "lua file to run",
             allow_single_file = True,
             mandatory = True,
+        ),
+        "_runfiles_lib": attr.label(
+            default = "@bazel_tools//tools/bash/runfiles",
         ),
     },
     doc = "Lua binary target. Will run the given tool with the registered lua toolchain.",

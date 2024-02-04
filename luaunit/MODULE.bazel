@@ -14,6 +14,7 @@ lua_deps = use_extension("@rules_lua//lua:defs.bzl", "lua_dependency")
 lua_deps.github(
     dependency = "luaunit",
     rockspec_path = "luaunit-3.4-1.rockspec",
+    sha256 = "b8aea5826f09749d149efa8ef1b13f81e6a9fc6abfbe4c1cbf87a558a6d4e8d0",
     tag = "LUAUNIT_V3_4",
     user = "bluebird75",
 )

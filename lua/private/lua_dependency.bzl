@@ -6,22 +6,19 @@ load(":lua_binary.bzl", "hack_get_lua_path")
 GITHUB_TEMPLATE = "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz"
 GITHUB_PREFIX_TEMPLATE = "{dependency}-{short_tag}"
 
-def _download_rockspec(rctx, url, fmt_vars):
+def _download_rockspec(rctx, url, fmt_vars, external_dependency_strip_template, deps = [], sha256 = "", rockspec_path = None):
     rockspec_path = "{dependency}-{version}.rockspec".format(**fmt_vars)
-
-    if rctx.attr.rockspec_path != "":
-        rockspec_path = rctx.attr.rockspec_path
 
     if url.endswith(".rockspec"):
         rctx.download(
             url,
-            sha256 = rctx.attr.sha256,
+            sha256 = sha256,
         )
     else:
         rctx.download_and_extract(
             url,
-            sha256 = rctx.attr.sha256,
-            stripPrefix = rctx.attr.external_dependency_strip_template.format(**fmt_vars),
+            sha256 = sha256,
+            stripPrefix = external_dependency_strip_template.format(**fmt_vars),
         )
 
     build_content = """
@@ -41,36 +38,32 @@ luarocks_library(
     data = [":all_files"],
     extra_cflags = [{extra_cflags}],
 )
-
-alias(
-    name = "{unmangled_name}",
-    actual = "{name}",
-)
 """.format(
-        deps = str([str(i) for i in rctx.attr.deps]),
+        deps = str([str(i) for i in deps]),
         rockspec_path = rockspec_path,
         **fmt_vars
     )
 
     return build_content
 
-def _get_fmt_vars(rctx):
+def _get_fmt_vars(name, attrs):
+    tag = getattr(attrs, "tag", None)
     fmt_vars = dict(
-        name = rctx.attr.name,
-        version = rctx.attr.version,
-        user = rctx.attr.user,
-        dependency = rctx.attr.dependency,
-        extra_cflags = ", ".join(['"{}"'.format(c) for c in rctx.attr.extra_cflags]),
-        unmangled_name = rctx.attr.unmangled_name  # FIXME: Need to somehow consistently get the name aliased here.
+        name = name,
+        version = getattr(attrs, "version", tag),
+        user = attrs.user,
+        tag = tag,
+        dependency = attrs.dependency,
+        extra_cflags = ", ".join(['"{}"'.format(c) for c in attrs.extra_cflags]),
     )
 
-    if hasattr(rctx.attr, "extra_fmt_vars"):
-        fmt_vars.update(**rctx.attr.extra_fmt_vars)
+    if hasattr(attrs, "extra_fmt_vars"):
+        fmt_vars.update(**attrs.extra_fmt_vars)
 
     return fmt_vars
 
 def _luarocks_repository_impl(rctx):
-    fmt_vars = _get_fmt_vars(rctx)
+    fmt_vars = _get_fmt_vars(rctx.attr.name, rctx.attr)
 
     rock_path = "{dependency}-{version}.src.rock".format(**fmt_vars)
 
@@ -155,7 +148,7 @@ def luarocks_dependency(dependency, name = None, **kwargs):
     )
 
 def _external_repository_impl(rctx):
-    fmt_vars = _get_fmt_vars(rctx)
+    fmt_vars = _get_fmt_vars(rctx.attr.name, rctx.attr)
 
     build_content = _download_rockspec(
         rctx,
@@ -245,6 +238,8 @@ def github_dependency(dependency, tag, name = None, **kwargs):
         version = kwargs.pop("version", tag),
         **kwargs
     )
+
+    return name
 
 def _luarocks_library_impl(ctx):
     lua_files = ctx.actions.declare_directory(ctx.attr.name)
@@ -405,6 +400,9 @@ _github_tag_attrs = {
         doc = "name of dependency",
         mandatory = True,
     ),
+    "sha256": attr.string(
+        doc = "expected hash",
+    ),
     "user": attr.string(
         doc = "username on github that uploaded the dependency",
         mandatory = True,
@@ -413,12 +411,6 @@ _github_tag_attrs = {
         doc = "tag on github",
         mandatory = True,
         # TODO: Allow hash as well
-    ),
-    "external_dependency_template": attr.string(
-        doc = "template to download from git",
-    ),
-    "external_dependency_strip_template": attr.string(
-        doc = "strip prefix of dependency archive, if present",
     ),
     "extra_fmt_vars": attr.string_dict(
         doc = "any extra things to pass to format external_dependency_template.",
@@ -449,10 +441,33 @@ def _lua_dependency_impl(mctx):
     #    artifacts = []
     #    for mod in mctx.modules:
     #        artifacts += [_to_artifact(artifact) for artifact in mod.tags.artifact]
+
+    deps = []
+
     for mod in mctx.modules:
         for github in mod.tags.github:
-            p = {k: getattr(github, k) for k in _github_tag_attrs}
-            github_dependency(**p)
+            name = "lua_{}".format(github.dependency)
+
+            strip_template = GITHUB_PREFIX_TEMPLATE
+
+            extra_fmt_vars = dict(
+                short_tag = github.tag.removeprefix("v"),
+                tag = github.tag,
+            )
+            extra_fmt_vars.update(github.extra_fmt_vars or {})
+            fmt_vars = _get_fmt_vars(name, github)
+            fmt_vars.update(extra_fmt_vars)
+
+            build_content = _download_rockspec(
+                mctx,
+                GITHUB_TEMPLATE.format(**fmt_vars),
+                fmt_vars,
+                GITHUB_PREFIX_TEMPLATE,
+                deps = github.deps,
+                sha256 = github.sha256,
+            )
+
+            mctx.file("BUILD.bazel", build_content)
 
     return
     if mctx.busted:

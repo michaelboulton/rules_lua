@@ -55,7 +55,7 @@ luaunit_test = rule(
             allow_files = True,
         ),
         "_luaunit": attr.label(
-            #            default = "@lua_luaunit",
+            default = "@lua_luaunit",
         ),
     },
     toolchains = ["@rules_lua//lua:toolchain_type"],

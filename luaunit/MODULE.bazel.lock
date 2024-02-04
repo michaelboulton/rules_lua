@@ -3976,10 +3976,31 @@
     },
     "@@rules_lua~override//lua:defs.bzl%lua_dependency": {
       "general": {
-        "bzlTransitiveDigest": "WQyAYJJHuFH8rgm7xGXYoZyxQBAoTx/k4wpoz606LVQ=",
+        "bzlTransitiveDigest": "vIjGiDsDgstIXbQMlQGbehCjl7c6cJw6snuyp80F3m0=",
         "accumulatedFileDigests": {},
         "envVariables": {},
-        "generatedRepoSpecs": {},
+        "generatedRepoSpecs": {
+          "lua_luaunit": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "external_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_luaunit",
+              "external_dependency_template": "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz",
+              "external_dependency_strip_template": "{dependency}-{short_tag}",
+              "dependency": "luaunit",
+              "extra_fmt_vars": {
+                "short_tag": "LUAUNIT_V3_4",
+                "tag": "LUAUNIT_V3_4"
+              },
+              "version": "LUAUNIT_V3_4",
+              "sha256": "",
+              "user": "bluebird75",
+              "rockspec_path": "",
+              "deps": [],
+              "extra_cflags": []
+            }
+          }
+        },
         "recordedRepoMappingEntries": [
           [
             "rules_lua~override",

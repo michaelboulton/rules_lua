@@ -6,7 +6,17 @@ load(":lua_binary.bzl", "hack_get_lua_path")
 GITHUB_TEMPLATE = "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz"
 GITHUB_PREFIX_TEMPLATE = "{dependency}-{short_tag}"
 
-def _download_rockspec(rctx, url, fmt_vars, external_dependency_strip_template, deps = [], sha256 = "", rockspec_path = None):
+def _shorten_name(cacnonical_name):
+    return cacnonical_name.split("~")[-1]
+
+def _download_rockspec(
+        rctx,
+        url,
+        fmt_vars,
+        external_dependency_strip_template,
+        deps = [],
+        sha256 = "",
+        rockspec_path = None):
     rockspec_path = "{dependency}-{version}.rockspec".format(**fmt_vars)
 
     if url.endswith(".rockspec"):
@@ -38,6 +48,11 @@ luarocks_library(
     data = [":all_files"],
     extra_cflags = [{extra_cflags}],
 )
+
+alias(
+    name = "{short_name}",
+    actual = "{name}",
+)
 """.format(
         deps = str([str(i) for i in deps]),
         rockspec_path = rockspec_path,
@@ -52,6 +67,7 @@ def _get_fmt_vars(name, attrs):
         name = name,
         version = getattr(attrs, "version", tag),
         user = attrs.user,
+        short_name = _shorten_name(name),
         tag = tag,
         dependency = attrs.dependency,
         extra_cflags = ", ".join(['"{}"'.format(c) for c in attrs.extra_cflags]),
@@ -154,6 +170,9 @@ def _external_repository_impl(rctx):
         rctx,
         rctx.attr.external_dependency_template.format(**fmt_vars),
         fmt_vars,
+        rctx.attr.external_dependency_strip_template,
+        deps = rctx.attr.deps,
+        sha256 = rctx.attr.sha256,
     )
 
     rctx.file("BUILD.bazel", build_content)
@@ -164,9 +183,6 @@ external_repository = repository_rule(
     attrs = {
         "dependency": attr.string(
             doc = "name of dependency",
-            mandatory = True,
-        ),
-        "unmangled_name": attr.string(
             mandatory = True,
         ),
         "user": attr.string(
@@ -230,7 +246,6 @@ def github_dependency(dependency, tag, name = None, **kwargs):
 
     external_repository(
         name = name,
-        unmangled_name = name,
         external_dependency_template = GITHUB_TEMPLATE,
         external_dependency_strip_template = strip_template,
         dependency = dependency,
@@ -446,28 +461,8 @@ def _lua_dependency_impl(mctx):
 
     for mod in mctx.modules:
         for github in mod.tags.github:
-            name = "lua_{}".format(github.dependency)
-
-            strip_template = GITHUB_PREFIX_TEMPLATE
-
-            extra_fmt_vars = dict(
-                short_tag = github.tag.removeprefix("v"),
-                tag = github.tag,
-            )
-            extra_fmt_vars.update(github.extra_fmt_vars or {})
-            fmt_vars = _get_fmt_vars(name, github)
-            fmt_vars.update(extra_fmt_vars)
-
-            build_content = _download_rockspec(
-                mctx,
-                GITHUB_TEMPLATE.format(**fmt_vars),
-                fmt_vars,
-                GITHUB_PREFIX_TEMPLATE,
-                deps = github.deps,
-                sha256 = github.sha256,
-            )
-
-            mctx.file("BUILD.bazel", build_content)
+            p = {k: getattr(github, k) for k in _github_tag_attrs}
+            github_dependency(**p)
 
     return
     if mctx.busted:

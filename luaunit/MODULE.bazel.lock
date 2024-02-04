@@ -2803,7 +2803,7 @@
     },
     "@@rules_lua~override//lua:defs.bzl%lua_dependency": {
       "general": {
-        "bzlTransitiveDigest": "fn2yLcorEmFR2Y8en+E5xfuGPEhcqSjIkKy2HnYGKDo=",
+        "bzlTransitiveDigest": "3Gs/VdWfwMpKRAjP9QezuI5znghxWNDQlOoRkT26kkE=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {

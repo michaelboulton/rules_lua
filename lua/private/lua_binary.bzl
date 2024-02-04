@@ -52,8 +52,8 @@ mkdir _%NAME%_deps
 
 while read p; do
   split=(${p//,/ })
-  ln -s $(pwd)/../${split[0]} _%NAME%_deps/${split[1]}
-done < <(cat ../_repo_mapping | grep -v toolchain)
+  ln -s $(pwd)/$(rlocation)/${split[0]} _%NAME%_deps/${split[1]}
+done < <(cat $(rlocation _repo_mapping) | grep rules_lua | grep -v toolchain)
 
 export LUA_PATH="$LUA_PATH;_%NAME%_deps/?.lua"
 export LUA_PATH="$LUA_PATH;_%NAME%_deps/?/?.lua"
@@ -76,11 +76,11 @@ def _lua_binary_impl(ctx):
     ctx.actions.write(
         out_executable,
         BASH_RLOCATION_FUNCTION + hack_get_lua_path + _lua_path_for_deps(ctx) + """
-$(rlocation {lua_rloc}) {src} {args} $@
+$(rlocation {lua_rloc}) $(rlocation {tool}) {args} $@
         """.format(
             lua_rloc = _to_rloc_file(lua_toolchain.target_tool[DefaultInfo].files_to_run.executable),
             lua = lua_path,
-            src = ctx.file.tool.short_path,
+            tool = _to_rloc_file(ctx.file.tool),
             deps = [i.short_path for i in ctx.files.deps],
             args = " ".join(ctx.attr.args),
         ),

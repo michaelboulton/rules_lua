@@ -274,21 +274,17 @@ def _luarocks_library_impl(ctx):
 
     ctx.actions.run_shell(
         outputs = [lua_files] + all_out_binaries,
-        inputs = [ctx.file.srcrock, ctx.executable._luarocks] +
+        inputs = [ctx.file.srcrock] +
                  ctx.files.data +
-                 lua_toolchain.tool_files +
-                 ctx.files._luarocks +
-                 ctx.files._luarocks_libs +
                  ctx.files.deps +
+                 lua_toolchain.tool_files +
+                 ctx.files._luarocks_libs +
                  cc_toolchain.all_files.to_list(),
         command = (hack_get_lua_path + """
         export LUA_PATH="?;?.lua;$(realpath $(pwd)/..)/?.lua{extra_lua_paths}"
         export LUA_INCDIR=$(pwd)/include
 
         set -ex
-        fd runfiles
-
-        find
 
         {luarocks} init --output .
         {luarocks} config --scope project variables.LUA_INCDIR $real_include
@@ -326,6 +322,8 @@ def _luarocks_library_impl(ctx):
             out_binaries_paths = " ".join([o.path for o in all_out_binaries]),
             extra_cflags = " ".join(ctx.attr.extra_cflags),
         ),
+        toolchain = "@rules_lua//lua:toolchain_type",
+        tools = [ctx.executable._luarocks],
     )
 
     runfiles = ctx.runfiles(files = ctx.files.deps)
@@ -383,7 +381,9 @@ luarocks_library = rule(
             doc = "luarocks libs",
             default = "@luarocks//:luarocks_lib",
         ),
-        "_cc_toolchain": attr.label(default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")),
+        "_cc_toolchain": attr.label(
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
+        ),
         "extra_cflags": attr.string_list(
             doc = "extra CFLAGS to pass to compilation",
         ),

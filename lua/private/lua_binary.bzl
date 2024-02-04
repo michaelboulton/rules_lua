@@ -12,9 +12,9 @@ if [ ! -z "$TEST_BINARY" ]; then
     export LUA_PATH="$LUA_PATH;$test_binary_dir/?.lua"
 fi
 
-export LUA_PATH="$LUA_PATH;$(realpath ..)/?.lua"
-export LUA_PATH="$LUA_PATH;$(realpath ..)/?/?.lua"
-export LUA_PATH="$LUA_PATH;$(realpath ..)/?/init.lua"
+#export LUA_PATH="$LUA_PATH;$(realpath ..)/?.lua"
+#export LUA_PATH="$LUA_PATH;$(realpath ..)/?/?.lua"
+#export LUA_PATH="$LUA_PATH;$(realpath ..)/?/init.lua"
 
 if ls -d ../lua* 2>/dev/null ; then
     for d in $(ls -d ../lua*/lua*); do
@@ -28,6 +28,21 @@ if ls -d ../lua* 2>/dev/null ; then
 fi
 """
 
+def _lua_path_for_deps(ctx):
+    """Set up a dir with symlinks to lua deps"""
+    return """
+mkdir _%NAME%_deps
+
+while read p; do
+  split=(${p//,/ })
+  ln -s $(pwd)/../${split[0]} _%NAME%_deps/${split[1]}
+done < <(cat ../_repo_mapping | grep -v toolchain)
+
+export LUA_PATH="$LUA_PATH;_%NAME%_deps/?.lua"
+export LUA_PATH="$LUA_PATH;_%NAME%_deps/?/?.lua"
+export LUA_PATH="$LUA_PATH;_%NAME%_deps/?/init.lua"
+""".replace("%NAME%", ctx.attr.name)
+
 def _lua_binary_impl(ctx):
     out_executable = ctx.actions.declare_file(ctx.attr.name + "_exec")
 
@@ -37,7 +52,7 @@ def _lua_binary_impl(ctx):
 
     ctx.actions.write(
         out_executable,
-        (hack_get_lua_path + """
+        hack_get_lua_path + _lua_path_for_deps(ctx) + ("""
 {lua} {src} {args} $@
         """).format(
             lua = lua_path,

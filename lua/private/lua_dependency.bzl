@@ -17,8 +17,6 @@ def _download_rockspec(
         deps = [],
         sha256 = "",
         rockspec_path = None):
-    rockspec_path = "{dependency}-{version}.rockspec".format(**fmt_vars)
-
     if url.endswith(".rockspec"):
         rctx.download(
             url,
@@ -30,6 +28,8 @@ def _download_rockspec(
             sha256 = sha256,
             stripPrefix = external_dependency_strip_template.format(**fmt_vars),
         )
+
+    rockspec_path = rockspec_path or "{dependency}-{version}.rockspec".format(**fmt_vars)
 
     build_content = """
 package(default_visibility = ["//visibility:public"])
@@ -173,6 +173,7 @@ def _external_repository_impl(rctx):
         rctx.attr.external_dependency_strip_template,
         deps = rctx.attr.deps,
         sha256 = rctx.attr.sha256,
+        rockspec_path = rctx.attr.rockspec_path,
     )
 
     rctx.file("BUILD.bazel", build_content)

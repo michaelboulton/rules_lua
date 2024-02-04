@@ -37,34 +37,40 @@ filegroup(
     output_group = "gen_dir",
 )
 
-genrule(
-    name = "install_tree",
-    outs = [
-        "lua_make/include/lua.hpp",
-        "lua_make/include/lualib.h",
-        "lua_make/include/luajit.h",
-        "lua_make/include/luaconf.h",
-        "lua_make/include/lauxlib.h",
-        "lua_make/include/lua.h",
-    ],
-    srcs = [":install_tree_group"],
-    cmd = """
-    for s in $(OUTS); do
-        base=$$(basename $$s)
-        cp $$(find . -name $$base) $$s
-    done
-    """,
-)
+#genrule(
+#    name = "install_tree",
+#    outs = [
+#        "lua_make/include/lua.hpp",
+#        "lua_make/include/lualib.h",
+#        "lua_make/include/luajit.h",
+#        "lua_make/include/luaconf.h",
+#        "lua_make/include/lauxlib.h",
+#        "lua_make/include/lua.h",
+#    ],
+#    srcs = [":install_tree_group"],
+#    cmd = """
+#    for s in $(OUTS); do
+#        base=$$(basename $$s)
+#        cp $$(find . -name $$base) $$s
+#    done
+#    """,
+#)
 
-filegroup(
+#filegroup(
+#    name = "includes",
+#    visibility = ["//visibility:public"],
+#    srcs = [
+#        "lua_make/include/lua.hpp",
+#        "lua_make/include/lualib.h",
+#        "lua_make/include/luajit.h",
+#        "lua_make/include/luaconf.h",
+#        "lua_make/include/lauxlib.h",
+#        "lua_make/include/lua.h",
+#    ],
+#)
+
+alias(
     name = "includes",
     visibility = ["//visibility:public"],
-    srcs = [
-        "lua_make/include/lua.hpp",
-        "lua_make/include/lualib.h",
-        "lua_make/include/luajit.h",
-        "lua_make/include/luaconf.h",
-        "lua_make/include/lauxlib.h",
-        "lua_make/include/lua.h",
-    ],
+    actual = "lua_make",
 )

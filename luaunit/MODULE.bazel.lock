@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "11b8471a27074ce607c96e684db942d91d6384f7cd9a867bd3f643aa691f9945",
+  "moduleFileHash": "25a68500fb65d03fe22ef12c368f327f80d8e6184142bad36e0d13df9ea057b1",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -45,6 +45,7 @@
               "tagName": "github",
               "attributeValues": {
                 "dependency": "luaunit",
+                "rockspec_path": "luaunit-3.4-1.rockspec",
                 "tag": "LUAUNIT_V3_4",
                 "user": "bluebird75"
               },
@@ -65,7 +66,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 20,
+            "line": 21,
             "column": 31
           },
           "imports": {
@@ -81,7 +82,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 21,
+                "line": 22,
                 "column": 19
               }
             }
@@ -3976,7 +3977,7 @@
     },
     "@@rules_lua~override//lua:defs.bzl%lua_dependency": {
       "general": {
-        "bzlTransitiveDigest": "vIjGiDsDgstIXbQMlQGbehCjl7c6cJw6snuyp80F3m0=",
+        "bzlTransitiveDigest": "K/VRb9qj/MeJpyR+luPYXflzIIFB8unSYxbktCvvYHM=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
@@ -3995,7 +3996,7 @@
               "version": "LUAUNIT_V3_4",
               "sha256": "",
               "user": "bluebird75",
-              "rockspec_path": "",
+              "rockspec_path": "luaunit-3.4-1.rockspec",
               "deps": [],
               "extra_cflags": []
             }

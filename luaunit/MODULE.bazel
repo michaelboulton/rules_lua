@@ -12,6 +12,7 @@ local_path_override(
 lua_deps = use_extension("@rules_lua//lua:defs.bzl", "lua_dependency")
 lua_deps.github(
     dependency = "luaunit",
+    rockspec_path = "luaunit-3.4-1.rockspec",
     tag = "LUAUNIT_V3_4",
     user = "bluebird75",
 )

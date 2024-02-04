@@ -19,7 +19,7 @@ def luaunit_test_impl(ctx, srcs):
         is_executable = True,
     )
 
-    runfiles = ctx.runfiles(files = srcs + ctx.files.deps + lua_toolchain.tool_files + ctx.files.data)
+    runfiles = ctx.runfiles(files = srcs + ctx.files._luaunit + ctx.files.deps + lua_toolchain.tool_files + ctx.files.data)
 
     # propagate dependencies
     dep_runfiles = [t[DefaultInfo].default_runfiles for t in [r for r in ctx.attr.deps + [ctx.attr._luaunit]]]

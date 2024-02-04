@@ -72,7 +72,7 @@ def aniseed_test(deps = [], macros = [], **kwargs):
     _aniseed_test(
         deps = deps,
         macros = macros + ["@aniseed//:aniseed_macros"],
-        preprocessor = "@com_github_michaelboulton_rules_lua//fennel/private:aniseed_preprocessor.sh",
+        preprocessor = "@rules_lua//fennel/private:aniseed_preprocessor.sh",
         **kwargs
     )
 

@@ -1,21 +1,21 @@
 workspace(name = "rules_lua_examples")
 
-load("@com_github_michaelboulton_rules_lua//lua:repositories.bzl", "luajit_register_toolchains")
+load("@rules_lua//lua:repositories.bzl", "luajit_register_toolchains")
 
 luajit_register_toolchains()
 
-load("@com_github_michaelboulton_rules_lua//fennel:repositories.bzl", "fennel_register_toolchains")
+load("@rules_lua//fennel:repositories.bzl", "fennel_register_toolchains")
 
 fennel_register_toolchains(
     name = "fennel",
     version = "1.2.1",
 )
 
-load("@com_github_michaelboulton_rules_lua//fennel:deps.bzl", "aniseed_dependencies")
+load("@rules_lua//fennel:deps.bzl", "aniseed_dependencies")
 
 aniseed_dependencies()
 
-load("@com_github_michaelboulton_rules_lua//lua:defs.bzl", "github_dependency", "luarocks_dependency")
+load("@rules_lua//lua:defs.bzl", "github_dependency", "luarocks_dependency")
 
 luarocks_dependency(
     dependency = "luafilesystem",
@@ -59,7 +59,7 @@ filegroup(
     srcs = glob(["**/*"], exclude=["**/* *"]),
 )
 
-load("@com_github_michaelboulton_rules_lua//lua:defs.bzl", "luarocks_library")
+load("@rules_lua//lua:defs.bzl", "luarocks_library")
 
 luarocks_library(
     name = "lua_luassert",

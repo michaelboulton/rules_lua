@@ -90,5 +90,5 @@ busted_test = rule(
             #            default = "@lua_busted//:lua_busted",
         ),
     },
-    toolchains = ["@com_github_michaelboulton_rules_lua//lua:toolchain_type"],
+    toolchains = ["@rules_lua//lua:toolchain_type"],
 )

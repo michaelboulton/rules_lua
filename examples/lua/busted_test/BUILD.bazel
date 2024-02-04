@@ -1,4 +1,4 @@
-load("@com_github_michaelboulton_rules_lua//lua:defs.bzl", "busted_test", "lua_library")
+load("@rules_lua//lua:defs.bzl", "busted_test", "lua_library")
 
 lua_library(
     name = "maths",

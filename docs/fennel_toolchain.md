@@ -2,7 +2,6 @@
 
 This module implements the language-specific toolchain rule.
 
-
 <a id="fennel_toolchain"></a>
 
 ## fennel_toolchain
@@ -15,14 +14,13 @@ Defines a fennel compiler/runtime toolchain.
 
 For usage see https://docs.bazel.build/versions/main/toolchains.html#defining-toolchains.
 
-
 **ATTRIBUTES**
 
 
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="fennel_toolchain-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
-| <a id="fennel_toolchain-extra_tool_files"></a>extra_tool_files |  -   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
+| <a id="fennel_toolchain-extra_tool_files"></a>extra_tool_files |  -   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="fennel_toolchain-target_tool"></a>target_tool |  A hermetically downloaded executable target for the target platform.   | <a href="https://bazel.build/concepts/labels">Label</a> | required |  |
 
 

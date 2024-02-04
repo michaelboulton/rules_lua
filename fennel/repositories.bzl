@@ -4,7 +4,7 @@ These are needed for local dev, and users must install them as well.
 See https://docs.bazel.build/versions/main/skylark/deploying.html#dependencies
 """
 
-load("@com_github_michaelboulton_rules_lua//lua:defs.bzl", "github_dependency", "luarocks_dependency")
+load("@rules_lua//lua:defs.bzl", "github_dependency", "luarocks_dependency")
 load("//fennel/private:toolchains_repo.bzl", "toolchains_repo")
 load("//fennel/private:versions.bzl", "FENNEL_VERSIONS")
 
@@ -20,7 +20,7 @@ def _fennel_repo_impl(rctx):
     build_content = """
 package(default_visibility = ["//visibility:public"])
 
-load("@com_github_michaelboulton_rules_lua//fennel:toolchain.bzl", "fennel_toolchain")
+load("@rules_lua//fennel:toolchain.bzl", "fennel_toolchain")
 
 filegroup(
     name = "fennel_binary_group",

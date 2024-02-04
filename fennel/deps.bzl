@@ -22,7 +22,7 @@ alias(
     visibility = ["//visibility:public"],
 )
 
-load("@com_github_michaelboulton_rules_lua//fennel:defs.bzl", "aniseed_library")
+load("@rules_lua//fennel:defs.bzl", "aniseed_library")
 
 aniseed_library(
     name = "aniseed",
@@ -33,5 +33,5 @@ aniseed_library(
 
         """,
         patch_args = ["-p", "1"],
-        patches = ["@com_github_michaelboulton_rules_lua//fennel:0001-Add-build-file.patch"],
+        patches = ["@rules_lua//fennel:0001-Add-build-file.patch"],
     )

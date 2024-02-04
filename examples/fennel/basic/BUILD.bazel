@@ -1,4 +1,4 @@
-load("@com_github_michaelboulton_rules_lua//fennel:defs.bzl", "fennel_library", )
+load("@rules_lua//fennel:defs.bzl", "fennel_library", )
 load("@rules_lua_luaunit//fennel:defs.bzl", "fennel_luaunit_test")
 
 fennel_library(

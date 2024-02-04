@@ -7,7 +7,8 @@
 
 module(
     name = "rules_lua",
-    repo_name = "com_github_michaelboulton_rules_lua",
+    version = "0.0.1",
+    compatibility_level = 0,
 )
 
 bazel_dep(name = "rules_go", version = "0.45.1", dev_dependency = True)
@@ -24,7 +25,7 @@ http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "ht
 
 http_archive(
     name = "luarocks",
-    build_file = "@com_github_michaelboulton_rules_lua//lua:luarocks.BUILD.bazel",
+    build_file = "//lua:luarocks.BUILD.bazel",
     sha256 = "bca6e4ecc02c203e070acdb5f586045d45c078896f6236eb46aa33ccd9b94edb",
     strip_prefix = "luarocks-3.9.2",
     urls = ["https://luarocks.org/releases/luarocks-3.9.2.tar.gz"],

@@ -39,7 +39,7 @@ filegroup(
     srcs = glob(["**/*"], exclude=["**/* *"]),
 )
 
-load("@com_github_michaelboulton_rules_lua//lua:defs.bzl", "luarocks_library")
+load("@rules_lua//lua:defs.bzl", "luarocks_library")
 
 luarocks_library(
     name = "{name}",
@@ -97,7 +97,7 @@ def _luarocks_repository_impl(rctx):
         build_content = """
 package(default_visibility = ["//visibility:public"])
 
-load("@com_github_michaelboulton_rules_lua//lua:defs.bzl", "luarocks_library")
+load("@rules_lua//lua:defs.bzl", "luarocks_library")
 
 filegroup(
     name = "rockspec",
@@ -259,7 +259,7 @@ def github_dependency(dependency, tag, name = None, **kwargs):
 
 def _luarocks_library_impl(ctx):
     lua_files = ctx.actions.declare_directory(ctx.attr.name)
-    lua_toolchain = ctx.toolchains["@com_github_michaelboulton_rules_lua//lua:toolchain_type"].lua_info
+    lua_toolchain = ctx.toolchains["@rules_lua//lua:toolchain_type"].lua_info
 
     cc_toolchain = find_cpp_toolchain(ctx)
 
@@ -380,7 +380,7 @@ luarocks_library = rule(
         ),
     },
     toolchains = [
-        "@com_github_michaelboulton_rules_lua//lua:toolchain_type",
+        "@rules_lua//lua:toolchain_type",
         "@bazel_tools//tools/cpp:toolchain_type",
     ],
     doc = "install a luarocks dependency from a rockspec or .src.rock file",

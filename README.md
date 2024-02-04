@@ -27,7 +27,7 @@ local_repository(
     path = "..",
 )
 
-load("@com_github_michaelboulton_rules_lua//:deps.bzl", "rules_lua_dependencies")
+load("@rules_lua//:deps.bzl", "rules_lua_dependencies")
 
 # Load default dependencies
 rules_lua_dependencies()
@@ -40,12 +40,12 @@ rules_foreign_cc_dependencies()
 
 
 # Optional: Load dependencies for busted. If you want to use busted_test you need to download all its dependencies - this will download them all for you. 
-load("@com_github_michaelboulton_rules_lua//:deps.bzl", "busted_test_dependencies")
+load("@rules_lua//:deps.bzl", "busted_test_dependencies")
 
 busted_test_dependencies()
 
 
-load("@com_github_michaelboulton_rules_lua//lua:repositories.bzl", "lua_register_system_toolchain", "lua_register_toolchains", "luajit_register_toolchains")
+load("@rules_lua//lua:repositories.bzl", "lua_register_system_toolchain", "lua_register_toolchains", "luajit_register_toolchains")
 
 # Register normal lua toolchain
 # lua_register_toolchains()

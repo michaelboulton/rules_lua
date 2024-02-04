@@ -51,7 +51,7 @@ def rules_lua_dependencies():
         sha256 = "ffafd83b1c42aa38042166a59ac3b618c838ce4e63f4ace9d961a5679ef58253",
         urls = ["https://luarocks.org/releases/luarocks-3.9.1.tar.gz"],
         strip_prefix = "luarocks-3.9.1",
-        build_file = "@com_github_michaelboulton_rules_lua//lua:luarocks.BUILD.bazel",
+        build_file = "@rules_lua//lua:luarocks.BUILD.bazel",
     )
 
 def luarocks_dependency(name, **kwargs):

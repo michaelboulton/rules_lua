@@ -91,7 +91,7 @@
             {
               "tagName": "@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
               "attributeValues": {
-                "build_file": "@com_github_michaelboulton_rules_lua//lua:luarocks.BUILD.bazel",
+                "build_file": "@rules_lua//lua:luarocks.BUILD.bazel",
                 "sha256": "bca6e4ecc02c203e070acdb5f586045d45c078896f6236eb46aa33ccd9b94edb",
                 "strip_prefix": "luarocks-3.9.2",
                 "urls": [

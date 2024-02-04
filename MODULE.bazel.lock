@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "d5951a06675a5bea35cfcbca1a0ae8768702449a9bc033176ba4ac22b8c1268a",
+  "moduleFileHash": "c96891eda84dd69738935ba0f5bb0c373b98f4227adeb506d6f1eb3d46785800",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -18,9 +18,9 @@
   "moduleDepGraph": {
     "<root>": {
       "name": "rules_lua",
-      "version": "",
+      "version": "0.0.1",
       "key": "<root>",
-      "repoName": "com_github_michaelboulton_rules_lua",
+      "repoName": "rules_lua",
       "executionPlatformsToRegister": [],
       "toolchainsToRegister": [
         "@lua_v5.1.1_toolchains//:x86_64-unknown-linux-gnu_toolchain"
@@ -43,7 +43,7 @@
             {
               "tagName": "@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
               "attributeValues": {
-                "build_file": "@com_github_michaelboulton_rules_lua//lua:luarocks.BUILD.bazel",
+                "build_file": "//lua:luarocks.BUILD.bazel",
                 "sha256": "bca6e4ecc02c203e070acdb5f586045d45c078896f6236eb46aa33ccd9b94edb",
                 "strip_prefix": "luarocks-3.9.2",
                 "urls": [
@@ -54,7 +54,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 25,
+                "line": 26,
                 "column": 13
               }
             }
@@ -63,12 +63,12 @@
           "hasNonDevUseExtension": true
         },
         {
-          "extensionBzlFile": "@com_github_michaelboulton_rules_lua//lua:repositories.bzl",
+          "extensionBzlFile": "@rules_lua//lua:repositories.bzl",
           "extensionName": "lua_toolchains",
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 45,
+            "line": 46,
             "column": 31
           },
           "imports": {
@@ -84,7 +84,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 46,
+                "line": 47,
                 "column": 19
               }
             }
@@ -1632,32 +1632,9 @@
     }
   },
   "moduleExtensions": {
-    "//:MODULE.bazel%_repo_rules": {
-      "general": {
-        "bzlTransitiveDigest": "nSp+oEsTv5DYy1r8s+aEwKWUHoJDhXelRNB5mFkZmdU=",
-        "accumulatedFileDigests": {},
-        "envVariables": {},
-        "generatedRepoSpecs": {
-          "luarocks": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_archive",
-            "attributes": {
-              "build_file": "@@//lua:luarocks.BUILD.bazel",
-              "sha256": "bca6e4ecc02c203e070acdb5f586045d45c078896f6236eb46aa33ccd9b94edb",
-              "strip_prefix": "luarocks-3.9.2",
-              "urls": [
-                "https://luarocks.org/releases/luarocks-3.9.2.tar.gz"
-              ],
-              "name": "_main~_repo_rules~luarocks"
-            }
-          }
-        },
-        "recordedRepoMappingEntries": []
-      }
-    },
     "//lua:repositories.bzl%lua_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "/OXmKreeOb7Zkw2mX6sXOTOiZ8SFEsrntmhNB5kgMfw=",
+        "bzlTransitiveDigest": "IVBriezCXZg0JOxC3F3Av2D7Ek+IZB9QQcy3GLXkUR8=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
@@ -2265,34 +2242,6 @@
         "recordedRepoMappingEntries": []
       }
     },
-    "@@bazel_tools//tools/android:android_extensions.bzl%remote_android_tools_extensions": {
-      "general": {
-        "bzlTransitiveDigest": "4x/FXzwoadac6uV9ItZ4eGOyCculGHHrKUhLFNWo3lA=",
-        "accumulatedFileDigests": {},
-        "envVariables": {},
-        "generatedRepoSpecs": {
-          "android_tools": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_archive",
-            "attributes": {
-              "name": "bazel_tools~remote_android_tools_extensions~android_tools",
-              "sha256": "2b661a761a735b41c41b3a78089f4fc1982626c76ddb944604ae3ff8c545d3c2",
-              "url": "https://mirror.bazel.build/bazel_android_tools/android_tools_pkg-0.30.0.tar"
-            }
-          },
-          "android_gmaven_r8": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_jar",
-            "attributes": {
-              "name": "bazel_tools~remote_android_tools_extensions~android_gmaven_r8",
-              "sha256": "57a696749695a09381a87bc2f08c3a8ed06a717a5caa3ef878a3077e0d3af19d",
-              "url": "https://maven.google.com/com/android/tools/r8/8.1.56/r8-8.1.56.jar"
-            }
-          }
-        },
-        "recordedRepoMappingEntries": []
-      }
-    },
     "@@bazel_tools//tools/cpp:cc_configure.bzl%cc_configure_extension": {
       "general": {
         "bzlTransitiveDigest": "mcsWHq3xORJexV5/4eCvNOLxFOQKV6eli3fkr+tEaqE=",
@@ -2353,27 +2302,6 @@
             "ruleClassName": "sh_config",
             "attributes": {
               "name": "bazel_tools~sh_configure_extension~local_config_sh"
-            }
-          }
-        },
-        "recordedRepoMappingEntries": []
-      }
-    },
-    "@@bazel_tools//tools/test:extensions.bzl%remote_coverage_tools_extension": {
-      "general": {
-        "bzlTransitiveDigest": "y48q5zUu2oMiYv7yUyi7rFB0wt14eqiF/RQcWT6vP7I=",
-        "accumulatedFileDigests": {},
-        "envVariables": {},
-        "generatedRepoSpecs": {
-          "remote_coverage_tools": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_archive",
-            "attributes": {
-              "name": "bazel_tools~remote_coverage_tools_extension~remote_coverage_tools",
-              "sha256": "7006375f6756819b7013ca875eab70a541cf7d89142d9c511ed78ea4fefa38af",
-              "urls": [
-                "https://mirror.bazel.build/bazel_coverage_output_generator/releases/coverage_output_generator-v2.6.zip"
-              ]
             }
           }
         },

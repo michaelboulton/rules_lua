@@ -1,4 +1,4 @@
-load("@com_github_michaelboulton_rules_lua//fennel:defs.bzl", "aniseed_library", "aniseed_test")
+load("@rules_lua//fennel:defs.bzl", "aniseed_library", "aniseed_test")
 
 aniseed_library(
     name = "example",

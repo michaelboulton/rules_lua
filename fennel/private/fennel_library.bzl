@@ -162,6 +162,6 @@ _aniseed_library = rule(
 def aniseed_library(macros = [], **kwargs):
     _aniseed_library(
         macros = macros + ["@aniseed//:aniseed_macros"],
-        preprocessor = "@com_github_michaelboulton_rules_lua//fennel/private:aniseed_preprocessor.sh",
+        preprocessor = "@rules_lua//fennel/private:aniseed_preprocessor.sh",
         **kwargs
     )

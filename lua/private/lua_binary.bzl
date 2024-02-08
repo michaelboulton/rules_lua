@@ -15,6 +15,15 @@ source "$(grep -sm1 "^$f " "$0.runfiles_manifest" | cut -f2- -d' ')" 2>/dev/null
 source "$(grep -sm1 "^$f " "$0.exe.runfiles_manifest" | cut -f2- -d' ')" 2>/dev/null || \
 { echo>&2 "ERROR: cannot find $f"; exit 1; }; f=; set -e
 # --- end runfiles.bash initialization v2 ---
+
+function alocation {
+  local P=$1
+  if [[ "${P:0:1}" == "/" ]]; then
+    echo "${P}"
+  else
+    echo "${PWD}/${P}"
+  fi
+}
 """
 
 # Looks for lua dependencies for a lua binary (incl. tests!) and sets the lua path appropriately
@@ -45,21 +54,6 @@ if ls -d ../lua* 2>/dev/null ; then
 fi
 """
 
-def _lua_path_for_deps(ctx):
-    """Set up a dir with symlinks to lua deps"""
-    return """
-mkdir _%NAME%_deps
-
-while read p; do
-  split=(${p//,/ })
-  ln -s $(pwd)/$(rlocation)/${split[0]} _%NAME%_deps/${split[1]}
-done < <(cat $(rlocation _repo_mapping) | grep rules_lua | grep -v toolchain)
-
-export LUA_PATH="$LUA_PATH;_%NAME%_deps/?.lua"
-export LUA_PATH="$LUA_PATH;_%NAME%_deps/?/?.lua"
-export LUA_PATH="$LUA_PATH;_%NAME%_deps/?/init.lua"
-""".replace("%NAME%", ctx.attr.name)
-
 def _lua_binary_impl(ctx):
     out_executable = ctx.actions.declare_file(ctx.attr.name + "_exec")
 
@@ -75,19 +69,22 @@ def _lua_binary_impl(ctx):
 
     ctx.actions.write(
         out_executable,
-        BASH_RLOCATION_FUNCTION + hack_get_lua_path + _lua_path_for_deps(ctx) + """
-$(rlocation {lua_rloc}) $(rlocation {tool}) {args} $@
+        BASH_RLOCATION_FUNCTION + hack_get_lua_path + """
+preload=$(mktemp XXXXXX).lua
+cat $(rlocation {wrapper}) > $preload
+export LUA_PATH="$LUA_PATH;/tmp/?"
+
+$(rlocation {lua_rloc}) -l $(basename ${{preload/.lua/}}) -l runfiles $(rlocation {tool}) $@
         """.format(
             lua_rloc = _to_rloc_file(lua_toolchain.target_tool[DefaultInfo].files_to_run.executable),
-            lua = lua_path,
             tool = _to_rloc_file(ctx.file.tool),
             deps = [i.short_path for i in ctx.files.deps],
-            args = " ".join(ctx.attr.args),
+            wrapper = _to_rloc_file(ctx.file._wrapper),
         ),
         is_executable = True,
     )
 
-    runfiles = ctx.runfiles(files = ctx.files.deps + ctx.files.data + ctx.files.tool + lua_toolchain.tool_files + ctx.files._runfiles_lib)
+    runfiles = ctx.runfiles(files = ctx.files.deps + ctx.files._wrapper + ctx.files.data + ctx.files.tool + lua_toolchain.tool_files + ctx.files._runfiles_lib)
 
     # propagate dependencies
     dep_runfiles = [t[DefaultInfo].default_runfiles for t in [r for r in ctx.attr.deps]]
@@ -120,7 +117,12 @@ lua_binary = rule(
             mandatory = True,
         ),
         "_runfiles_lib": attr.label(
+            allow_files = True,
             default = "@bazel_tools//tools/bash/runfiles",
+        ),
+        "_wrapper": attr.label(
+            allow_single_file = True,
+            default = "@rules_lua//lua/private:binary_wrapper.tmpl.lua",
         ),
     },
     doc = "Lua binary target. Will run the given tool with the registered lua toolchain.",

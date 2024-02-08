@@ -31,11 +31,11 @@ genrule(
 
 # FIXME: Remove this hack somehow as well - headers should be in the output of lua_make, so why aren't they?? And data_dirs????
 
-filegroup(
-    name = "install_tree_group",
-    srcs = [":lua_make"],
-    output_group = "gen_dir",
-)
+#filegroup(
+#    name = "install_tree_group",
+#    srcs = [":lua_make"],
+#    output_group = "gen_dir",
+#)
 
 #genrule(
 #    name = "install_tree",
@@ -55,22 +55,17 @@ filegroup(
 #    done
 #    """,
 #)
-
+#
 #filegroup(
 #    name = "includes",
 #    visibility = ["//visibility:public"],
-#    srcs = [
-#        "lua_make/include/lua.hpp",
-#        "lua_make/include/lualib.h",
-#        "lua_make/include/luajit.h",
-#        "lua_make/include/luaconf.h",
-#        "lua_make/include/lauxlib.h",
-#        "lua_make/include/lua.h",
-#    ],
+#    srcs = glob([
+#        "lua_make/include/**/*.h",
+#    ], allow_empty = False),
 #)
-
-alias(
-    name = "includes",
-    visibility = ["//visibility:public"],
-    actual = "lua_make",
-)
+#
+#alias(
+#    name = "includes",
+#    visibility = ["//visibility:public"],
+#    actual = "lua_make",
+#)

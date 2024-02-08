@@ -8,4 +8,5 @@ load("//:defs.bzl", "fennel_luaunit_test", "luaunit_test")
 luaunit_test(
     name = "lua_test",
     srcs = ["test_example.lua"],
+    data = [":my_example_runfile.txt"],
 )

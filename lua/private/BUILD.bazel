@@ -47,3 +47,5 @@ bzl_library(
         "@bazel_tools//tools/cpp:toolchain_utils.bzl",
     ],
 )
+
+exports_files(["binary_wrapper.tmpl.lua"])

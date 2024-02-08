@@ -1,7 +1,6 @@
 load("//lua:providers.bzl", "LuaLibrary")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain", "use_cpp_toolchain")
-load(":lua_binary.bzl", "hack_get_lua_path")
 
 GITHUB_TEMPLATE = "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz"
 GITHUB_PREFIX_TEMPLATE = "{dependency}-{short_tag}"
@@ -263,8 +262,6 @@ def _luarocks_library_impl(ctx):
 
     cc_toolchain = find_cpp_toolchain(ctx)
 
-    lua_path = lua_toolchain.target_tool[DefaultInfo].files_to_run.executable.short_path
-
     out_binaries = {}
     all_out_binaries = []
     for b in ctx.attr.out_binaries:
@@ -272,56 +269,66 @@ def _luarocks_library_impl(ctx):
         out_binaries[b] = depset([binary_out])
         all_out_binaries.append(binary_out)
 
+    def _to_rloc_file(file):
+        if file.short_path.startswith("../"):
+            return file.short_path[3:]
+        else:
+            return ctx.workspace_name + "/" + file.short_path
+
     ctx.actions.run_shell(
         outputs = [lua_files] + all_out_binaries,
         inputs = [ctx.file.srcrock] +
                  ctx.files.data +
                  ctx.files.deps +
                  lua_toolchain.tool_files +
-                 ctx.files._luarocks_libs +
                  cc_toolchain.all_files.to_list(),
-        command = (hack_get_lua_path + """
-        export LUA_PATH="?;?.lua;$(realpath $(pwd)/..)/?.lua{extra_lua_paths}"
-        export LUA_INCDIR=$(pwd)/include
+        command =
+            """
+set -e
 
-        set -ex
+tmpcfg=$(mktemp).lua
+cat > $tmpcfg << EOF
+variables = {{
+   LUA_INCDIR = "$(realpath {lua_headers}/*)",
+   LUA_LIBDIR = "$(realpath {lua_headers}/../lib)",
+}}
+EOF
+export LUAROCKS_CONFIG=$tmpcfg
 
-        {luarocks} init --output .
-        {luarocks} config --scope project variables.LUA_INCDIR $real_include
-        # FIXME does this need to be a toolchain too?
-        {luarocks} config --scope project variables.UNZIP /bin/unzip
-        {luarocks} config --scope project variables.MD5SUM /bin/md5sum
-        {luarocks} config --scope project variables.CC {compiler}
-        {luarocks} config --scope project variables.LD {linker}
-        {luarocks} config --scope project gcc_rpath 'false'
-        {luarocks} config --scope project variables.CFLAGS -- "-fPIC {extra_cflags}"
+{luarocks} init --output .
+# FIXME does this need to be a toolchain too?
+{luarocks} config --scope project variables.UNZIP /bin/unzip
+{luarocks} config --scope project variables.MD5SUM /bin/md5sum
+{luarocks} config --scope project variables.CC {compiler}
+{luarocks} config --scope project variables.LD {linker}
+{luarocks} config --scope project gcc_rpath 'false'
+{luarocks} config --scope project variables.CFLAGS "-fPIC {extra_cflags}"
 
-        if ! [[ "{src}" =~ .*.rockspec ]]; then
-            {lua} {luarocks} unpack {src}
-            {lua} {luarocks} install --no-doc --no-manifest --deps-mode none {src}
-        else
-            cp -s -r $(realpath external/{name})/* .
-            {lua} {luarocks} make --no-doc --no-manifest --deps-mode none {src}
-        fi
+if ! [[ "{src}" =~ .*.rockspec ]]; then
+    {luarocks} unpack {src}
+    {luarocks} install --no-doc --no-manifest --deps-mode none {src}
+else
+    cp -s -r $(realpath external/{name})/* .
+    {luarocks} make --no-doc --no-manifest --deps-mode none {src}
+fi
 
-        cp -r -L ./lua_modules/* {outpath}
+cp -r -L ./lua_modules/* {outpath}
 
-        for out_binary in {out_binaries_paths}; do
-            cp {outpath}/bin/$(basename $out_binary) $out_binary
-        done
-        """).format(
-            extra_lua_paths = ";$(pwd)/{}/?.lua".format(paths.join(ctx.var["BINDIR"], "external")),
-            lua = lua_path,
-            name = ctx.attr.name,
-            lexec = ctx.executable._luarocks.path,
-            src = ctx.file.srcrock.path,
-            compiler = cc_toolchain.compiler_executable,
-            linker = cc_toolchain.ld_executable,
-            luarocks = ctx.executable._luarocks.path,
-            outpath = lua_files.path,
-            out_binaries_paths = " ".join([o.path for o in all_out_binaries]),
-            extra_cflags = " ".join(ctx.attr.extra_cflags),
-        ),
+for out_binary in {out_binaries_paths}; do
+    cp {outpath}/bin/$(basename $out_binary) $out_binary
+done
+        """.format(
+                lua_headers = (lua_toolchain.headers.path),
+                name = ctx.attr.name,
+                lexec = ctx.executable._luarocks.path,
+                src = ctx.file.srcrock.path,
+                compiler = cc_toolchain.compiler_executable,
+                linker = cc_toolchain.ld_executable,
+                luarocks = ctx.executable._luarocks.path,
+                outpath = lua_files.path,
+                out_binaries_paths = " ".join([o.path for o in all_out_binaries]),
+                extra_cflags = " ".join(ctx.attr.extra_cflags),
+            ),
         toolchain = "@rules_lua//lua:toolchain_type",
         tools = [ctx.executable._luarocks],
     )
@@ -376,10 +383,6 @@ luarocks_library = rule(
             default = "@luarocks//:luarocks",
             cfg = "exec",
             executable = True,
-        ),
-        "_luarocks_libs": attr.label(
-            doc = "luarocks libs",
-            default = "@luarocks//:luarocks_lib",
         ),
         "_cc_toolchain": attr.label(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),

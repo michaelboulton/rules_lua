@@ -125,6 +125,7 @@ lua_system_repositories(<a href="#lua_system_repositories-name">name</a>, <a hre
 <pre>
 lua_toolchains = use_extension("@rules_lua//lua:repositories.bzl", "lua_toolchains")
 lua_toolchains.lua(<a href="#lua_toolchains.lua-version">version</a>)
+lua_toolchains.luajit(<a href="#lua_toolchains.luajit-version">version</a>)
 </pre>
 
 
@@ -141,5 +142,17 @@ initialise lua toolchain
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="lua_toolchains.lua-version"></a>version |  version of SDK   | String | optional |  `"v5.1.1"`  |
+
+<a id="lua_toolchains.luajit"></a>
+
+### luajit
+
+initialise luajit toolchain
+
+**Attributes**
+
+| Name  | Description | Type | Mandatory | Default |
+| :------------- | :------------- | :------------- | :------------- | :------------- |
+| <a id="lua_toolchains.luajit-version"></a>version |  version of SDK   | String | optional |  `"v2.1"`  |
 
 

@@ -45,13 +45,13 @@ bzl_library(
 )
 
 bzl_library(
-    name = "toolchain",
-    srcs = ["toolchain.bzl"],
+    name = "providers",
+    srcs = ["providers.bzl"],
     visibility = ["//visibility:public"],
 )
 
 bzl_library(
-    name = "providers",
-    srcs = ["providers.bzl"],
+    name = "toolchain",
+    srcs = ["toolchain.bzl"],
     visibility = ["//visibility:public"],
 )

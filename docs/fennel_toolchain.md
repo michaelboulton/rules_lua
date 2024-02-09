@@ -29,7 +29,7 @@ For usage see https://docs.bazel.build/versions/main/toolchains.html#defining-to
 ## FennelInfo
 
 <pre>
-FennelInfo(<a href="#FennelInfo-target_tool_path">target_tool_path</a>, <a href="#FennelInfo-tool_files">tool_files</a>)
+FennelInfo(<a href="#FennelInfo-target_tool">target_tool</a>, <a href="#FennelInfo-tool_files">tool_files</a>)
 </pre>
 
 Information about how to invoke the tool executable.
@@ -39,7 +39,7 @@ Information about how to invoke the tool executable.
 
 | Name  | Description |
 | :------------- | :------------- |
-| <a id="FennelInfo-target_tool_path"></a>target_tool_path |  Path to the tool executable for the target platform.    |
+| <a id="FennelInfo-target_tool"></a>target_tool |  Path to the tool executable for the target platform.    |
 | <a id="FennelInfo-tool_files"></a>tool_files |  Files required in runfiles to make the tool executable available.<br><br>May be empty if the target_tool_path points to a locally installed tool binary.    |
 
 

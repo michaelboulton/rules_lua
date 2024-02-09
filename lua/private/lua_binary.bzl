@@ -1,21 +1,12 @@
 load("//lua:providers.bzl", "LuaLibrary")
 load("@bazel_skylib//lib:paths.bzl", "paths")
+load("@aspect_bazel_lib//lib:paths.bzl", "to_rlocation_path", _default_location_function = "BASH_RLOCATION_FUNCTION")
 
 # Bash helper function for looking up runfiles.
 # See windows_utils.bzl for the cmd.exe equivalent.
 # Vendored from
 # https://github.com/bazelbuild/bazel/blob/master/tools/bash/runfiles/runfiles.bash
-BASH_RLOCATION_FUNCTION = r"""
-# --- begin runfiles.bash initialization v2 ---
-set -uo pipefail; f=bazel_tools/tools/bash/runfiles/runfiles.bash
-source "${RUNFILES_DIR:-/dev/null}/$f" 2>/dev/null || \
-source "$(grep -sm1 "^$f " "${RUNFILES_MANIFEST_FILE:-/dev/null}" | cut -f2- -d' ')" 2>/dev/null || \
-source "$0.runfiles/$f" 2>/dev/null || \
-source "$(grep -sm1 "^$f " "$0.runfiles_manifest" | cut -f2- -d' ')" 2>/dev/null || \
-source "$(grep -sm1 "^$f " "$0.exe.runfiles_manifest" | cut -f2- -d' ')" 2>/dev/null || \
-{ echo>&2 "ERROR: cannot find $f"; exit 1; }; f=; set -e
-# --- end runfiles.bash initialization v2 ---
-
+BASH_RLOCATION_FUNCTION = _default_location_function + r"""
 function alocation {
   local P=$1
   if [[ "${P:0:1}" == "/" ]]; then
@@ -58,28 +49,20 @@ def _lua_binary_impl(ctx):
     out_executable = ctx.actions.declare_file(ctx.attr.name + "_exec")
 
     lua_toolchain = ctx.toolchains["//lua:toolchain_type"].lua_info
-
-    lua_path = lua_toolchain.target_tool[DefaultInfo].files_to_run.executable.short_path
-
-    def _to_rloc_file(file):
-        if file.short_path.startswith("../"):
-            return file.short_path[3:]
-        else:
-            return ctx.workspace_name + "/" + file.short_path
+    lua_executable = lua_toolchain.target_tool[DefaultInfo].files_to_run.executable
 
     ctx.actions.write(
         out_executable,
-        BASH_RLOCATION_FUNCTION + hack_get_lua_path + """
-preload=$(mktemp XXXXXX).lua
-cat $(rlocation {wrapper}) > $preload
-export LUA_PATH="$LUA_PATH;/tmp/?"
-
-$(rlocation {lua_rloc}) -l $(basename ${{preload/.lua/}}) -l runfiles $(rlocation {tool}) $@
+        BASH_RLOCATION_FUNCTION + """
+set -e
+set +u
+export LUA_PATH="$LUA_PATH;$(alocation $(dirname $(rlocation {wrapper})))/?.lua"
+$(rlocation {lua_rloc}) -l binary_wrapper $(rlocation {tool}) $@
         """.format(
-            lua_rloc = _to_rloc_file(lua_toolchain.target_tool[DefaultInfo].files_to_run.executable),
-            tool = _to_rloc_file(ctx.file.tool),
+            lua_rloc = to_rlocation_path(ctx, lua_executable),
+            tool = to_rlocation_path(ctx, ctx.file.tool),
             deps = [i.short_path for i in ctx.files.deps],
-            wrapper = _to_rloc_file(ctx.file._wrapper),
+            wrapper = to_rlocation_path(ctx, ctx.file._wrapper),
         ),
         is_executable = True,
     )
@@ -122,7 +105,7 @@ lua_binary = rule(
         ),
         "_wrapper": attr.label(
             allow_single_file = True,
-            default = "@rules_lua//lua/private:binary_wrapper.tmpl.lua",
+            default = "@rules_lua//lua/private:binary_wrapper.lua",
         ),
     },
     doc = "Lua binary target. Will run the given tool with the registered lua toolchain.",

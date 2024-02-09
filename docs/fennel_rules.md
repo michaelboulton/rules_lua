@@ -2,6 +2,27 @@
 
 Public API re-exports
 
+<a id="fennel_binary"></a>
+
+## fennel_binary
+
+<pre>
+fennel_binary(<a href="#fennel_binary-name">name</a>, <a href="#fennel_binary-deps">deps</a>, <a href="#fennel_binary-data">data</a>, <a href="#fennel_binary-tool">tool</a>)
+</pre>
+
+Fennel binary target. Will run the given tool with the registered fennel toolchain.
+
+**ATTRIBUTES**
+
+
+| Name  | Description | Type | Mandatory | Default |
+| :------------- | :------------- | :------------- | :------------- | :------------- |
+| <a id="fennel_binary-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
+| <a id="fennel_binary-deps"></a>deps |  Runtime dependencies of target   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="fennel_binary-data"></a>data |  extra files to be available at runtime   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="fennel_binary-tool"></a>tool |  fennel file to run   | <a href="https://bazel.build/concepts/labels">Label</a> | required |  |
+
+
 <a id="fennel_library"></a>
 
 ## fennel_library

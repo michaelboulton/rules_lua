@@ -30,7 +30,7 @@ For usage see https://docs.bazel.build/versions/main/toolchains.html#defining-to
 ## LuaInfo
 
 <pre>
-LuaInfo(<a href="#LuaInfo-target_tool">target_tool</a>, <a href="#LuaInfo-target_tool_path">target_tool_path</a>, <a href="#LuaInfo-tool_files">tool_files</a>)
+LuaInfo(<a href="#LuaInfo-target_tool">target_tool</a>, <a href="#LuaInfo-target_tool_path">target_tool_path</a>, <a href="#LuaInfo-tool_files">tool_files</a>, <a href="#LuaInfo-headers">headers</a>)
 </pre>
 
 Information about how to invoke the tool executable.
@@ -43,5 +43,6 @@ Information about how to invoke the tool executable.
 | <a id="LuaInfo-target_tool"></a>target_tool |  label of generated lua path. Should prefer this over target_tool_path    |
 | <a id="LuaInfo-target_tool_path"></a>target_tool_path |  absolute path to the tool executable for the target platform. should only be used if using system lua    |
 | <a id="LuaInfo-tool_files"></a>tool_files |  Files required in runfiles to make the tool executable available.<br><br>May be empty if the target_tool_path points to a locally installed tool binary.    |
+| <a id="LuaInfo-headers"></a>headers |  Lua header dir    |
 
 

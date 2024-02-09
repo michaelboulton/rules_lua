@@ -4,7 +4,7 @@
 FennelInfo = provider(
     doc = "Information about how to invoke the tool executable.",
     fields = {
-        "target_tool_path": "Path to the tool executable for the target platform.",
+        "target_tool": "Path to the tool executable for the target platform.",
         "tool_files": """Files required in runfiles to make the tool executable available.
 
 May be empty if the target_tool_path points to a locally installed tool binary.""",
@@ -20,19 +20,14 @@ def _to_manifest_path(ctx, file):
 
 def _fennel_toolchain_impl(ctx):
     tool_files = ctx.attr.target_tool.files.to_list() + ctx.files.extra_tool_files
-    target_tool_path = _to_manifest_path(ctx, tool_files[0])
+    target_tool = ctx.attr.target_tool
 
-    # Make the $(tool_BIN) variable available in places like genrules.
-    # See https://docs.bazel.build/versions/main/be/make-variables.html#custom_variables
-    template_variables = platform_common.TemplateVariableInfo({
-        "fennel_BIN": target_tool_path,
-    })
     default = DefaultInfo(
         files = depset(tool_files),
         runfiles = ctx.runfiles(files = tool_files),
     )
     fennel_info = FennelInfo(
-        target_tool_path = target_tool_path,
+        target_tool = target_tool,
         tool_files = tool_files,
     )
 
@@ -40,14 +35,12 @@ def _fennel_toolchain_impl(ctx):
     # so the resolved_toolchain rule can grab and re-export them.
     toolchain_info = platform_common.ToolchainInfo(
         fennel_info = fennel_info,
-        template_variables = template_variables,
         default = default,
     )
 
     return [
         default,
         toolchain_info,
-        template_variables,
     ]
 
 fennel_toolchain = rule(

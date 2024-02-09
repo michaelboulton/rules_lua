@@ -13,6 +13,7 @@ def _download_rockspec(
         url,
         fmt_vars,
         external_dependency_strip_template,
+        out_binaries = [],
         deps = [],
         sha256 = "",
         rockspec_path = None):
@@ -38,7 +39,7 @@ filegroup(
     srcs = glob(["**/*"], exclude=["**/* *"]),
 )
 
-load("@rules_lua//lua:defs.bzl", "luarocks_library")
+load("@rules_lua//lua:defs.bzl", "luarocks_library", "lua_binary")
 
 luarocks_library(
     name = "{name}",
@@ -46,6 +47,7 @@ luarocks_library(
     deps = {deps},
     data = [":all_files"],
     extra_cflags = [{extra_cflags}],
+    out_binaries = [{out_binaries}],
 )
 
 alias(
@@ -54,9 +56,33 @@ alias(
 )
 """.format(
         deps = str([str(i) for i in deps]),
+        out_binaries = ", ".join(['"{}"'.format(c) for c in out_binaries]),
         rockspec_path = rockspec_path,
         **fmt_vars
     )
+
+    out_binary_content = """
+
+filegroup(
+    name = "{bin_name}_bin_group",
+    srcs = ["{name}"],
+    output_group = "{bin_name}",
+)
+
+genrule(
+    name = "{bin_name}_bin_gen",
+    srcs = [":{bin_name}_bin_group"],
+    outs = ["{bin_name}_bin"],
+    cmd = "cat $< > $@",
+    visibility = ["//visibility:public"],
+)
+    """
+
+    for bin_name in out_binaries:
+        build_content += out_binary_content.format(
+            bin_name = bin_name,
+            **fmt_vars
+        )
 
     return build_content
 
@@ -109,7 +135,13 @@ luarocks_library(
     deps = {deps},
     out_binaries = {out_binaries},
     extra_cflags = [{extra_cflags}],
-)""".format(
+)
+
+alias(
+    name = "{short_name}",
+    actual = "{name}",
+)
+""".format(
             deps = str([str(i) for i in rctx.attr.deps]),
             out_binaries = str([str(i) for i in rctx.attr.out_binaries]),
             **fmt_vars
@@ -170,6 +202,7 @@ def _external_repository_impl(rctx):
         rctx.attr.external_dependency_template.format(**fmt_vars),
         fmt_vars,
         rctx.attr.external_dependency_strip_template,
+        out_binaries = rctx.attr.out_binaries,
         deps = rctx.attr.deps,
         sha256 = rctx.attr.sha256,
         rockspec_path = rctx.attr.rockspec_path,
@@ -192,6 +225,9 @@ external_repository = repository_rule(
         "version": attr.string(
             doc = "version of dependency",
             mandatory = True,
+        ),
+        "out_binaries": attr.string_list(
+            doc = "binaries to produce",
         ),
         "sha256": attr.string(
             doc = "sha256 of dependency",
@@ -269,12 +305,6 @@ def _luarocks_library_impl(ctx):
         out_binaries[b] = depset([binary_out])
         all_out_binaries.append(binary_out)
 
-    def _to_rloc_file(file):
-        if file.short_path.startswith("../"):
-            return file.short_path[3:]
-        else:
-            return ctx.workspace_name + "/" + file.short_path
-
     ctx.actions.run_shell(
         outputs = [lua_files] + all_out_binaries,
         inputs = [ctx.file.srcrock] +
@@ -289,8 +319,10 @@ set -e
 tmpcfg=$(mktemp).lua
 cat > $tmpcfg << EOF
 variables = {{
+   LUA_BINDIR = "$(realpath {lua_headers}/../bin)",
    LUA_INCDIR = "$(realpath {lua_headers}/*)",
    LUA_LIBDIR = "$(realpath {lua_headers}/../lib)",
+   LUA_DIR = "$(realpath {lua_headers}/..)",
 }}
 EOF
 export LUAROCKS_CONFIG=$tmpcfg
@@ -302,7 +334,7 @@ export LUAROCKS_CONFIG=$tmpcfg
 {luarocks} config --scope project variables.CC {compiler}
 {luarocks} config --scope project variables.LD {linker}
 {luarocks} config --scope project gcc_rpath 'false'
-{luarocks} config --scope project variables.CFLAGS "-fPIC {extra_cflags}"
+{luarocks} config --scope project variables.CFLAGS -- "-fPIC {extra_cflags}"
 
 if ! [[ "{src}" =~ .*.rockspec ]]; then
     {luarocks} unpack {src}
@@ -455,6 +487,9 @@ _github_tag_attrs = {
     ),
     "extra_cflags": attr.string_list(
         doc = "extra CFLAGS to pass to compilation",
+    ),
+    "out_binaries": attr.string_list(
+        doc = "binaries to produce",
     ),
 }
 

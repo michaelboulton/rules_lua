@@ -2,28 +2,6 @@
 
 Public API re-exports
 
-<a id="busted_test"></a>
-
-## busted_test
-
-<pre>
-busted_test(<a href="#busted_test-name">name</a>, <a href="#busted_test-deps">deps</a>, <a href="#busted_test-srcs">srcs</a>, <a href="#busted_test-data">data</a>, <a href="#busted_test-standalone">standalone</a>)
-</pre>
-
-
-
-**ATTRIBUTES**
-
-
-| Name  | Description | Type | Mandatory | Default |
-| :------------- | :------------- | :------------- | :------------- | :------------- |
-| <a id="busted_test-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
-| <a id="busted_test-deps"></a>deps |  runtime dependencies for test   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
-| <a id="busted_test-srcs"></a>srcs |  test sources   | <a href="https://bazel.build/concepts/labels">List of labels</a> | required |  |
-| <a id="busted_test-data"></a>data |  extra files to be available at runtime   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
-| <a id="busted_test-standalone"></a>standalone |  Whether this is a 'standalone' test or a normal test that sould be called with the busted cli   | Boolean | optional |  `False`  |
-
-
 <a id="lua_binary"></a>
 
 ## lua_binary
@@ -136,10 +114,9 @@ luarocks_dependency(<a href="#luarocks_dependency-dependency">dependency</a>, <a
 
 <pre>
 lua_dependency = use_extension("@rules_lua//lua:defs.bzl", "lua_dependency")
-lua_dependency.luarocks(<a href="#lua_dependency.luarocks-dependency">dependency</a>, <a href="#lua_dependency.luarocks-extra_cflags">extra_cflags</a>, <a href="#lua_dependency.luarocks-out_binaries">out_binaries</a>, <a href="#lua_dependency.luarocks-sha256">sha256</a>, <a href="#lua_dependency.luarocks-user">user</a>, <a href="#lua_dependency.luarocks-version">version</a>)
-lua_dependency.busted()
-lua_dependency.github(<a href="#lua_dependency.github-deps">deps</a>, <a href="#lua_dependency.github-dependency">dependency</a>, <a href="#lua_dependency.github-extra_cflags">extra_cflags</a>, <a href="#lua_dependency.github-extra_fmt_vars">extra_fmt_vars</a>, <a href="#lua_dependency.github-out_binaries">out_binaries</a>, <a href="#lua_dependency.github-rockspec_path">rockspec_path</a>,
-                      <a href="#lua_dependency.github-sha256">sha256</a>, <a href="#lua_dependency.github-tag">tag</a>, <a href="#lua_dependency.github-user">user</a>)
+lua_dependency.luarocks(<a href="#lua_dependency.luarocks-name">name</a>, <a href="#lua_dependency.luarocks-deps">deps</a>, <a href="#lua_dependency.luarocks-dependency">dependency</a>, <a href="#lua_dependency.luarocks-extra_cflags">extra_cflags</a>, <a href="#lua_dependency.luarocks-out_binaries">out_binaries</a>, <a href="#lua_dependency.luarocks-sha256">sha256</a>, <a href="#lua_dependency.luarocks-user">user</a>, <a href="#lua_dependency.luarocks-version">version</a>)
+lua_dependency.github(<a href="#lua_dependency.github-name">name</a>, <a href="#lua_dependency.github-deps">deps</a>, <a href="#lua_dependency.github-dependency">dependency</a>, <a href="#lua_dependency.github-extra_cflags">extra_cflags</a>, <a href="#lua_dependency.github-extra_fmt_vars">extra_fmt_vars</a>, <a href="#lua_dependency.github-out_binaries">out_binaries</a>,
+                      <a href="#lua_dependency.github-rockspec_path">rockspec_path</a>, <a href="#lua_dependency.github-sha256">sha256</a>, <a href="#lua_dependency.github-tag">tag</a>, <a href="#lua_dependency.github-user">user</a>)
 </pre>
 
 
@@ -155,23 +132,14 @@ Fetch a dependency from luarocks
 
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
+| <a id="lua_dependency.luarocks-name"></a>name |  name to use, if not lua_<dependency>   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | optional |  `""`  |
+| <a id="lua_dependency.luarocks-deps"></a>deps |  lua deps   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="lua_dependency.luarocks-dependency"></a>dependency |  name of dependency on luarocks   | String | required |  |
 | <a id="lua_dependency.luarocks-extra_cflags"></a>extra_cflags |  extra CFLAGS to pass to compilation   | List of strings | optional |  `[]`  |
 | <a id="lua_dependency.luarocks-out_binaries"></a>out_binaries |  List of binaries which should be produced   | List of strings | optional |  `[]`  |
 | <a id="lua_dependency.luarocks-sha256"></a>sha256 |  sha256 of dependency   | String | optional |  `""`  |
 | <a id="lua_dependency.luarocks-user"></a>user |  user on luarocks that uploaded the dependency   | String | required |  |
 | <a id="lua_dependency.luarocks-version"></a>version |  version of dependency   | String | required |  |
-
-<a id="lua_dependency.busted"></a>
-
-### busted
-
-get a version of busted
-
-**Attributes**
-
-| Name  | Description | Type | Mandatory | Default |
-| :------------- | :------------- | :------------- | :------------- | :------------- |
 
 <a id="lua_dependency.github"></a>
 
@@ -183,6 +151,7 @@ Fetch a dependency from a url. Expects there to be a .rockspec file in the top l
 
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
+| <a id="lua_dependency.github-name"></a>name |  name to use, if not lua_<dependency>   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | optional |  `""`  |
 | <a id="lua_dependency.github-deps"></a>deps |  lua deps   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="lua_dependency.github-dependency"></a>dependency |  name of dependency   | String | required |  |
 | <a id="lua_dependency.github-extra_cflags"></a>extra_cflags |  extra CFLAGS to pass to compilation   | List of strings | optional |  `[]`  |

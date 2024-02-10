@@ -85,22 +85,3 @@ aniseed_test(<a href="#aniseed_test-deps">deps</a>, <a href="#aniseed_test-macro
 | <a id="aniseed_test-kwargs"></a>kwargs |  <p align="center"> - </p>   |  none |
 
 
-<a id="fennel_busted_test"></a>
-
-## fennel_busted_test
-
-<pre>
-fennel_busted_test(<a href="#fennel_busted_test-deps">deps</a>, <a href="#fennel_busted_test-kwargs">kwargs</a>)
-</pre>
-
-
-
-**PARAMETERS**
-
-
-| Name  | Description | Default Value |
-| :------------- | :------------- | :------------- |
-| <a id="fennel_busted_test-deps"></a>deps |  <p align="center"> - </p>   |  `[]` |
-| <a id="fennel_busted_test-kwargs"></a>kwargs |  <p align="center"> - </p>   |  none |
-
-

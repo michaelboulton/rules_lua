@@ -11,10 +11,6 @@ fennel_register_toolchains(
     version = "1.2.1",
 )
 
-load("@rules_lua//fennel:deps.bzl", "aniseed_dependencies")
-
-aniseed_dependencies()
-
 load("@rules_lua//lua:defs.bzl", "github_dependency", "luarocks_dependency")
 
 luarocks_dependency(

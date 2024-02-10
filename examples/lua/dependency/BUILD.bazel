@@ -1,4 +1,4 @@
-load("@rules_lua//lua:defs.bzl", "lua_library", "luaunit_test")
+load("@rules_lua//lua:defs.bzl", "lua_library")
 load("@rules_lua_luaunit//:defs.bzl", "luaunit_test")
 
 lua_library(

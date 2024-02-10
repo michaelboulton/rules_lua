@@ -76,9 +76,6 @@ def compile_fennel(ctx, fennel_files, strip_prefix = ""):
                 $extra_macro_paths \
                 --compile \
                 {preprocessed_output} > {lua_output}
-
-            # Hack for aniseed
-            sed -i -e '/ANISEED_DELETE_ME/d' {lua_output}
             """.format(
                 fennel = fennel_executable.path,
                 preprocessed_output = preprocessed_output.path,

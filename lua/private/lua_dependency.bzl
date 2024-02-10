@@ -108,8 +108,12 @@ def _luarocks_repository_impl(rctx):
 
     rock_path = "{dependency}-{version}.src.rock".format(**fmt_vars)
 
+    srcrock_path = "{dependency}-{version}.src.rock".format(**fmt_vars)
     result = rctx.download(
-        "https://luarocks.org/manifests/{user}/{dependency}-{version}.src.rock".format(**fmt_vars),
+        "https://luarocks.org/manifests/{user}/{srcrock_path}".format(
+            srcrock_path = srcrock_path,
+            **fmt_vars
+        ),
         allow_fail = True,
         output = rock_path,
         sha256 = rctx.attr.sha256,
@@ -126,12 +130,12 @@ load("@rules_lua//lua:defs.bzl", "luarocks_library")
 
 filegroup(
     name = "rockspec",
-    srcs = ["{dependency}-{version}.src.rock"],
+    srcs = ["{srcrock_path}"],
 )
 
 luarocks_library(
     name = "{name}",
-    srcrock = ":{dependency}-{version}.src.rock",
+    srcrock = ":{srcrock_path}",
     deps = {deps},
     out_binaries = {out_binaries},
     extra_cflags = [{extra_cflags}],
@@ -142,12 +146,36 @@ alias(
     actual = "{name}",
 )
 """.format(
+            srcrock_path = srcrock_path,
             deps = str([str(i) for i in rctx.attr.deps]),
             out_binaries = str([str(i) for i in rctx.attr.out_binaries]),
             **fmt_vars
         )
     else:
         fail("luarocks_dependency can only be used for dependencies which have a .src.rock file available. Use github_dependency, external_dependnecy, or download the file yourself in the WORKSPACE and use luarocks_dependency directly.")
+
+    out_binary_content = """
+
+filegroup(
+    name = "{bin_name}_bin_group",
+    srcs = ["{name}"],
+    output_group = "{bin_name}",
+)
+
+genrule(
+    name = "{bin_name}_bin_gen",
+    srcs = [":{bin_name}_bin_group"],
+    outs = ["{bin_name}_bin"],
+    cmd = "cat $< > $@",
+    visibility = ["//visibility:public"],
+)
+    """
+
+    for bin_name in rctx.attr.out_binaries:
+        build_content += out_binary_content.format(
+            bin_name = bin_name,
+            **fmt_vars
+        )
 
     rctx.file("BUILD.bazel", build_content)
 
@@ -185,7 +213,7 @@ luarocks_repository = repository_rule(
 )
 
 def luarocks_dependency(dependency, name = None, **kwargs):
-    if name == None:
+    if not name:
         name = "lua_{}".format(dependency)
 
     luarocks_repository(
@@ -431,6 +459,9 @@ luarocks_library = rule(
 )
 
 _luarocks_tag_attrs = {
+    "name": attr.string(
+        doc = "name to use, if not lua_<dependency>",
+    ),
     "extra_cflags": attr.string_list(
         doc = "extra CFLAGS to pass to compilation",
     ),
@@ -446,6 +477,10 @@ _luarocks_tag_attrs = {
         doc = "user on luarocks that uploaded the dependency",
         mandatory = True,
     ),
+    "deps": attr.label_list(
+        doc = "lua deps",
+        providers = [LuaLibrary],
+    ),
     "version": attr.string(
         doc = "version of dependency",
         mandatory = True,
@@ -460,6 +495,9 @@ _luarocks_tag = tag_class(
 )
 
 _github_tag_attrs = {
+    "name": attr.string(
+        doc = "name to use, if not lua_<dependency>",
+    ),
     "dependency": attr.string(
         doc = "name of dependency",
         mandatory = True,

@@ -14,16 +14,16 @@ $(rlocation {runner}) \
     -Xoutput --color --output=utfTerminal \
     $(rlocation {srcs}) $@
             """.format(
-            runner = to_rlocation_path(ctx, ctx.file._runner),
+            runner = to_rlocation_path(ctx, ctx.file._busted),
             srcs = " ".join([to_rlocation_path(ctx, i) for i in srcs]),
         ),
         is_executable = True,
     )
 
-    runfiles = ctx.runfiles(files = srcs + ctx.files._runner + ctx.files.deps + ctx.files.data)
+    runfiles = ctx.runfiles(files = srcs + ctx.files._busted + ctx.files.deps + ctx.files.data)
 
     # propagate dependencies
-    dep_runfiles = [t[DefaultInfo].default_runfiles for t in [r for r in ctx.attr.deps + [ctx.attr._runner]]]
+    dep_runfiles = [t[DefaultInfo].default_runfiles for t in [r for r in ctx.attr.deps + [ctx.attr._busted]]]
     runfiles = runfiles.merge_all(dep_runfiles)
     runfiles = runfiles.merge(ctx.attr._runfiles_lib[DefaultInfo].default_runfiles)
 
@@ -47,10 +47,6 @@ busted_test = rule(
             doc = "runtime dependencies for test",
             providers = [LuaLibrary],
         ),
-        "standalone": attr.bool(
-            doc = "Whether this is a 'standalone' test or a normal test that sould be called with the busted cli",
-            default = False,
-        ),
         "data": attr.label_list(
             doc = "extra files to be available at runtime",
             allow_files = True,
@@ -60,10 +56,14 @@ busted_test = rule(
             allow_files = True,
             mandatory = True,
         ),
+        "_runfiles_lib": attr.label(
+            default = "@bazel_tools//tools/bash/runfiles",
+        ),
         "_busted": attr.label(
-            allow_files = True,
+            allow_single_file = True,
+            cfg = "exec",
             executable = True,
-            default = "@lua_busted//:lua_busted",
+            default = "@lua_busted//:busted_bin",
         ),
     },
 )

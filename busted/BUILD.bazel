@@ -1,0 +1,18 @@
+#load("@rules_lua//lua:defs.bzl", "lua_binary")
+#
+#lua_binary(
+#    name = "busted",
+#    tool = "@lua_busted",
+#    visibility = ["//:__subpackages__"],
+#    deps = [
+#        "@lua_ansicolors",
+#        "@lua_dkjson",
+#        "@lua_lua_cliargs",
+#        "@lua_luassert",
+#        "@lua_luasystem",
+#        "@lua_mediator",
+#        "@lua_penlight",
+#        "@lua_say",
+#        "@lua_term",
+#    ],
+#)

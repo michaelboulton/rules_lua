@@ -31,7 +31,6 @@ lua_deps.luarocks_dependency(
     ],
 )
 lua_deps.luarocks_dependency(
-    name = "lua_penlight",
     dependency = "penlight",
     sha256 = "fa028f7057cad49cdb84acdd9fe362f090734329ceca8cc6abb2d95d43b91835",
     user = "tieske",
@@ -39,49 +38,42 @@ lua_deps.luarocks_dependency(
     deps = ["@lua_luafilesystem"],
 )
 lua_deps.luarocks_dependency(
-    name = "lua_luafilesystem",
     dependency = "luafilesystem",
     sha256 = "576270a55752894254c2cba0d49d73595d37ec4ea8a75e557fdae7aff80e19cf",
     user = "hisham",
     version = "1.8.0-1",
 )
 lua_deps.luarocks_dependency(
-    name = "lua_luasystem",
     dependency = "luasystem",
     sha256 = "d1c706d48efc7279d33f5ea123acb4d27e2ee93e364bedbe07f2c9c8d0ad3d24",
     user = "olim",
     version = "0.2.1-0",
 )
 lua_deps.luarocks_dependency(
-    name = "lua_lua_cliargs",
     dependency = "lua_cliargs",
     sha256 = "3c79981292aab72dbfba9eb5c006bb37c5f42ee73d7062b15fdd840c00b70d63",
     user = "amireh",
     version = "3.0-2",
 )
 lua_deps.luarocks_dependency(
-    name = "lua_say",
     dependency = "say",
     sha256 = "90a1c0253ec38d6628007eef0b424d0707d0f3e0442fce478a627111eb02bb07",
     user = "lunarmodules",
     version = "1.4.1-3",
 )
 lua_deps.luarocks_dependency(
-    name = "lua_luassert",
     dependency = "luassert",
     sha256 = "146a7b2ec8e0cadf7dbca6dc993debcd2090e0e4fdf5c632d9f4ec20670357dd",
     user = "lunarmodules",
     version = "1.9.0-1",
 )
 lua_deps.luarocks_dependency(
-    name = "lua_ansicolors",
     dependency = "ansicolors",
     sha256 = "df6126501af3b9b944019164a08aed91377d82e6845c24432769140f12c815d6",
     user = "kikito",
     version = "1.0.2-3",
 )
 lua_deps.luarocks_dependency(
-    name = "lua_dkjson",
     dependency = "dkjson",
     sha256 = "e4ba15f2a85f84ffc7f628157a4ad16b2b04ba05eb44a2e5956fa46bd104125e",
     user = "dhkolf",

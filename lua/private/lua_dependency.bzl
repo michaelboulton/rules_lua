@@ -430,32 +430,33 @@ luarocks_library = rule(
     doc = "install a luarocks dependency from a rockspec or .src.rock file",
 )
 
+_luarocks_tag_attrs = {
+    "extra_cflags": attr.string_list(
+        doc = "extra CFLAGS to pass to compilation",
+    ),
+    "sha256": attr.string(
+        doc = "sha256 of dependency",
+        # mandatory = True,
+    ),
+    "dependency": attr.string(
+        doc = "name of dependency on luarocks",
+        mandatory = True,
+    ),
+    "user": attr.string(
+        doc = "user on luarocks that uploaded the dependency",
+        mandatory = True,
+    ),
+    "version": attr.string(
+        doc = "version of dependency",
+        mandatory = True,
+    ),
+    "out_binaries": attr.string_list(
+        doc = "List of binaries which should be produced",
+    ),
+}
 _luarocks_tag = tag_class(
     doc = "Fetch a dependency from luarocks",
-    attrs = {
-        "extra_cflags": attr.string_list(
-            doc = "extra CFLAGS to pass to compilation",
-        ),
-        "sha256": attr.string(
-            doc = "sha256 of dependency",
-            # mandatory = True,
-        ),
-        "dependency": attr.string(
-            doc = "name of dependency on luarocks",
-            mandatory = True,
-        ),
-        "user": attr.string(
-            doc = "user on luarocks that uploaded the dependency",
-            mandatory = True,
-        ),
-        "version": attr.string(
-            doc = "version of dependency",
-            mandatory = True,
-        ),
-        "out_binaries": attr.string_list(
-            doc = "List of binaries which should be produced",
-        ),
-    },
+    attrs = _luarocks_tag_attrs,
 )
 
 _github_tag_attrs = {

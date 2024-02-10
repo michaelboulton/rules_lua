@@ -1,15 +1,10 @@
 load("@rules_lua//lua:providers.bzl", "LuaLibrary")
 load("@rules_lua//lua/private:lua_binary.bzl", "BASH_RLOCATION_FUNCTION")
 load("@rules_lua//fennel/private:fennel_library.bzl", "compile_fennel", FENNEL_ATTRS = "COMMON_ATTRS")
+load("@aspect_bazel_lib//lib:paths.bzl", "to_rlocation_path")
 
 def luaunit_test_impl(ctx, srcs):
     out_executable = ctx.actions.declare_file(ctx.attr.name + "_test")
-
-    def _to_rloc_file(file):
-        if file.short_path.startswith("../"):
-            return file.short_path[3:]
-        else:
-            return ctx.workspace_name + "/" + file.short_path
 
     ctx.actions.write(
         out_executable,
@@ -18,8 +13,8 @@ set -e
 export TEST_FILES={srcs}
 $(rlocation {runner}) $@
             """.format(
-            runner = _to_rloc_file(ctx.file._runner),
-            srcs = ",".join([_to_rloc_file(i) for i in srcs]),
+            runner = to_rlocation_path(ctx, ctx.file._runner),
+            srcs = ",".join([to_rlocation_path(ctx, i) for i in srcs]),
         ),
         is_executable = True,
     )

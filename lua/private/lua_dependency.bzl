@@ -8,6 +8,39 @@ GITHUB_PREFIX_TEMPLATE = "{dependency}-{short_tag}"
 def _shorten_name(cacnonical_name):
     return cacnonical_name.split("~")[-1]
 
+def _append_output_binaries(ctx, fmt_vars, build_content, out_binaries):
+    build_content += """load("@rules_lua//lua:defs.bzl", "lua_binary")"""
+
+    out_binary_content = """
+filegroup(
+    name = "{bin_name}_bin_group",
+    srcs = ["{name}"],
+    output_group = "{bin_name}",
+)
+
+genrule(
+    name = "{bin_name}_bin_gen",
+    srcs = [":{bin_name}_bin_group"],
+    outs = ["{bin_name}_bin_file"],
+    cmd = "cat $< > $@",
+    visibility = ["//visibility:public"],
+)
+
+lua_binary(
+    name = "{bin_name}_bin",
+    tool = "{bin_name}_bin_file",
+    deps = [":{name}"],
+)
+    """
+
+    for bin_name in out_binaries:
+        build_content += out_binary_content.format(
+            bin_name = bin_name,
+            **fmt_vars
+        )
+
+    return build_content
+
 def _download_rockspec(
         rctx,
         url,
@@ -61,28 +94,7 @@ alias(
         **fmt_vars
     )
 
-    out_binary_content = """
-
-filegroup(
-    name = "{bin_name}_bin_group",
-    srcs = ["{name}"],
-    output_group = "{bin_name}",
-)
-
-genrule(
-    name = "{bin_name}_bin_gen",
-    srcs = [":{bin_name}_bin_group"],
-    outs = ["{bin_name}_bin"],
-    cmd = "cat $< > $@",
-    visibility = ["//visibility:public"],
-)
-    """
-
-    for bin_name in out_binaries:
-        build_content += out_binary_content.format(
-            bin_name = bin_name,
-            **fmt_vars
-        )
+    build_content = _append_output_binaries(rctx, fmt_vars, build_content, out_binaries)
 
     return build_content
 
@@ -137,7 +149,7 @@ luarocks_library(
     name = "{name}",
     srcrock = ":{srcrock_path}",
     deps = {deps},
-    out_binaries = {out_binaries},
+    out_binaries = [{out_binaries}],
     extra_cflags = [{extra_cflags}],
 )
 
@@ -148,34 +160,13 @@ alias(
 """.format(
             srcrock_path = srcrock_path,
             deps = str([str(i) for i in rctx.attr.deps]),
-            out_binaries = str([str(i) for i in rctx.attr.out_binaries]),
+            out_binaries = ", ".join(['"{}"'.format(c) for c in rctx.attr.out_binaries]),
             **fmt_vars
         )
     else:
         fail("luarocks_dependency can only be used for dependencies which have a .src.rock file available. Use github_dependency, external_dependnecy, or download the file yourself in the WORKSPACE and use luarocks_dependency directly.")
 
-    out_binary_content = """
-
-filegroup(
-    name = "{bin_name}_bin_group",
-    srcs = ["{name}"],
-    output_group = "{bin_name}",
-)
-
-genrule(
-    name = "{bin_name}_bin_gen",
-    srcs = [":{bin_name}_bin_group"],
-    outs = ["{bin_name}_bin"],
-    cmd = "cat $< > $@",
-    visibility = ["//visibility:public"],
-)
-    """
-
-    for bin_name in rctx.attr.out_binaries:
-        build_content += out_binary_content.format(
-            bin_name = bin_name,
-            **fmt_vars
-        )
+    build_content = _append_output_binaries(rctx, fmt_vars, build_content, rctx.attr.out_binaries)
 
     rctx.file("BUILD.bazel", build_content)
 

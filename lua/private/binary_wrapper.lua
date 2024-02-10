@@ -72,6 +72,9 @@ local function read_lua_mappings()
     return relevant
 end
 
+package.path = ""
+package.cpath = ""
+
 if os.getenv("RUNFILES_DIR") then
     local function rlocation(workspace_relative)
         local runfiles_dir = os.getenv("RUNFILES_DIR")

@@ -12,4 +12,12 @@
   "Tests can add 2"
   (l.assertNotEquals 6 (+ 2 2)))
 
-{: test-print : test-add-2 : test-add-wrong}
+(lambda test-runfile []
+  (let [r (require :runfiles)
+        path (r.rlocation :tests/my_example_runfile.txt)]
+    (do
+      (l.assertNotNil path)
+      (each [line (io.lines path)]
+        (l.assertEquals line :Hello)))))
+
+{: test-print : test-add-2 : test-add-wrong : test-runfile}

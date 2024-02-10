@@ -46,8 +46,14 @@ local function read_repo_mapping()
     return repo_mappings
 end
 
+
+local _added = {}
 --- Adds the given path to the existing LUA_PATH
 local function add_to_path(s)
+    if _added[s] ~= nil then
+        return nil
+    end
+    _added[s] = true
     package.path = package.path .. ";" .. s
 end
 

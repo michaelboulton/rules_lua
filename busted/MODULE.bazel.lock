@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "9321caf496880f7f8b7046e87ca8346656740eea2c4203dc37fca7ae172f4dac",
+  "moduleFileHash": "3f7afa6773010b13acdd3d87d837bb729d7c41b68e73c0e5fcb055614f25f4f6",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -37,18 +37,7 @@
             "line": 15,
             "column": 25
           },
-          "imports": {
-            "lua_ansicolors": "lua_ansicolors",
-            "lua_dkjson": "lua_dkjson",
-            "lua_lua_cliargs": "lua_lua_cliargs",
-            "lua_luafilesystem": "lua_luafilesystem",
-            "lua_luassert": "lua_luassert",
-            "lua_luasystem": "lua_luasystem",
-            "lua_mediator": "lua_mediator",
-            "lua_penlight": "lua_penlight",
-            "lua_say": "lua_say",
-            "lua_term": "lua_term"
-          },
+          "imports": {},
           "devImports": [],
           "tags": [
             {
@@ -243,7 +232,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 111,
+            "line": 102,
             "column": 31
           },
           "imports": {
@@ -257,7 +246,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 112,
+                "line": 103,
                 "column": 22
               }
             }
@@ -271,7 +260,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 124,
+            "line": 115,
             "column": 34
           },
           "imports": {
@@ -288,7 +277,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 125,
+                "line": 116,
                 "column": 25
               }
             }

@@ -96,16 +96,7 @@ lua_deps.github_dependency(
 )
 use_repo(
     lua_deps,
-    "lua_ansicolors",
-    "lua_dkjson",
-    "lua_lua_cliargs",
-    "lua_luafilesystem",
-    "lua_luassert",
-    "lua_luasystem",
-    "lua_mediator",
-    "lua_penlight",
-    "lua_say",
-    "lua_term",
+    "lua_busted",
 )
 
 lua_toolchains = use_extension("@rules_lua//lua:repositories.bzl", "lua_toolchains")

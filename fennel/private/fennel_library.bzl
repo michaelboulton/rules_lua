@@ -142,33 +142,16 @@ COMMON_ATTRS = {
     ),
 }
 
-_LIBRARY_RULE_ARGS = {
-    "implementation": _fennel_library_impl,
-    "attrs": dict(
-        strip_prefix = attr.string(
+fennel_library = rule(
+    doc = "Library of fennel, compiled all src files into one big lua file",
+    implementation = _fennel_library_impl,
+    attrs = dict({
+        "strip_prefix": attr.string(
             doc = "Strip prefix from files before compiling",
         ),
-        **COMMON_ATTRS
-    ),
-    "toolchains": [
+    }, **COMMON_ATTRS),
+    toolchains = [
         "//fennel:toolchain_type",
         "//lua:toolchain_type",
     ],
-}
-
-fennel_library = rule(
-    doc = "Library of fennel, compiled all src files into one big lua file",
-    **_LIBRARY_RULE_ARGS
 )
-
-_aniseed_library = rule(
-    doc = "Fennel library with aniseed 'module' semantics",
-    **_LIBRARY_RULE_ARGS
-)
-
-def aniseed_library(macros = [], **kwargs):
-    _aniseed_library(
-        macros = macros + ["@aniseed//:aniseed_macros"],
-        preprocessor = "@rules_lua//fennel/private:aniseed_preprocessor.sh",
-        **kwargs
-    )

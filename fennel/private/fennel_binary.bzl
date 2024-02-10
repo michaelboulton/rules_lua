@@ -1,4 +1,4 @@
-load("//lua/private:lua_binary.bzl", "BASH_RLOCATION_FUNCTION", "hack_get_lua_path", "lua_binary")
+load("//lua/private:lua_binary.bzl", "BASH_RLOCATION_FUNCTION", "lua_binary")
 load(":fennel_library.bzl", "COMMON_ATTRS")
 load("//lua:providers.bzl", "LuaLibrary")
 load("//fennel:providers.bzl", "FennelLibrary")

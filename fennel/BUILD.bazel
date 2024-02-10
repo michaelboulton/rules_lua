@@ -38,13 +38,11 @@ bzl_library(
     deps = [
         "//fennel/private:fennel_binary",
         "//fennel/private:fennel_library",
-        "//fennel/private:fennel_test",
     ],
 )
 
 bzl_library(
     name = "deps",
-    srcs = ["deps.bzl"],
     visibility = ["//visibility:public"],
     deps = [
         "@bazel_tools//tools/build_defs/repo:http.bzl",

@@ -13,7 +13,6 @@ gazelle(
 
 bzl_library(
     name = "deps",
-    srcs = ["deps.bzl"],
     visibility = ["//visibility:public"],
     deps = [
         "//lua:defs",

@@ -126,11 +126,13 @@ if os.getenv("RUNFILES_DIR") then
 
     for k, v in pairs(relevant) do
         add_to_path(runfiles_dir .. "/?.lua")
+        add_to_path(runfiles_dir .. "/?/init.lua")
 
         local root = runfiles_dir .. "/" .. v[2] .. "/" .. v[2]
 
         -- FIXME: get luarocks install prefix
         add_to_path(root .. "/share/lua/5.1/?.lua")
+        add_to_path(root .. "/share/lua/5.1/?/init.lua")
         add_to_cpath(root .. "/lib/lua/5.1/?.so")
     end
 

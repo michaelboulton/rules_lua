@@ -24,6 +24,7 @@ lua_deps.luarocks(
         "@lua_ansicolors",
         "@lua_dkjson",
         "@lua_lua_cliargs",
+        "@lua_luafilesystem",
         "@lua_luassert",
         "@lua_luasystem",
         "@lua_mediator",

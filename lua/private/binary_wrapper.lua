@@ -49,14 +49,24 @@ local function read_repo_mapping()
     return repo_mappings
 end
 
-local _added = {}
+local _path_added = {}
 --- Adds the given path to the existing LUA_PATH
 local function add_to_path(s)
-    if _added[s] ~= nil then
+    if _path_added[s] ~= nil then
         return nil
     end
-    _added[s] = true
+    _path_added[s] = true
     package.path = package.path .. ";" .. s
+end
+
+local _cpath_added = {}
+--- Adds the given cpath to the existing LUA_CPATH
+local function add_to_cpath(s)
+    if _cpath_added[s] ~= nil then
+        return nil
+    end
+    _cpath_added[s] = true
+    package.cpath = package.cpath .. ";" .. s
 end
 
 local function is_relevant(repo_name)
@@ -120,7 +130,8 @@ if os.getenv("RUNFILES_DIR") then
         local root = runfiles_dir .. "/" .. v[2] .. "/" .. v[2]
 
         -- FIXME: get luarocks install prefix
-        add_to_path(root .. "/share/lua/5.1/" .. "?.lua")
+        add_to_path(root .. "/share/lua/5.1/?.lua")
+        add_to_cpath(root .. "/lib/lua/5.1/?.so")
     end
 
     -- Set up loader for mangled names
@@ -131,6 +142,14 @@ if os.getenv("RUNFILES_DIR") then
 
     table.insert(loaders, function(module_name)
         local real_module_toplevel_name = module_name:gsub("[.].+", "")
+
+        --print("Trying to load " .. module_name)
+        --for i, v in pairs(relevant) do
+        --    print(i)
+        --    print(v)
+        --end
+        --print(package.path)
+        --print(package.cpath)
 
         local resolved
         if relevant[real_module_toplevel_name] then

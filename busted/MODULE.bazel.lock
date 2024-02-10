@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "0fd90420c9f406d85ea5e6396571653e1729b0652879b4d57a50eea7243d8cb0",
+  "moduleFileHash": "8939d1ca3a762427058dc9a456470d1ae05997ab2dbe3da43859b7944d19eb5e",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -67,6 +67,7 @@
                   "@lua_ansicolors",
                   "@lua_dkjson",
                   "@lua_lua_cliargs",
+                  "@lua_luafilesystem",
                   "@lua_luassert",
                   "@lua_luasystem",
                   "@lua_mediator",
@@ -93,7 +94,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 35,
+                "line": 36,
                 "column": 18
               }
             },
@@ -111,7 +112,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 41,
+                "line": 42,
                 "column": 18
               }
             },
@@ -126,7 +127,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 48,
+                "line": 49,
                 "column": 18
               }
             },
@@ -141,7 +142,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 54,
+                "line": 55,
                 "column": 18
               }
             },
@@ -156,7 +157,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 60,
+                "line": 61,
                 "column": 18
               }
             },
@@ -171,7 +172,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 66,
+                "line": 67,
                 "column": 18
               }
             },
@@ -186,7 +187,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 72,
+                "line": 73,
                 "column": 18
               }
             },
@@ -201,7 +202,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 78,
+                "line": 79,
                 "column": 18
               }
             },
@@ -217,7 +218,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 84,
+                "line": 85,
                 "column": 16
               }
             },
@@ -233,7 +234,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 91,
+                "line": 92,
                 "column": 16
               }
             }
@@ -247,7 +248,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 113,
+            "line": 114,
             "column": 31
           },
           "imports": {
@@ -261,7 +262,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 114,
+                "line": 115,
                 "column": 22
               }
             }
@@ -275,7 +276,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 126,
+            "line": 127,
             "column": 34
           },
           "imports": {
@@ -292,7 +293,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 127,
+                "line": 128,
                 "column": 25
               }
             }
@@ -3211,6 +3212,7 @@
                 "@@rules_lua~override~lua_dependency~lua_ansicolors//:lua_ansicolors",
                 "@@rules_lua~override~lua_dependency~lua_dkjson//:lua_dkjson",
                 "@@rules_lua~override~lua_dependency~lua_lua_cliargs//:lua_lua_cliargs",
+                "@@rules_lua~override~lua_dependency~lua_luafilesystem//:lua_luafilesystem",
                 "@@rules_lua~override~lua_dependency~lua_luassert//:lua_luassert",
                 "@@rules_lua~override~lua_dependency~lua_luasystem//:lua_luasystem",
                 "@@rules_lua~override~lua_dependency~lua_mediator//:lua_mediator",

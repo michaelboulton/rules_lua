@@ -275,7 +275,7 @@ external_repository = repository_rule(
 )
 
 def external_dependency(dependency, name = None, **kwargs):
-    if name == None:
+    if not name:
         name = "lua_{}".format(dependency)
 
     external_repository(
@@ -285,7 +285,7 @@ def external_dependency(dependency, name = None, **kwargs):
     )
 
 def github_dependency(dependency, tag, name = None, **kwargs):
-    if name == None:
+    if not name:
         name = "lua_{}".format(dependency)
 
     if kwargs.pop("external_dependency_template", None):

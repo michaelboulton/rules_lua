@@ -39,27 +39,6 @@ lua_repositories = repository_rule(
     attrs = _ATTRS,
 )
 
-# Wrapper macro around everything above, this is the primary API
-def lua_register_toolchains(name = "lua", version = "v5.1.1", **kwargs):
-    """Convenience macro for users which does typical setup.
-
-    - create a repository for each built-in platform like "lua_linux_amd64" -
-      this repository is lazily fetched when node is needed for that platform.
-    - TODO: create a convenience repository for the host platform like "lua_host"
-    - create a repository exposing toolchains for each platform like "lua_platforms"
-    - register a toolchain pointing at each platform
-    Users can avoid this macro and do these steps themselves, if they want more control.
-
-    Args:
-        name: base name for all created repos, like "lua1_14"
-        **kwargs: passed to each node_repositories call
-    """
-
-    _lua_register_toolchains(name, version, **kwargs)
-
-    for platform in PLATFORMS.keys():
-        native.register_toolchains("@{}_toolchains//:{}_toolchain".format(name, platform))
-
 def _lua_register_toolchains(name, version, **kwargs):
     if version not in LUA_VERSIONS:
         fail("Unknown lua version {}".format(version))
@@ -83,27 +62,6 @@ def _lua_register_toolchains(name, version, **kwargs):
             platform = platform,
             **kwargs
         )
-
-# Wrapper macro around everything above, this is the primary API
-def luajit_register_toolchains(name = "lua", version = "v2.1", **kwargs):
-    """Convenience macro for users which does typical setup.
-
-    - create a repository for each built-in platform like "lua_linux_amd64" -
-      this repository is lazily fetched when node is needed for that platform.
-    - TODO: create a convenience repository for the host platform like "lua_host"
-    - create a repository exposing toolchains for each platform like "lua_platforms"
-    - register a toolchain pointing at each platform
-    Users can avoid this macro and do these steps themselves, if they want more control.
-
-    Args:
-        name: base name for all created repos, like "lua1_14"
-        **kwargs: passed to each node_repositories call
-    """
-
-    _luajit_register_toolchains(name, version, **kwargs)
-
-    for platform in PLATFORMS.keys():
-        native.register_toolchains("@{}_toolchains//:{}_toolchain".format(name, platform))
 
 def _luajit_register_toolchains(name = "lua", version = "v2.1", **kwargs):
     if version not in LUAJIT_VERSIONS:
@@ -148,7 +106,6 @@ lua_system_repositories = repository_rule(
 
 def lua_register_system_toolchain(lua_path, name = "lua"):
     lua_system_repositories(name = name, target_tool_path = lua_path)
-    native.register_toolchains("@{}_toolchains//:lua_toolchain".format(name))
 
     system_toolchains_repo(
         name = name + "_toolchains",
@@ -158,6 +115,10 @@ def lua_register_system_toolchain(lua_path, name = "lua"):
 _lua_tag = tag_class(
     doc = "initialise lua toolchain",
     attrs = {
+        "name": attr.string(
+            default = "lua",
+            doc = "register toolchain repo with this name",
+        ),
         "version": attr.string(
             default = "v5.1.1",
             doc = "version of SDK",
@@ -168,6 +129,10 @@ _lua_tag = tag_class(
 _luajit_tag = tag_class(
     doc = "initialise luajit toolchain",
     attrs = {
+        "name": attr.string(
+            default = "luajit",
+            doc = "register toolchain repo with this name",
+        ),
         "version": attr.string(
             default = "v2.1",
             doc = "version of SDK",
@@ -176,13 +141,23 @@ _luajit_tag = tag_class(
 )
 
 def _lua_toolchains_extension(mctx):
+    def _verify_toolchain_name(mod, expected, name):
+        if name != expected and not mod.is_root:
+            fail("""\
+            Only the root module may override the default name for the {} toolchains.
+            This prevents conflicting registrations in the global namespace of external repos.
+            """.format(expected))
+
     for mod in mctx.modules:
         for lua in mod.tags.lua:
-            name = "{}_lua_{}".format(mod.name, lua.version)
-            _lua_register_toolchains(name, lua.version)
+            _verify_toolchain_name(mod, "lua", lua.name)
+
+            _lua_register_toolchains(lua.name, lua.version)
+
         for luajit in mod.tags.luajit:
-            name = "luajit_{}".format(luajit.version)
-            _luajit_register_toolchains(name, luajit.version)
+            _verify_toolchain_name(mod, "luajit", luajit.name)
+
+            _luajit_register_toolchains(luajit.name, luajit.version)
 
 lua_toolchains = module_extension(
     implementation = _lua_toolchains_extension,

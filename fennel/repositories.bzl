@@ -88,24 +88,13 @@ def _fennel_register_toolchains(name, version, **kwargs):
 
     return "@{}_toolchains//:fennel_toolchain".format(name)
 
-# Wrapper macro around everything above, this is the primary API
-def fennel_register_toolchains(name, version = "1.2.1", **kwargs):
-    """Convenience macro for users which does typical setup.
-
-    - create a repository exposing toolchains for each platform like "fennel_platforms"
-    - register a toolchain pointing at each platform
-    Users can avoid this macro and do these steps themselves, if they want more control.
-
-    Args:
-        name: base name for all created repos, like "fennel1_14"
-        **kwargs: passed to each node_repositories call
-    """
-
-    native.register_toolchains(_fennel_register_toolchains(name, version, **kwargs))
-
 _fennel_tag = tag_class(
     doc = "initialise fennel toolchain",
     attrs = {
+        "name": attr.string(
+            default = "fennel",
+            doc = "register toolchain repo with this name",
+        ),
         "version": attr.string(
             default = "1.2.1",
             doc = "version of SDK",
@@ -114,10 +103,18 @@ _fennel_tag = tag_class(
 )
 
 def _fennel_toolchains_extension(mctx):
+    def _verify_toolchain_name(mod, expected, name):
+        if name != expected and not mod.is_root:
+            fail("""\
+            Only the root module may override the default name for the {} toolchains.
+            This prevents conflicting registrations in the global namespace of external repos.
+            """.format(expected))
+
     for mod in mctx.modules:
         for fennel in mod.tags.fennel:
-            name = "fennel_{}".format(fennel.version)
-            _fennel_register_toolchains(name, fennel.version)
+            _verify_toolchain_name(mod, "fennel", fennel.name)
+
+            _fennel_register_toolchains(fennel.name, fennel.version)
 
 fennel_toolchains = module_extension(
     implementation = _fennel_toolchains_extension,

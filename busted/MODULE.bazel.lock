@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "d071307df9baf7ed2ccf006cfc3be2ed0f369e712c70c4e92691c26dddf64c6c",
+  "moduleFileHash": "de34963ee5142dde0971a38448e08b4d5f1daadb2fd2e04cd94dea67732a2b53",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -3017,7 +3017,7 @@
     },
     "@@rules_lua~override//fennel:repositories.bzl%fennel_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "Pb0eNJaDf7Ezo4nfw3clte7+axUB4jGp5lnGMfOQTpQ=",
+        "bzlTransitiveDigest": "yaHBZ56h9nuVk9AatDA0CkzV8WXXpKR69qGXLcQeJ/U=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
@@ -3078,7 +3078,7 @@
     },
     "@@rules_lua~override//lua:defs.bzl%lua_dependency": {
       "general": {
-        "bzlTransitiveDigest": "qAo2IuxxFpJJds4XZatCaSRSAOvIGeJFwq7aoOOVISA=",
+        "bzlTransitiveDigest": "pY4zdDWrb4BA3Hk0iwJyqYVYC9sd1tdjxFrQWljVI3U=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
@@ -3152,7 +3152,7 @@
                 "short_tag": "1.1.2-0",
                 "tag": "v1.1.2-0"
               },
-              "version": "v1.1.2-0",
+              "version": "",
               "sha256": "",
               "user": "Olivine-Labs",
               "rockspec_path": "mediator_lua-1.1.2-0.rockspec",
@@ -3187,7 +3187,7 @@
                 "short_tag": "0.07",
                 "tag": "0.07"
               },
-              "version": "0.07",
+              "version": "",
               "sha256": "",
               "user": "hoelzro",
               "rockspec_path": "lua-term-0.7-1.rockspec",

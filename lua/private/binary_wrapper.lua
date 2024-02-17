@@ -112,20 +112,6 @@ if os.getenv("RUNFILES_DIR") then
         local resolved = runfiles_dir .. "/" .. "_main" .. "/" .. workspace_relative
 
         return resolved
-
-        --local relevant = read_repo_mapping()
-        --local prefix = string.gsub(workspace_relative, "/.+", "")
-        --for k, v in ipairs(relevant) do
-        --    print(v[1] .. ": " .. v[2])
-        --end
-        --
-        --for str in string.gmatch(workspace_relative, "([^,]+)") do
-        --    if relevant[str] then
-        --        break
-        --    end
-        --
-        --    error("file not found: " .. workspace_relative)
-        --end
     end
 
     package.preload["runfiles"] = function()
@@ -243,19 +229,5 @@ elseif os.getenv("RUNFILES_MANIFEST_FILE") then
         end
     end
 else
-    error("J")
+    error("unable to find runfiles")
 end
-
-
---for i, file in ipairs({
---    --[[RUN]]--
---}) do
---    local loc = rlocation(file)
---    print(loc)
---    print(loc)
---    print(loc)
---    print(loc)
---    io.lines(loc)
---    local chunk = loadfile(loc)
---    chunk("-content_image", "content_image", "-output_image", "output_image")
---end

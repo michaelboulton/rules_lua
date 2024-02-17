@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "42c7a13c4c5b2587d444c2c01717a9639951656b51b5fd3859eea71ce3f5f8d9",
+  "moduleFileHash": "243b1cd9b236eab844f75bc9ecb836734d8070a98dcbea40cb9dd353920c98ec",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -24,6 +24,7 @@
       "repoName": "rules_lua_luaunit",
       "executionPlatformsToRegister": [],
       "toolchainsToRegister": [
+        "@lua_toolchains//:x86_64-unknown-linux-gnu_toolchain",
         "@fennel_toolchains//:fennel_toolchain"
       ],
       "extensionUsages": [
@@ -2900,7 +2901,7 @@
     },
     "@@rules_lua~override//fennel:repositories.bzl%fennel_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "Pb0eNJaDf7Ezo4nfw3clte7+axUB4jGp5lnGMfOQTpQ=",
+        "bzlTransitiveDigest": "yaHBZ56h9nuVk9AatDA0CkzV8WXXpKR69qGXLcQeJ/U=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
@@ -2961,7 +2962,7 @@
     },
     "@@rules_lua~override//lua:defs.bzl%lua_dependency": {
       "general": {
-        "bzlTransitiveDigest": "qAo2IuxxFpJJds4XZatCaSRSAOvIGeJFwq7aoOOVISA=",
+        "bzlTransitiveDigest": "pY4zdDWrb4BA3Hk0iwJyqYVYC9sd1tdjxFrQWljVI3U=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
@@ -2977,7 +2978,7 @@
                 "short_tag": "LUAUNIT_V3_4",
                 "tag": "LUAUNIT_V3_4"
               },
-              "version": "LUAUNIT_V3_4",
+              "version": "",
               "sha256": "b8aea5826f09749d149efa8ef1b13f81e6a9fc6abfbe4c1cbf87a558a6d4e8d0",
               "user": "bluebird75",
               "rockspec_path": "luaunit-3.4-1.rockspec",

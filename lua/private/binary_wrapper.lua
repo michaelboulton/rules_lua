@@ -1,5 +1,7 @@
 --[[LUA_PATH]]--
 
+-- Can this be assumed to work...?
+local lua_numeric_ver = string.gsub(_VERSION, "Lua ", "")
 
 local function read_repo_mapping()
     local repo_mappings = {}
@@ -138,10 +140,9 @@ if os.getenv("RUNFILES_DIR") then
 
         local root = runfiles_dir .. "/" .. v[2] .. "/" .. v[2]
 
-        -- FIXME: get luarocks install prefix
-        add_to_path(root .. "/share/lua/5.1/?.lua")
-        add_to_path(root .. "/share/lua/5.1/?/init.lua")
-        add_to_cpath(root .. "/lib/lua/5.1/?.so")
+        add_to_path(root .. "/share/lua/" .. lua_numeric_ver .. "/?.lua")
+        add_to_path(root .. "/share/lua/" .. lua_numeric_ver .. "/?/init.lua")
+        add_to_cpath(root .. "/lib/lua/" .. lua_numeric_ver .. "/?.so")
     end
 
     -- Set up loader for mangled names
@@ -235,8 +236,7 @@ elseif os.getenv("RUNFILES_MANIFEST_FILE") then
         if inverted[folder_name] and is_relevant(folder_name) then
             local root = t[2]
             add_to_path(root .. "/?.lua")
-            -- FIXME: get luarocks install prefix
-            add_to_path(root .. "/share/lua/5.1/" .. "?.lua")
+            add_to_path(root .. "/share/lua/" .. lua_numeric_ver .. "/" .. "?.lua")
         end
     end
 else

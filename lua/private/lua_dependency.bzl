@@ -500,6 +500,9 @@ _github_tag_attrs = {
         doc = "username on github that uploaded the dependency",
         mandatory = True,
     ),
+    "version": attr.string(
+        doc = "version of actual underlying lua dependency",
+    ),
     "tag": attr.string(
         doc = "tag on github",
         mandatory = True,

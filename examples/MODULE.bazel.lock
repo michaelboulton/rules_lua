@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "a2e7a57c361ef9db020037f4696240b2f9a0f8f57b042565007090340b5e1c89",
+  "moduleFileHash": "f0898eb35a32c70d88b1cc2d301d6f29aae9d639554d87b021d18bad4f6f5d90",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -13,10 +13,10 @@
     "compatibilityMode": "ERROR"
   },
   "localOverrideHashes": {
-    "rules_lua_busted": "8939d1ca3a762427058dc9a456470d1ae05997ab2dbe3da43859b7944d19eb5e",
-    "rules_lua_luaunit": "a7e1b16aa24903a24224ee15a1433a5e356b74c7082fc89d433f631c7b7ea28c",
+    "rules_lua_busted": "de34963ee5142dde0971a38448e08b4d5f1daadb2fd2e04cd94dea67732a2b53",
+    "rules_lua_luaunit": "243b1cd9b236eab844f75bc9ecb836734d8070a98dcbea40cb9dd353920c98ec",
     "bazel_tools": "922ea6752dc9105de5af957f7a99a6933c0a6a712d23df6aad16a9c399f7e787",
-    "rules_lua": "6648d570f86b4152d330915a32299972147cee698cd46978f05adcb4f2f5119b"
+    "rules_lua": "1709d3b442eefe63cb86a684ad961f4cc670fb1ab18efcc1021907edbcaa7638"
   },
   "moduleDepGraph": {
     "<root>": {
@@ -25,10 +25,7 @@
       "key": "<root>",
       "repoName": "",
       "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [
-        "@luajit_v2.1_toolchains//:x86_64-unknown-linux-gnu_toolchain",
-        "@fennel_1.2.1_toolchains//:fennel_toolchain"
-      ],
+      "toolchainsToRegister": [],
       "extensionUsages": [
         {
           "extensionBzlFile": "@rules_lua//lua:defs.bzl",
@@ -57,7 +54,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 41,
+                "line": 42,
                 "column": 16
               }
             }
@@ -90,67 +87,8 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 53,
+                "line": 54,
                 "column": 15
-              }
-            }
-          ],
-          "hasDevUseExtension": false,
-          "hasNonDevUseExtension": true
-        },
-        {
-          "extensionBzlFile": "@rules_lua//lua:repositories.bzl",
-          "extensionName": "lua_toolchains",
-          "usingModule": "<root>",
-          "location": {
-            "file": "@@//:MODULE.bazel",
-            "line": 75,
-            "column": 31
-          },
-          "imports": {
-            "luajit_v2.1_toolchains": "luajit_v2.1_toolchains"
-          },
-          "devImports": [],
-          "tags": [
-            {
-              "tagName": "luajit",
-              "attributeValues": {},
-              "devDependency": false,
-              "location": {
-                "file": "@@//:MODULE.bazel",
-                "line": 76,
-                "column": 22
-              }
-            }
-          ],
-          "hasDevUseExtension": false,
-          "hasNonDevUseExtension": true
-        },
-        {
-          "extensionBzlFile": "@rules_lua//fennel:repositories.bzl",
-          "extensionName": "fennel_toolchains",
-          "usingModule": "<root>",
-          "location": {
-            "file": "@@//:MODULE.bazel",
-            "line": 88,
-            "column": 34
-          },
-          "imports": {
-            "fennel_1.2.1_toolchains": "fennel_1.2.1_toolchains",
-            "lua_fennel": "lua_fennel"
-          },
-          "devImports": [],
-          "tags": [
-            {
-              "tagName": "fennel",
-              "attributeValues": {
-                "version": "1.2.1"
-              },
-              "devDependency": false,
-              "location": {
-                "file": "@@//:MODULE.bazel",
-                "line": 89,
-                "column": 25
               }
             }
           ],
@@ -206,7 +144,10 @@
       "key": "rules_lua@_",
       "repoName": "rules_lua",
       "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [],
+      "toolchainsToRegister": [
+        "@luajit_toolchains//:x86_64-unknown-linux-gnu_toolchain",
+        "@fennel_toolchains//:fennel_toolchain"
+      ],
       "extensionUsages": [
         {
           "extensionBzlFile": "//:MODULE.bazel",
@@ -238,6 +179,67 @@
                 "file": "@@rules_lua~override//:MODULE.bazel",
                 "line": 26,
                 "column": 13
+              }
+            }
+          ],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@rules_lua//lua:repositories.bzl",
+          "extensionName": "lua_toolchains",
+          "usingModule": "rules_lua@_",
+          "location": {
+            "file": "@@rules_lua~override//:MODULE.bazel",
+            "line": 34,
+            "column": 31
+          },
+          "imports": {
+            "luajit_toolchains": "luajit_toolchains"
+          },
+          "devImports": [],
+          "tags": [
+            {
+              "tagName": "luajit",
+              "attributeValues": {
+                "version": "v2.1"
+              },
+              "devDependency": false,
+              "location": {
+                "file": "@@rules_lua~override//:MODULE.bazel",
+                "line": 35,
+                "column": 22
+              }
+            }
+          ],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@rules_lua//fennel:repositories.bzl",
+          "extensionName": "fennel_toolchains",
+          "usingModule": "rules_lua@_",
+          "location": {
+            "file": "@@rules_lua~override//:MODULE.bazel",
+            "line": 42,
+            "column": 34
+          },
+          "imports": {
+            "fennel_toolchains": "fennel_toolchains"
+          },
+          "devImports": [],
+          "tags": [
+            {
+              "tagName": "fennel",
+              "attributeValues": {
+                "name": "fennel",
+                "version": "1.2.1"
+              },
+              "devDependency": false,
+              "location": {
+                "file": "@@rules_lua~override//:MODULE.bazel",
+                "line": 43,
+                "column": 25
               }
             }
           ],
@@ -480,8 +482,8 @@
       "repoName": "rules_lua_luaunit",
       "executionPlatformsToRegister": [],
       "toolchainsToRegister": [
-        "@luajit_v2.1_toolchains//:x86_64-unknown-linux-gnu_toolchain",
-        "@fennel_1.2.1_toolchains//:fennel_toolchain"
+        "@lua_toolchains//:x86_64-unknown-linux-gnu_toolchain",
+        "@fennel_toolchains//:fennel_toolchain"
       ],
       "extensionUsages": [
         {
@@ -528,18 +530,21 @@
             "column": 31
           },
           "imports": {
-            "luajit_v2.1_toolchains": "luajit_v2.1_toolchains"
+            "lua_toolchains": "lua_toolchains"
           },
           "devImports": [],
           "tags": [
             {
-              "tagName": "luajit",
-              "attributeValues": {},
+              "tagName": "lua",
+              "attributeValues": {
+                "name": "lua",
+                "version": "v5.4.6"
+              },
               "devDependency": false,
               "location": {
                 "file": "@@rules_lua_luaunit~override//:MODULE.bazel",
                 "line": 25,
-                "column": 22
+                "column": 19
               }
             }
           ],
@@ -552,24 +557,24 @@
           "usingModule": "rules_lua_luaunit@_",
           "location": {
             "file": "@@rules_lua_luaunit~override//:MODULE.bazel",
-            "line": 37,
+            "line": 33,
             "column": 34
           },
           "imports": {
-            "fennel_1.2.1_toolchains": "fennel_1.2.1_toolchains",
-            "lua_fennel": "lua_fennel"
+            "fennel_toolchains": "fennel_toolchains"
           },
           "devImports": [],
           "tags": [
             {
               "tagName": "fennel",
               "attributeValues": {
+                "name": "fennel",
                 "version": "1.2.1"
               },
               "devDependency": false,
               "location": {
                 "file": "@@rules_lua_luaunit~override//:MODULE.bazel",
-                "line": 38,
+                "line": 34,
                 "column": 25
               }
             }
@@ -591,10 +596,7 @@
       "key": "rules_lua_busted@_",
       "repoName": "rules_lua_busted",
       "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [
-        "@luajit_v2.1_toolchains//:x86_64-unknown-linux-gnu_toolchain",
-        "@fennel_1.2.1_toolchains//:fennel_toolchain"
-      ],
+      "toolchainsToRegister": [],
       "extensionUsages": [
         {
           "extensionBzlFile": "@rules_lua//lua:defs.bzl",
@@ -804,65 +806,6 @@
                 "file": "@@rules_lua_busted~override//:MODULE.bazel",
                 "line": 92,
                 "column": 16
-              }
-            }
-          ],
-          "hasDevUseExtension": false,
-          "hasNonDevUseExtension": true
-        },
-        {
-          "extensionBzlFile": "@rules_lua//lua:repositories.bzl",
-          "extensionName": "lua_toolchains",
-          "usingModule": "rules_lua_busted@_",
-          "location": {
-            "file": "@@rules_lua_busted~override//:MODULE.bazel",
-            "line": 114,
-            "column": 31
-          },
-          "imports": {
-            "luajit_v2.1_toolchains": "luajit_v2.1_toolchains"
-          },
-          "devImports": [],
-          "tags": [
-            {
-              "tagName": "luajit",
-              "attributeValues": {},
-              "devDependency": false,
-              "location": {
-                "file": "@@rules_lua_busted~override//:MODULE.bazel",
-                "line": 115,
-                "column": 22
-              }
-            }
-          ],
-          "hasDevUseExtension": false,
-          "hasNonDevUseExtension": true
-        },
-        {
-          "extensionBzlFile": "@rules_lua//fennel:repositories.bzl",
-          "extensionName": "fennel_toolchains",
-          "usingModule": "rules_lua_busted@_",
-          "location": {
-            "file": "@@rules_lua_busted~override//:MODULE.bazel",
-            "line": 127,
-            "column": 34
-          },
-          "imports": {
-            "fennel_1.2.1_toolchains": "fennel_1.2.1_toolchains",
-            "lua_fennel": "lua_fennel"
-          },
-          "devImports": [],
-          "tags": [
-            {
-              "tagName": "fennel",
-              "attributeValues": {
-                "version": "1.2.1"
-              },
-              "devDependency": false,
-              "location": {
-                "file": "@@rules_lua_busted~override//:MODULE.bazel",
-                "line": 128,
-                "column": 25
               }
             }
           ],
@@ -3299,6 +3242,490 @@
             "rules_java~7.1.0",
             "remote_java_tools",
             "rules_java~7.1.0~toolchains~remote_java_tools"
+          ]
+        ]
+      }
+    },
+    "@@rules_lua~override//:MODULE.bazel%_repo_rules": {
+      "general": {
+        "bzlTransitiveDigest": "nSp+oEsTv5DYy1r8s+aEwKWUHoJDhXelRNB5mFkZmdU=",
+        "accumulatedFileDigests": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "luarocks": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "build_file": "@@rules_lua~override//lua:luarocks.BUILD.bazel",
+              "sha256": "bca6e4ecc02c203e070acdb5f586045d45c078896f6236eb46aa33ccd9b94edb",
+              "strip_prefix": "luarocks-3.9.2",
+              "urls": [
+                "https://luarocks.org/releases/luarocks-3.9.2.tar.gz"
+              ],
+              "name": "rules_lua~override~_repo_rules~luarocks"
+            }
+          }
+        },
+        "recordedRepoMappingEntries": []
+      }
+    },
+    "@@rules_lua~override//fennel:repositories.bzl%fennel_toolchains": {
+      "general": {
+        "bzlTransitiveDigest": "cCoilYF0pk6+dR3pdePHQHvXnrnVmMDf8U5Q1OiGxdQ=",
+        "accumulatedFileDigests": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "lua_fennel_1.2.1": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "luarocks_repository",
+            "attributes": {
+              "name": "rules_lua~override~fennel_toolchains~lua_fennel_1.2.1",
+              "dependency": "fennel",
+              "sha256": "4ab3f10816777b73daa2cf7f0855a86e31315fdf2adc21c894f208c27f0150cf",
+              "user": "technomancy",
+              "version": "1.2.1-1",
+              "out_binaries": [
+                "fennel"
+              ]
+            }
+          },
+          "fennel_repositories": {
+            "bzlFile": "@@rules_lua~override//fennel:repositories.bzl",
+            "ruleClassName": "fennel_repositories",
+            "attributes": {
+              "name": "rules_lua~override~fennel_toolchains~fennel_repositories",
+              "version": "1.2.1"
+            }
+          },
+          "fennel_toolchains": {
+            "bzlFile": "@@rules_lua~override//fennel/private:toolchains_repo.bzl",
+            "ruleClassName": "toolchains_repo",
+            "attributes": {
+              "name": "rules_lua~override~fennel_toolchains~fennel_toolchains",
+              "user_repository_name": "fennel_repositories"
+            }
+          }
+        },
+        "recordedRepoMappingEntries": [
+          [
+            "aspect_bazel_lib~2.4.1",
+            "bazel_skylib",
+            "bazel_skylib~1.5.0"
+          ],
+          [
+            "rules_lua~override",
+            "aspect_bazel_lib",
+            "aspect_bazel_lib~2.4.1"
+          ],
+          [
+            "rules_lua~override",
+            "bazel_skylib",
+            "bazel_skylib~1.5.0"
+          ],
+          [
+            "rules_lua~override",
+            "bazel_tools",
+            "bazel_tools"
+          ]
+        ]
+      }
+    },
+    "@@rules_lua~override//lua:defs.bzl%lua_dependency": {
+      "general": {
+        "bzlTransitiveDigest": "pY4zdDWrb4BA3Hk0iwJyqYVYC9sd1tdjxFrQWljVI3U=",
+        "accumulatedFileDigests": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "lua_luasystem": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "luarocks_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_luasystem",
+              "dependency": "luasystem",
+              "extra_cflags": [],
+              "sha256": "d1c706d48efc7279d33f5ea123acb4d27e2ee93e364bedbe07f2c9c8d0ad3d24",
+              "user": "olim",
+              "deps": [],
+              "version": "0.2.1-0",
+              "out_binaries": []
+            }
+          },
+          "lua_penlight": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "luarocks_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_penlight",
+              "dependency": "penlight",
+              "extra_cflags": [],
+              "sha256": "fa028f7057cad49cdb84acdd9fe362f090734329ceca8cc6abb2d95d43b91835",
+              "user": "tieske",
+              "deps": [
+                "@@rules_lua~override~lua_dependency~lua_luafilesystem//:lua_luafilesystem"
+              ],
+              "version": "1.13.1-1",
+              "out_binaries": []
+            }
+          },
+          "lua_dkjson": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "luarocks_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_dkjson",
+              "dependency": "dkjson",
+              "extra_cflags": [],
+              "sha256": "e4ba15f2a85f84ffc7f628157a4ad16b2b04ba05eb44a2e5956fa46bd104125e",
+              "user": "dhkolf",
+              "deps": [],
+              "version": "2.6-1",
+              "out_binaries": []
+            }
+          },
+          "lua_luaunit": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "external_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_luaunit",
+              "external_dependency_template": "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz",
+              "external_dependency_strip_template": "{dependency}-{short_tag}",
+              "dependency": "luaunit",
+              "extra_fmt_vars": {
+                "short_tag": "LUAUNIT_V3_4",
+                "tag": "LUAUNIT_V3_4"
+              },
+              "version": "",
+              "sha256": "b8aea5826f09749d149efa8ef1b13f81e6a9fc6abfbe4c1cbf87a558a6d4e8d0",
+              "user": "bluebird75",
+              "rockspec_path": "luaunit-3.4-1.rockspec",
+              "deps": [],
+              "extra_cflags": [],
+              "out_binaries": []
+            }
+          },
+          "lua_ansicolors": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "luarocks_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_ansicolors",
+              "dependency": "ansicolors",
+              "extra_cflags": [],
+              "sha256": "df6126501af3b9b944019164a08aed91377d82e6845c24432769140f12c815d6",
+              "user": "kikito",
+              "deps": [],
+              "version": "1.0.2-3",
+              "out_binaries": []
+            }
+          },
+          "lua_luassert": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "luarocks_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_luassert",
+              "dependency": "luassert",
+              "extra_cflags": [],
+              "sha256": "146a7b2ec8e0cadf7dbca6dc993debcd2090e0e4fdf5c632d9f4ec20670357dd",
+              "user": "lunarmodules",
+              "deps": [],
+              "version": "1.9.0-1",
+              "out_binaries": []
+            }
+          },
+          "lua_say": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "luarocks_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_say",
+              "dependency": "say",
+              "extra_cflags": [],
+              "sha256": "90a1c0253ec38d6628007eef0b424d0707d0f3e0442fce478a627111eb02bb07",
+              "user": "lunarmodules",
+              "deps": [],
+              "version": "1.4.1-3",
+              "out_binaries": []
+            }
+          },
+          "lua_luafilesystem": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "luarocks_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_luafilesystem",
+              "dependency": "luafilesystem",
+              "extra_cflags": [],
+              "sha256": "576270a55752894254c2cba0d49d73595d37ec4ea8a75e557fdae7aff80e19cf",
+              "user": "hisham",
+              "deps": [],
+              "version": "1.8.0-1",
+              "out_binaries": []
+            }
+          },
+          "lua_mediator": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "external_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_mediator",
+              "external_dependency_template": "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz",
+              "external_dependency_strip_template": "{dependency}-{short_tag}",
+              "dependency": "mediator_lua",
+              "extra_fmt_vars": {
+                "short_tag": "1.1.2-0",
+                "tag": "v1.1.2-0"
+              },
+              "version": "",
+              "sha256": "",
+              "user": "Olivine-Labs",
+              "rockspec_path": "mediator_lua-1.1.2-0.rockspec",
+              "deps": [],
+              "extra_cflags": [],
+              "out_binaries": []
+            }
+          },
+          "lua_inspect": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "external_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_inspect",
+              "external_dependency_template": "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz",
+              "external_dependency_strip_template": "{dependency}-{short_tag}",
+              "dependency": "inspect.lua",
+              "extra_fmt_vars": {
+                "short_tag": "3.1.3",
+                "tag": "v3.1.3"
+              },
+              "version": "3.1.3-0",
+              "sha256": "",
+              "user": "kikito",
+              "rockspec_path": "rockspecs/inspect-3.1.2-0.rockspec",
+              "deps": [],
+              "extra_cflags": [],
+              "out_binaries": []
+            }
+          },
+          "lua_term": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "external_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_term",
+              "external_dependency_template": "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz",
+              "external_dependency_strip_template": "{dependency}-{short_tag}",
+              "dependency": "lua-term",
+              "extra_fmt_vars": {
+                "short_tag": "0.07",
+                "tag": "0.07"
+              },
+              "version": "",
+              "sha256": "",
+              "user": "hoelzro",
+              "rockspec_path": "lua-term-0.7-1.rockspec",
+              "deps": [],
+              "extra_cflags": [],
+              "out_binaries": []
+            }
+          },
+          "lua_busted": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "luarocks_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_busted",
+              "dependency": "busted",
+              "extra_cflags": [],
+              "sha256": "251a848525c743b3ead74d77a125551946fc57ddd20441109d2c9ed912d8ccd4",
+              "user": "lunarmodules",
+              "deps": [
+                "@@rules_lua~override~lua_dependency~lua_ansicolors//:lua_ansicolors",
+                "@@rules_lua~override~lua_dependency~lua_dkjson//:lua_dkjson",
+                "@@rules_lua~override~lua_dependency~lua_lua_cliargs//:lua_lua_cliargs",
+                "@@rules_lua~override~lua_dependency~lua_luafilesystem//:lua_luafilesystem",
+                "@@rules_lua~override~lua_dependency~lua_luassert//:lua_luassert",
+                "@@rules_lua~override~lua_dependency~lua_luasystem//:lua_luasystem",
+                "@@rules_lua~override~lua_dependency~lua_mediator//:lua_mediator",
+                "@@rules_lua~override~lua_dependency~lua_penlight//:lua_penlight",
+                "@@rules_lua~override~lua_dependency~lua_say//:lua_say",
+                "@@rules_lua~override~lua_dependency~lua_term//:lua_term"
+              ],
+              "version": "2.1.1-1",
+              "out_binaries": [
+                "busted"
+              ]
+            }
+          },
+          "lua_lua_cliargs": {
+            "bzlFile": "@@rules_lua~override//lua/private:lua_dependency.bzl",
+            "ruleClassName": "luarocks_repository",
+            "attributes": {
+              "name": "rules_lua~override~lua_dependency~lua_lua_cliargs",
+              "dependency": "lua_cliargs",
+              "extra_cflags": [],
+              "sha256": "3c79981292aab72dbfba9eb5c006bb37c5f42ee73d7062b15fdd840c00b70d63",
+              "user": "amireh",
+              "deps": [],
+              "version": "3.0-2",
+              "out_binaries": []
+            }
+          }
+        },
+        "recordedRepoMappingEntries": [
+          [
+            "aspect_bazel_lib~2.4.1",
+            "bazel_skylib",
+            "bazel_skylib~1.5.0"
+          ],
+          [
+            "rules_lua~override",
+            "aspect_bazel_lib",
+            "aspect_bazel_lib~2.4.1"
+          ],
+          [
+            "rules_lua~override",
+            "bazel_skylib",
+            "bazel_skylib~1.5.0"
+          ],
+          [
+            "rules_lua~override",
+            "bazel_tools",
+            "bazel_tools"
+          ]
+        ]
+      }
+    },
+    "@@rules_lua~override//lua:repositories.bzl%lua_toolchains": {
+      "general": {
+        "bzlTransitiveDigest": "cDcFmwsqfoANl8+C8iYJD433YN8KFTFlc5TCeTdufZI=",
+        "accumulatedFileDigests": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "luajit_x86_64-pc-windows-msvc": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~luajit_x86_64-pc-windows-msvc",
+              "platform": "x86_64-pc-windows-msvc",
+              "lua_repository_name": "luajit_src_v2.1"
+            }
+          },
+          "lua_aarch64-apple-darwin": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "lua_repository_name": "lua_src_v5.4.6",
+              "name": "rules_lua~override~lua_toolchains~lua_aarch64-apple-darwin",
+              "platform": "aarch64-apple-darwin"
+            }
+          },
+          "lua_x86_64-pc-windows-msvc": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "lua_repository_name": "lua_src_v5.4.6",
+              "name": "rules_lua~override~lua_toolchains~lua_x86_64-pc-windows-msvc",
+              "platform": "x86_64-pc-windows-msvc"
+            }
+          },
+          "luajit_x86_64-unknown-linux-gnu": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~luajit_x86_64-unknown-linux-gnu",
+              "platform": "x86_64-unknown-linux-gnu",
+              "lua_repository_name": "luajit_src_v2.1"
+            }
+          },
+          "luajit_src_v2.1": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~luajit_src_v2.1",
+              "patch_args": [
+                "-p",
+                "1"
+              ],
+              "build_file": "@@rules_lua~override//lua:luajit-2.1-ROLLING.BUILD.bazel",
+              "urls": [
+                "https://github.com/LuaJIT/LuaJIT/archive/0d313b243194a0b8d2399d8b549ca5a0ff234db5.zip"
+              ],
+              "sha256": "55c7a00edb7c18233ecf1b3a85ea232c1d7d7e3d5bd94b3d34bae28a61542d93",
+              "strip_prefix": "LuaJIT-0d313b243194a0b8d2399d8b549ca5a0ff234db5",
+              "patches": [
+                "@@rules_lua~override//lua:0001-Install-luajit-as-lua-as-well.patch"
+              ]
+            }
+          },
+          "luajit_aarch64-apple-darwin": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~luajit_aarch64-apple-darwin",
+              "platform": "aarch64-apple-darwin",
+              "lua_repository_name": "luajit_src_v2.1"
+            }
+          },
+          "lua_src_v5.4.6": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~lua_src_v5.4.6",
+              "patch_args": [
+                "-p",
+                "1"
+              ],
+              "sha256": "d8f590bce037218157fc6b135f3830f37db127d71fa1969e1eff6cef82fe1887",
+              "urls": [
+                "https://github.com/lua/lua/archive/refs/tags/v5.4.6.zip"
+              ],
+              "strip_prefix": "lua-5.4.6",
+              "patches": [
+                "@@rules_lua~override//lua:0001-Add-install-target-v5.4.6.patch"
+              ],
+              "build_file": "@@rules_lua~override//lua:lua-v5.4.6.BUILD.bazel"
+            }
+          },
+          "lua_x86_64-unknown-linux-gnu": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "lua_repository_name": "lua_src_v5.4.6",
+              "name": "rules_lua~override~lua_toolchains~lua_x86_64-unknown-linux-gnu",
+              "platform": "x86_64-unknown-linux-gnu"
+            }
+          },
+          "luajit_toolchains": {
+            "bzlFile": "@@rules_lua~override//lua/private:toolchains_repo.bzl",
+            "ruleClassName": "toolchains_repo",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~luajit_toolchains",
+              "user_repository_name": "luajit"
+            }
+          },
+          "luajit_x86_64-apple-darwin": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~luajit_x86_64-apple-darwin",
+              "platform": "x86_64-apple-darwin",
+              "lua_repository_name": "luajit_src_v2.1"
+            }
+          },
+          "lua_x86_64-apple-darwin": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "lua_repository_name": "lua_src_v5.4.6",
+              "name": "rules_lua~override~lua_toolchains~lua_x86_64-apple-darwin",
+              "platform": "x86_64-apple-darwin"
+            }
+          },
+          "lua_toolchains": {
+            "bzlFile": "@@rules_lua~override//lua/private:toolchains_repo.bzl",
+            "ruleClassName": "toolchains_repo",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~lua_toolchains",
+              "user_repository_name": "lua"
+            }
+          }
+        },
+        "recordedRepoMappingEntries": [
+          [
+            "rules_lua~override",
+            "bazel_tools",
+            "bazel_tools"
           ]
         ]
       }

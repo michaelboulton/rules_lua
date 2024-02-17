@@ -3271,7 +3271,7 @@
     },
     "@@rules_lua~override//fennel:repositories.bzl%fennel_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "cCoilYF0pk6+dR3pdePHQHvXnrnVmMDf8U5Q1OiGxdQ=",
+        "bzlTransitiveDigest": "yaHBZ56h9nuVk9AatDA0CkzV8WXXpKR69qGXLcQeJ/U=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {

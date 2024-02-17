@@ -103,6 +103,9 @@ end
 package.path = ""
 package.cpath = ""
 
+add_to_path("?.lua")
+add_to_path("?/init.lua")
+
 if os.getenv("RUNFILES_DIR") then
     local function rlocation(workspace_relative)
         local runfiles_dir = os.getenv("RUNFILES_DIR")

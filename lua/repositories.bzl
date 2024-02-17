@@ -148,8 +148,10 @@ def _lua_toolchains_extension(mctx):
     luajit_versions = {}
     for mod in mctx.modules:
         for lua in mod.tags.lua:
+            _verify_toolchain_name(mod, "lua", lua.name)
             lua_versions[lua.version] = None
         for luajit in mod.tags.luajit:
+            _verify_toolchain_name(mod, "luajit", luajit.name)
             luajit_versions[luajit.version] = None
 
     for luajit_version in luajit_versions:
@@ -173,8 +175,6 @@ def _lua_toolchains_extension(mctx):
             patch_args = ["-p", "1"],
             **LUA_VERSIONS[lua_version]
         )
-
-        _verify_toolchain_name(mod, "lua", lua.name)
 
         _lua_register_toolchains(lua.name, lua.version, lua_repository_name)
 

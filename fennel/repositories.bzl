@@ -94,6 +94,7 @@ def _fennel_toolchains_extension(mctx):
     versions = {}
     for mod in mctx.modules:
         for fennel in mod.tags.fennel:
+            _verify_toolchain_name(mod, "fennel", fennel.name)
             versions[fennel.version] = None
 
     for version in versions:
@@ -105,8 +106,6 @@ def _fennel_toolchains_extension(mctx):
             version = "{version}-1".format(version = version),
             out_binaries = ["fennel"],
         )
-
-        _verify_toolchain_name(mod, "fennel", fennel.name)
 
         _fennel_register_toolchains(fennel.name, fennel.version)
 

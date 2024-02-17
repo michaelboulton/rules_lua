@@ -2901,7 +2901,7 @@
     },
     "@@rules_lua~override//fennel:repositories.bzl%fennel_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "pG7aP7AihQSVRV3HEcvRNfrxftfW6fL1U+NgYlmL4JQ=",
+        "bzlTransitiveDigest": "2Mx/xZI/jiym534Hv6lFvBJinIMuO53R510stALPxZg=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
@@ -3014,7 +3014,7 @@
     },
     "@@rules_lua~override//lua:repositories.bzl%lua_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "/LrLpl3KhzAjnjMgGRLin2BiQFVGTNPVEwYw3I7PPXM=",
+        "bzlTransitiveDigest": "fdeJp5NMTVvfzOdH1XfohzunEXO/oNk8kYrUH+xo+IM=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {

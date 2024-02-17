@@ -159,7 +159,6 @@ def _lua_toolchains_extension(mctx):
 
         _luajit_register_toolchains(luajit.name, luajit.version, luajit_repository_name)
 
-    print(lua_versions)
     for lua_version in lua_versions:
         lua_repository_name = "lua_src_{version}".format(version = lua_version)
 

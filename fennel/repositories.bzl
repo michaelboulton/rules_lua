@@ -4,33 +4,16 @@ These are needed for local dev, and users must install them as well.
 See https://docs.bazel.build/versions/main/skylark/deploying.html#dependencies
 """
 
-load("@rules_lua//lua:defs.bzl", "github_dependency", "luarocks_dependency")
+load("//lua:defs.bzl", "luarocks_dependency")
 load("//fennel/private:toolchains_repo.bzl", "toolchains_repo")
 load("//fennel/private:versions.bzl", "FENNEL_VERSIONS")
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
 ########
 # Remaining content of the file is only used to support toolchains.
 ########
 
 def _fennel_repo_impl(rctx):
-    workspace_content = """
-load("@rules_lua//lua:defs.bzl", "luarocks_dependency")
-load("@rules_lua//fennel/private:versions.bzl", "FENNEL_VERSIONS")
-
-luarocks_dependency(
-    name = "lua_fennel",
-    sha256 = FENNEL_VERSIONS["{version}"],
-    dependency = "fennel",
-    user = "technomancy",
-    version = "{version}-1",
-    out_binaries = ["fennel"],
-)
-""".format(
-        name = rctx.attr.name,
-        version = rctx.attr.version,
-    )
-    rctx.file("WORKSPACE")
-
     build_content = """
 package(default_visibility = ["//visibility:public"])
 
@@ -38,7 +21,7 @@ load("@rules_lua//fennel:toolchain.bzl", "fennel_toolchain")
 
 filegroup(
     name = "fennel_binary_group",
-    srcs = ["@lua_fennel"],
+    srcs = ["@lua_fennel_{version}"],
     output_group = "fennel",
 )
 
@@ -52,10 +35,11 @@ genrule(
 fennel_toolchain(
     name = "fennel_toolchain",
     target_tool = ":fennel",
-    extra_tool_files = ["@lua_fennel"],
+    extra_tool_files = ["@lua_fennel_{version}"],
 )
 """.format(
         name = rctx.attr.name,
+        version = rctx.attr.version,
     )
 
     # Base BUILD file for this repository
@@ -77,6 +61,16 @@ def _fennel_register_toolchains(name, version, **kwargs):
         name = name + "_repositories",
         version = version,
         **kwargs
+    )
+
+    maybe(
+        luarocks_dependency,
+        name = "lua_fennel_{version}".format(version = version),
+        sha256 = FENNEL_VERSIONS[version],
+        dependency = "fennel",
+        user = "technomancy",
+        version = "{version}-1".format(version = version),
+        out_binaries = ["fennel"],
     )
 
     toolchains_repo(

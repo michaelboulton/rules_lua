@@ -8,6 +8,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("//lua/private:toolchains_repo.bzl", "PLATFORMS", "system_toolchains_repo", "toolchains_repo")
 load("//lua/private:versions.bzl", "LUAJIT_VERSIONS", "LUA_VERSIONS")
 load("//lua:toolchain.bzl", "lua_toolchain")
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
 ########
 # Remaining content of the file is only used to support toolchains.
@@ -19,11 +20,11 @@ load("@rules_lua//lua:toolchain.bzl", "lua_toolchain")
 
 lua_toolchain(
     name = "lua_toolchain",
-    target_tool = "@lua_src_{version}//:lua",
-    dev_files = ["@lua_src_{version}//:lua_make"],
+    target_tool = "@{lua_repository_name}//:lua",
+    dev_files = ["@{lua_repository_name}//:lua_make"],
 )
 """.format(
-        version = repository_ctx.attr.version,
+        lua_repository_name = repository_ctx.attr.lua_repository_name,
     )
 
     # Base BUILD file for this repository
@@ -37,18 +38,25 @@ lua_repositories = repository_rule(
             mandatory = True,
             values = PLATFORMS.keys(),
         ),
-        "version": attr.string(
-            values = LUAJIT_VERSIONS.keys(),
+        "lua_repository_name": attr.string(
             mandatory = True,
         ),
     },
 )
 
 def _lua_register_toolchains(name, version, **kwargs):
+    lua_repository_name = "lua_src_{version}".format(version = version)
+    maybe(
+        http_archive,
+        name = lua_repository_name,
+        patch_args = ["-p", "1"],
+        **LUA_VERSIONS[version]
+    )
+
     toolchains_repo_name = name + "_toolchains"
     for platform in PLATFORMS.keys():
         lua_repositories(
-            version = version,
+            lua_repository_name = lua_repository_name,
             name = name + "_" + platform,
             platform = platform,
             **kwargs
@@ -57,23 +65,29 @@ def _lua_register_toolchains(name, version, **kwargs):
     toolchains_repo(
         name = toolchains_repo_name,
         user_repository_name = name,
-        version = version,
     )
 
 def _luajit_register_toolchains(name = "lua", version = "v2.1", **kwargs):
+    luajit_repository_name = "luajit_src_{version}".format(version = version)
+    maybe(
+        http_archive,
+        name = luajit_repository_name,
+        patch_args = ["-p", "1"],
+        **LUAJIT_VERSIONS[version]
+    )
+
     toolchains_repo_name = name + "_toolchains"
     for platform in PLATFORMS.keys():
         lua_repositories(
             name = name + "_" + platform,
             platform = platform,
-            version = version,
+            lua_repository_name = luajit_repository_name,
             **kwargs
         )
 
     toolchains_repo(
         name = toolchains_repo_name,
         user_repository_name = name,
-        version = version,
     )
 
 def _lua_system_repo_impl(repository_ctx):

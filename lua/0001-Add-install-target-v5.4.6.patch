@@ -4,13 +4,15 @@ diff --git a/makefile b/makefile
 index d46e650c..3e710bbf 100644
 --- a/makefile
 +++ b/makefile
-@@ -134,6 +134,10 @@ echo:
+@@ -134,6 +134,12 @@ echo:
 
  $(ALL_O): makefile ltests.h
 
 +install: $(LUA_T)
 +	mkdir -p $(PREFIX)/bin
 +	cp $(LUA_T) $(PREFIX)/bin/
++	mkdir -p $(PREFIX)/include/lua5.4
++	cp *.h $(PREFIX)/include/lua5.4/
 +
  # DO NOT EDIT
  # automatically made with 'gcc -MM l*.c'

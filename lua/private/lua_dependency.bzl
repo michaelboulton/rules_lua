@@ -366,7 +366,7 @@ fi
 cp -r -L ./lua_modules/* {outpath}
 
 for out_binary in {out_binaries_paths}; do
-    cp {outpath}/bin/$(basename $out_binary) $out_binary
+    cp $({luarocks} config rocks_dir)/*/*/bin/$(basename $out_binary) $out_binary
 done
         """.format(
                 lua_headers = (lua_toolchain.headers.path),

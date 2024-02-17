@@ -63,16 +63,6 @@ def _fennel_register_toolchains(name, version, **kwargs):
         **kwargs
     )
 
-    maybe(
-        luarocks_dependency,
-        name = "lua_fennel_{version}".format(version = version),
-        sha256 = FENNEL_VERSIONS[version],
-        dependency = "fennel",
-        user = "technomancy",
-        version = "{version}-1".format(version = version),
-        out_binaries = ["fennel"],
-    )
-
     toolchains_repo(
         name = name + "_toolchains",
         user_repository_name = name + "_repositories",
@@ -82,7 +72,7 @@ _fennel_tag = tag_class(
     doc = "initialise fennel toolchain",
     attrs = {
         "name": attr.string(
-            mandatory = True,
+            default = "fennel",
             doc = "register toolchain repo with this name",
         ),
         "version": attr.string(
@@ -101,12 +91,24 @@ def _fennel_toolchains_extension(mctx):
             This prevents conflicting registrations in the global namespace of external repos.
             """.format(expected))
 
+    versions = {}
     for mod in mctx.modules:
         for fennel in mod.tags.fennel:
-            _verify_toolchain_name(mod, "fennel", fennel.name)
+            versions[fennel.version] = None
 
-            fennel_name = fennel.name or "fennel_{}".format(fennel.version)
-            _fennel_register_toolchains(fennel_name, fennel.version)
+    for version in versions:
+        luarocks_dependency(
+            name = "lua_fennel_{version}".format(version = version),
+            sha256 = FENNEL_VERSIONS[version],
+            dependency = "fennel",
+            user = "technomancy",
+            version = "{version}-1".format(version = version),
+            out_binaries = ["fennel"],
+        )
+
+        _verify_toolchain_name(mod, "fennel", fennel.name)
+
+        _fennel_register_toolchains(fennel.name, fennel.version)
 
 fennel_toolchains = module_extension(
     implementation = _fennel_toolchains_extension,

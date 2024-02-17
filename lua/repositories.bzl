@@ -67,15 +67,7 @@ def _lua_register_toolchains(name, version, **kwargs):
         user_repository_name = name,
     )
 
-def _luajit_register_toolchains(name = "lua", version = "v2.1", **kwargs):
-    luajit_repository_name = "luajit_src_{version}".format(version = version)
-    maybe(
-        http_archive,
-        name = luajit_repository_name,
-        patch_args = ["-p", "1"],
-        **LUAJIT_VERSIONS[version]
-    )
-
+def _luajit_register_toolchains(name, version, luajit_repository_name, **kwargs):
     toolchains_repo_name = name + "_toolchains"
     for platform in PLATFORMS.keys():
         lua_repositories(
@@ -152,17 +144,39 @@ def _lua_toolchains_extension(mctx):
             This prevents conflicting registrations in the global namespace of external repos.
             """.format(expected))
 
+    lua_versions = {}
+    luajit_versions = {}
     for mod in mctx.modules:
         for lua in mod.tags.lua:
-            _verify_toolchain_name(mod, "lua", lua.name)
-
-            lua_name = lua.name or "lua_{}".format(lua.version)
-            _lua_register_toolchains(lua_name, lua.version)
-
+            lua_versions[lua.version] = None
         for luajit in mod.tags.luajit:
-            _verify_toolchain_name(mod, "luajit", luajit.name)
+            luajit_versions[luajit.version] = None
 
-            _luajit_register_toolchains(luajit.name, luajit.version)
+    for luajit_version in luajit_versions:
+        luajit_repository_name = "luajit_src_{version}".format(version = luajit_version)
+
+        http_archive(
+            name = luajit_repository_name,
+            patch_args = ["-p", "1"],
+            **LUAJIT_VERSIONS[luajit_version]
+        )
+
+        _verify_toolchain_name(mod, "luajit", luajit.name)
+
+        _luajit_register_toolchains(luajit.name, luajit.version, luajit_repository_name)
+
+    for lua_version in lua_versions:
+        lua_repository_name = "lua_src_{version}".format(version = lua_version)
+
+        http_archive(
+            name = lua_repository_name,
+            patch_args = ["-p", "1"],
+            **LUA_VERSIONS[lua_version]
+        )
+
+        _verify_toolchain_name(mod, "lua", lua.name)
+
+        _lua_register_toolchains(lua.name, lua.version, lua_repository_name)
 
 lua_toolchains = module_extension(
     implementation = _lua_toolchains_extension,

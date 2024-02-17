@@ -14,7 +14,7 @@
   },
   "localOverrideHashes": {
     "bazel_tools": "922ea6752dc9105de5af957f7a99a6933c0a6a712d23df6aad16a9c399f7e787",
-    "rules_lua": "283cd3a9235f318c8266b5e08afa5efa9502237c7e74a2fbf8694e13feed7725"
+    "rules_lua": "1709d3b442eefe63cb86a684ad961f4cc670fb1ab18efcc1021907edbcaa7638"
   },
   "moduleDepGraph": {
     "<root>": {
@@ -289,7 +289,10 @@
       "key": "rules_lua@_",
       "repoName": "rules_lua",
       "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [],
+      "toolchainsToRegister": [
+        "@luajit_toolchains//:x86_64-unknown-linux-gnu_toolchain",
+        "@fennel_toolchains//:fennel_toolchain"
+      ],
       "extensionUsages": [
         {
           "extensionBzlFile": "//:MODULE.bazel",
@@ -321,6 +324,67 @@
                 "file": "@@rules_lua~override//:MODULE.bazel",
                 "line": 26,
                 "column": 13
+              }
+            }
+          ],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@rules_lua//lua:repositories.bzl",
+          "extensionName": "lua_toolchains",
+          "usingModule": "rules_lua@_",
+          "location": {
+            "file": "@@rules_lua~override//:MODULE.bazel",
+            "line": 34,
+            "column": 31
+          },
+          "imports": {
+            "luajit_toolchains": "luajit_toolchains"
+          },
+          "devImports": [],
+          "tags": [
+            {
+              "tagName": "luajit",
+              "attributeValues": {
+                "version": "v2.1"
+              },
+              "devDependency": false,
+              "location": {
+                "file": "@@rules_lua~override//:MODULE.bazel",
+                "line": 35,
+                "column": 22
+              }
+            }
+          ],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@rules_lua//fennel:repositories.bzl",
+          "extensionName": "fennel_toolchains",
+          "usingModule": "rules_lua@_",
+          "location": {
+            "file": "@@rules_lua~override//:MODULE.bazel",
+            "line": 42,
+            "column": 34
+          },
+          "imports": {
+            "fennel_toolchains": "fennel_toolchains"
+          },
+          "devImports": [],
+          "tags": [
+            {
+              "tagName": "fennel",
+              "attributeValues": {
+                "name": "fennel",
+                "version": "1.2.1"
+              },
+              "devDependency": false,
+              "location": {
+                "file": "@@rules_lua~override//:MODULE.bazel",
+                "line": 43,
+                "column": 25
               }
             }
           ],
@@ -2837,7 +2901,7 @@
     },
     "@@rules_lua~override//fennel:repositories.bzl%fennel_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "ZwrWMldIRhCYKGPDuGsin+zK+CVzI1831A2RWFbT8RM=",
+        "bzlTransitiveDigest": "pG7aP7AihQSVRV3HEcvRNfrxftfW6fL1U+NgYlmL4JQ=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
@@ -2950,7 +3014,7 @@
     },
     "@@rules_lua~override//lua:repositories.bzl%lua_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "jJdByshKN0Ontl92pbuDeKnu3WOak3o1nWVrKenG2S8=",
+        "bzlTransitiveDigest": "/LrLpl3KhzAjnjMgGRLin2BiQFVGTNPVEwYw3I7PPXM=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {

@@ -10,7 +10,7 @@ genrule(
 
 filegroup(
     name = "lua_srcs",
-    srcs = glob(["dynasm/*", "src/**", "etc/**", "Makefile" ]),
+    srcs = glob(["dynasm/*", "src/**", "etc/**", "Makefile"]),
 )
 
 # FIXME: For this and lua, find the cquery command to list the output inc dirs, and include them in the toolchain.

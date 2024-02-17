@@ -1,5 +1,5 @@
 docs/*.md linguist-generated=true
 
-MODULE.bazel.lock linguist-generated
-**/MODULE.bazel.lock linguist-generated
+MODULE.bazel.lock linguist-generated=true
+**/MODULE.bazel.lock linguist-generated=true
 

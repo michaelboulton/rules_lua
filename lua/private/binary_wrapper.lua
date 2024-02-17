@@ -56,7 +56,11 @@ local function add_to_path(s)
         return nil
     end
     _path_added[s] = true
-    package.path = package.path .. ";" .. s
+    if package.path == "" then
+        package.path = s
+    else
+        package.path = package.path .. ";" .. s
+    end
 end
 
 local _cpath_added = {}
@@ -66,7 +70,11 @@ local function add_to_cpath(s)
         return nil
     end
     _cpath_added[s] = true
-    package.cpath = package.cpath .. ";" .. s
+    if package.cpath == "" then
+        package.cpath = s
+    else
+        package.cpath = package.cpath .. ";" .. s
+    end
 end
 
 local function is_relevant(repo_name)

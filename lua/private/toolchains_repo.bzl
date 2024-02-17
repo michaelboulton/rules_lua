@@ -17,6 +17,8 @@ This guidance tells us how to avoid that: we put the toolchain targets in the al
 with only the toolchain attribute pointing into the platform-specific repositories.
 """
 
+load(":versions.bzl", "LUAJIT_VERSIONS")
+
 # Add more platforms as needed to mirror all the binaries
 # published by the upstream project.
 PLATFORMS = {
@@ -49,17 +51,21 @@ PLATFORMS = {
 def _toolchains_repo_impl(repository_ctx):
     workspace_content = """
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 load("@rules_lua//lua/private:versions.bzl", "LUAJIT_VERSIONS")
 
-http_archive(
-    name = "{name}_lua_git",
+# Use 'maybe' because if it's the same version we don't care
+maybe(
+    http_archive,
+    name = "lua_src_{version}",
     patch_args = ["-p", "1"],
-    **LUA_VERSIONS[version]
+    **LUAJIT_VERSIONS["{version}"]
 )
 """.format(
-        name = repository_ctx.attr.name,
+        #        name = repository_ctx.attr.user_repository_name,
+        version = repository_ctx.attr.version,
     )
-    repository_ctx.file("WORKSPACE")
+    repository_ctx.file("WORKSPACE", workspace_content)
 
     # Expose a concrete toolchain which is the result of Bazel resolving the toolchain
     # for the execution or target platform.
@@ -124,6 +130,10 @@ toolchains_repo = repository_rule(
         "user_repository_name": attr.string(
             mandatory = True,
             doc = "what the user chose for the base name",
+        ),
+        "version": attr.string(
+            mandatory = True,
+            values = LUAJIT_VERSIONS.keys(),
         ),
     },
 )

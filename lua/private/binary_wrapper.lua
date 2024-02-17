@@ -28,11 +28,11 @@ local function read_repo_mapping()
         -- rules_lua~override~lua_dependency~lua_luaunit,bazel_tools,bazel_tools
         -- rules_lua~override~lua_dependency~lua_luaunit,lua_luaunit,rules_lua~override~lua_dependency~lua_luaunit
         -- rules_lua~override~lua_dependency~lua_luaunit,rules_lua,rules_lua~override
-        -- rules_lua~override~lua_toolchains~lua_git,bazel_tools,bazel_tools
-        -- rules_lua~override~lua_toolchains~lua_git,lua_git,rules_lua~override~lua_toolchains~lua_git
-        -- rules_lua~override~lua_toolchains~lua_git,rules_lua,rules_lua~override
+        -- rules_lua~override~lua_toolchains~lua_src,bazel_tools,bazel_tools
+        -- rules_lua~override~lua_toolchains~lua_src,lua_src,rules_lua~override~lua_toolchains~lua_src
+        -- rules_lua~override~lua_toolchains~lua_src,rules_lua,rules_lua~override
         -- rules_lua~override~lua_toolchains~luajit_v2.1_x86_64-unknown-linux-gnu,bazel_tools,bazel_tools
-        -- rules_lua~override~lua_toolchains~luajit_v2.1_x86_64-unknown-linux-gnu,lua_git,rules_lua~override~lua_toolchains~lua_git
+        -- rules_lua~override~lua_toolchains~luajit_v2.1_x86_64-unknown-linux-gnu,lua_src,rules_lua~override~lua_toolchains~lua_src
         -- rules_lua~override~lua_toolchains~luajit_v2.1_x86_64-unknown-linux-gnu,rules_lua,rules_lua~override
         for str in string.gmatch(line, "([^,]+)") do
             table.insert(t, str)
@@ -213,11 +213,11 @@ elseif os.getenv("RUNFILES_MANIFEST_FILE") then
         --rules_lua~override~_repo_rules~luarocks/upload/multipart.lua /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_lua~override~_repo_rules~luarocks/upload/multipart.lua
         --rules_lua~override~_repo_rules~luarocks/util.lua /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_lua~override~_repo_rules~luarocks/util.lua
         --rules_lua~override~lua_dependency~lua_luaunit/rules_lua~override~lua_dependency~lua_luaunit /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-fastbuild/bin/external/rules_lua~override~lua_dependency~lua_luaunit/rules_lua~override~lua_dependency~lua_luaunit
-        --rules_lua~override~lua_toolchains~lua_git/lua /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_lua~override~lua_toolchains~lua_git/lua
-        --rules_lua~override~lua_toolchains~lua_git/lua_make/bin/lua /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_lua~override~lua_toolchains~lua_git/lua_make/bin/lua
-        --rules_lua~override~lua_toolchains~lua_git/lua_make/include /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_lua~override~lua_toolchains~lua_git/lua_make/include
-        --rules_lua~override~lua_toolchains~lua_git/lua_make/lib/libluajit-5.1.a /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_lua~override~lua_toolchains~lua_git/lua_make/lib/libluajit-5.1.a
-        --rules_lua~override~lua_toolchains~lua_git/lua_make/lib/libluajit-5.1.so.2.1.0 /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_lua~override~lua_toolchains~lua_git/lua_make/lib/libluajit-5.1.so.2.1.0
+        --rules_lua~override~lua_toolchains~lua_src/lua /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_lua~override~lua_toolchains~lua_src/lua
+        --rules_lua~override~lua_toolchains~lua_src/lua_make/bin/lua /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_lua~override~lua_toolchains~lua_src/lua_make/bin/lua
+        --rules_lua~override~lua_toolchains~lua_src/lua_make/include /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_lua~override~lua_toolchains~lua_src/lua_make/include
+        --rules_lua~override~lua_toolchains~lua_src/lua_make/lib/libluajit-5.1.a /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_lua~override~lua_toolchains~lua_src/lua_make/lib/libluajit-5.1.a
+        --rules_lua~override~lua_toolchains~lua_src/lua_make/lib/libluajit-5.1.so.2.1.0 /home/michael/.cache/bazel/_bazel_michael/8b8e9136bd71c77bdacd15b930f72e19/execroot/_main/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_lua~override~lua_toolchains~lua_src/lua_make/lib/libluajit-5.1.so.2.1.0
 
         for str in string.gmatch(line, "([^ ]+)") do
             table.insert(t, str)

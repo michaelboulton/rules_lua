@@ -19,11 +19,11 @@ load("@rules_lua//lua:toolchain.bzl", "lua_toolchain")
 
 lua_toolchain(
     name = "lua_toolchain",
-    target_tool = "@{lua_workspace_name}//:lua",
-    dev_files = ["@{lua_workspace_name}//:lua_make"],
+    target_tool = "@lua_src_{version}//:lua",
+    dev_files = ["@lua_src_{version}//:lua_make"],
 )
 """.format(
-        lua_workspace_name = repository_ctx.attr.lua_workspace_name,
+        version = repository_ctx.attr.version,
     )
 
     # Base BUILD file for this repository
@@ -37,46 +37,43 @@ lua_repositories = repository_rule(
             mandatory = True,
             values = PLATFORMS.keys(),
         ),
-        "lua_workspace_name": attr.string(
+        "version": attr.string(
+            values = LUAJIT_VERSIONS.keys(),
             mandatory = True,
         ),
     },
 )
 
 def _lua_register_toolchains(name, version, **kwargs):
-    if version not in LUA_VERSIONS:
-        fail("Unknown lua version {}".format(version))
-
-    toolchains_repo_name = name + "_lua_toolchains"
+    toolchains_repo_name = name + "_toolchains"
     for platform in PLATFORMS.keys():
         lua_repositories(
-            lua_workspace_name = toolchains_repo_name,
+            version = version,
             name = name + "_" + platform,
             platform = platform,
             **kwargs
         )
 
     toolchains_repo(
-        name = "lua_{}".format(version),
+        name = toolchains_repo_name,
         user_repository_name = name,
+        version = version,
     )
 
 def _luajit_register_toolchains(name = "lua", version = "v2.1", **kwargs):
-    if version not in LUAJIT_VERSIONS:
-        fail("Unknown luajit version {}".format(version))
-
-    toolchains_repo_name = name + "_luajit_toolchains"
+    toolchains_repo_name = name + "_toolchains"
     for platform in PLATFORMS.keys():
         lua_repositories(
             name = name + "_" + platform,
             platform = platform,
-            lua_workspace_name = toolchains_repo_name,
+            version = version,
             **kwargs
         )
 
     toolchains_repo(
-        name = "luajit_{}".format(version),
+        name = toolchains_repo_name,
         user_repository_name = name,
+        version = version,
     )
 
 def _lua_system_repo_impl(repository_ctx):
@@ -112,7 +109,8 @@ _lua_tag = tag_class(
         ),
         "version": attr.string(
             default = "v5.1.1",
-            doc = "version of SDK",
+            values = LUA_VERSIONS.keys(),
+            doc = "version of lua SDK",
         ),
     },
 )
@@ -126,7 +124,8 @@ _luajit_tag = tag_class(
         ),
         "version": attr.string(
             default = "v2.1",
-            doc = "version of SDK",
+            values = LUAJIT_VERSIONS.keys(),
+            doc = "version of luajit SDK",
         ),
     },
 )
@@ -143,12 +142,13 @@ def _lua_toolchains_extension(mctx):
         for lua in mod.tags.lua:
             _verify_toolchain_name(mod, "lua", lua.name)
 
-            _lua_register_toolchains(mod.name + lua.name, lua.version)
+            lua_name = lua.name or "lua_{}".format(lua.version)
+            _lua_register_toolchains(lua_name, lua.version)
 
         for luajit in mod.tags.luajit:
             _verify_toolchain_name(mod, "luajit", luajit.name)
 
-            _luajit_register_toolchains(mod.name + luajit.name, luajit.version)
+            _luajit_register_toolchains(luajit.name, luajit.version)
 
 lua_toolchains = module_extension(
     implementation = _lua_toolchains_extension,

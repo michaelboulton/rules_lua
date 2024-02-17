@@ -73,9 +73,6 @@ fennel_repositories = repository_rule(
 )
 
 def _fennel_register_toolchains(name, version, **kwargs):
-    if version not in FENNEL_VERSIONS:
-        fail("Unrecognised fennel version {}".format(version))
-
     fennel_repositories(
         name = name + "_repositories",
         version = version,
@@ -83,16 +80,15 @@ def _fennel_register_toolchains(name, version, **kwargs):
     )
 
     toolchains_repo(
-        name = name,
-        user_repository_name = name,
+        name = name + "_toolchains",
+        user_repository_name = name + "_repositories",
     )
-
-    return "@{}_toolchains//:fennel_toolchain".format(name)
 
 _fennel_tag = tag_class(
     doc = "initialise fennel toolchain",
     attrs = {
         "name": attr.string(
+            mandatory = True,
             doc = "register toolchain repo with this name",
         ),
         "version": attr.string(

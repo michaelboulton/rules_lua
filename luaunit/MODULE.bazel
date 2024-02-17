@@ -21,21 +21,37 @@ lua_deps.github(
 )
 use_repo(lua_deps, "lua_luaunit")
 
-lua_toolchains = use_extension("@rules_lua//lua:repositories.bzl", "lua_toolchains")
-lua_toolchains.luajit()
-use_repo(lua_toolchains, "luajit_v2.1")
-
-register_toolchains("@luajit_v2.1//:x86_64-unknown-linux-gnu_toolchain")
-
-#lua_toolchains.lua(version = "v5.1.1")
+#lua_toolchains = use_extension("@rules_lua//lua:repositories.bzl", "lua_toolchains")
+#lua_toolchains.luajit()
+#use_repo(lua_toolchains, "luajit_v2.1")
 #
-## FIXME: how are you supposed to use names
+#register_toolchains("@luajit_v2.1//:x86_64-unknown-linux-gnu_toolchain")
+#
+#lua_toolchains.lua(version = "v5.1.1")
 #use_repo(lua_toolchains, "rules_lua_luaunit_lua_v5.1.1_toolchains")
 #
 #register_toolchains("@rules_lua_luaunit_lua_v5.1.1_toolchains//:x86_64-unknown-linux-gnu_toolchain")
+#
+#fennel_toolchains = use_extension("@rules_lua//fennel:repositories.bzl", "fennel_toolchains")
+#fennel_toolchains.fennel(version = "1.2.1")
+#use_repo(fennel_toolchains, "fennel_1.2.1")
+#
+#register_toolchains("@fennel_1.2.1//:fennel_toolchain")
+
+lua_toolchains = use_extension("@rules_lua//lua:repositories.bzl", "lua_toolchains")
+lua_toolchains.luajit(
+    name = "luajit",
+    version = "v2.1",
+)
+use_repo(lua_toolchains, "luajit_toolchains")
+
+register_toolchains("@luajit_toolchains//:x86_64-unknown-linux-gnu_toolchain")
 
 fennel_toolchains = use_extension("@rules_lua//fennel:repositories.bzl", "fennel_toolchains")
-fennel_toolchains.fennel(version = "1.2.1")
-use_repo(fennel_toolchains, "fennel_1.2.1")
+fennel_toolchains.fennel(
+    name = "fennel",
+    version = "1.2.1",
+)
+use_repo(fennel_toolchains, "fennel_toolchains")
 
-register_toolchains("@fennel_1.2.1//:fennel_toolchain")
+register_toolchains("@fennel_toolchains//:fennel_toolchain")

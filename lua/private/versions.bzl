@@ -8,7 +8,7 @@ LUA_VERSIONS = {
     "v5.4.6": dict(
         sha256 = "d8f590bce037218157fc6b135f3830f37db127d71fa1969e1eff6cef82fe1887",
         urls = ["https://github.com/lua/lua/archive/refs/tags/v5.4.6.zip"],
-        strip_prefix = "lua-v5.4.6",
+        strip_prefix = "lua-5.4.6",
         patches = ["@rules_lua//lua:0001-Add-install-target-v5.4.6.patch"],
         build_file = "@rules_lua//lua:lua-v5.4.6.BUILD.bazel",
     ),

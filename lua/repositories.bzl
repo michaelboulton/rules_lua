@@ -44,15 +44,7 @@ lua_repositories = repository_rule(
     },
 )
 
-def _lua_register_toolchains(name, version, **kwargs):
-    lua_repository_name = "lua_src_{version}".format(version = version)
-    maybe(
-        http_archive,
-        name = lua_repository_name,
-        patch_args = ["-p", "1"],
-        **LUA_VERSIONS[version]
-    )
-
+def _lua_register_toolchains(name, version, lua_repository_name, **kwargs):
     toolchains_repo_name = name + "_toolchains"
     for platform in PLATFORMS.keys():
         lua_repositories(
@@ -167,6 +159,7 @@ def _lua_toolchains_extension(mctx):
 
         _luajit_register_toolchains(luajit.name, luajit.version, luajit_repository_name)
 
+    print(lua_versions)
     for lua_version in lua_versions:
         lua_repository_name = "lua_src_{version}".format(version = lua_version)
 

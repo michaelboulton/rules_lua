@@ -36,6 +36,6 @@ register_toolchains("@luajit_v2.1//:x86_64-unknown-linux-gnu_toolchain")
 
 fennel_toolchains = use_extension("@rules_lua//fennel:repositories.bzl", "fennel_toolchains")
 fennel_toolchains.fennel(version = "1.2.1")
-use_repo(fennel_toolchains, "fennel_1.2.1", "lua_fennel")
+use_repo(fennel_toolchains, "fennel_1.2.1")
 
 register_toolchains("@fennel_1.2.1//:fennel_toolchain")

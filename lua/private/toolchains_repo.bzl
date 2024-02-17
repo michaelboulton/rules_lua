@@ -56,7 +56,9 @@ http_archive(
     patch_args = ["-p", "1"],
     **LUA_VERSIONS[version]
 )
-""".format(repository_ctx.attr.name)
+""".format(
+        name = repository_ctx.attr.name,
+    )
     repository_ctx.file("WORKSPACE")
 
     # Expose a concrete toolchain which is the result of Bazel resolving the toolchain

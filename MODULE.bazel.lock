@@ -1756,66 +1756,52 @@
     },
     "//lua:repositories.bzl%lua_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "UETb9qodxDh5qcaIK10CT4Mrk+dahyL4zDf6PjQG5tk=",
+        "bzlTransitiveDigest": "vO7TtNQl6/rHflfzxsqkyyjyeFwfhBmW+J2lrWmk4RU=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
-          "lua_git": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:git.bzl",
-            "ruleClassName": "git_repository",
-            "attributes": {
-              "name": "_main~lua_toolchains~lua_git",
-              "remote": "https://github.com/lua/lua.git",
-              "build_file": "@@//lua:lua.BUILD.bazel",
-              "patch_args": [
-                "-p",
-                "1"
-              ],
-              "commit": "98194db4295726069137d13b8d24fca8cbf892b6",
-              "shallow_since": "1149874274 -0300",
-              "patches": [
-                "@@//lua:0001-Add-install-target-v5.1.1.patch"
-              ]
-            }
-          },
-          "lua_aarch64-apple-darwin": {
+          "rules_lualua_x86_64-pc-windows-msvc": {
             "bzlFile": "@@//lua:repositories.bzl",
             "ruleClassName": "lua_repositories",
             "attributes": {
-              "name": "_main~lua_toolchains~lua_aarch64-apple-darwin",
-              "platform": "aarch64-apple-darwin"
-            }
-          },
-          "lua_x86_64-pc-windows-msvc": {
-            "bzlFile": "@@//lua:repositories.bzl",
-            "ruleClassName": "lua_repositories",
-            "attributes": {
-              "name": "_main~lua_toolchains~lua_x86_64-pc-windows-msvc",
+              "lua_workspace_name": "rules_lualua_lua_toolchains",
+              "name": "_main~lua_toolchains~rules_lualua_x86_64-pc-windows-msvc",
               "platform": "x86_64-pc-windows-msvc"
             }
           },
-          "lua_x86_64-unknown-linux-gnu": {
+          "rules_lualua_x86_64-apple-darwin": {
             "bzlFile": "@@//lua:repositories.bzl",
             "ruleClassName": "lua_repositories",
             "attributes": {
-              "name": "_main~lua_toolchains~lua_x86_64-unknown-linux-gnu",
-              "platform": "x86_64-unknown-linux-gnu"
-            }
-          },
-          "lua_x86_64-apple-darwin": {
-            "bzlFile": "@@//lua:repositories.bzl",
-            "ruleClassName": "lua_repositories",
-            "attributes": {
-              "name": "_main~lua_toolchains~lua_x86_64-apple-darwin",
+              "lua_workspace_name": "rules_lualua_lua_toolchains",
+              "name": "_main~lua_toolchains~rules_lualua_x86_64-apple-darwin",
               "platform": "x86_64-apple-darwin"
             }
           },
-          "lua_toolchains": {
+          "rules_lualua_x86_64-unknown-linux-gnu": {
+            "bzlFile": "@@//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "lua_workspace_name": "rules_lualua_lua_toolchains",
+              "name": "_main~lua_toolchains~rules_lualua_x86_64-unknown-linux-gnu",
+              "platform": "x86_64-unknown-linux-gnu"
+            }
+          },
+          "lua_v5.1.1": {
             "bzlFile": "@@//lua/private:toolchains_repo.bzl",
             "ruleClassName": "toolchains_repo",
             "attributes": {
-              "name": "_main~lua_toolchains~lua_toolchains",
-              "user_repository_name": "lua"
+              "name": "_main~lua_toolchains~lua_v5.1.1",
+              "user_repository_name": "rules_lualua"
+            }
+          },
+          "rules_lualua_aarch64-apple-darwin": {
+            "bzlFile": "@@//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "lua_workspace_name": "rules_lualua_lua_toolchains",
+              "name": "_main~lua_toolchains~rules_lualua_aarch64-apple-darwin",
+              "platform": "aarch64-apple-darwin"
             }
           }
         },

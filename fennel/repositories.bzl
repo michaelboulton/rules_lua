@@ -18,7 +18,7 @@ load("@rules_lua//lua:defs.bzl", "luarocks_dependency")
 load("@rules_lua//fennel/private:versions.bzl", "FENNEL_VERSIONS")
 
 luarocks_dependency(
-    name = "{name}_lua_fennel",
+    name = "lua_fennel",
     sha256 = FENNEL_VERSIONS["{version}"],
     dependency = "fennel",
     user = "technomancy",
@@ -49,8 +49,14 @@ genrule(
     cmd = "set -ex; find .; cp $(locations fennel_binary_group) $@",
 )
 
-fennel_toolchain(name = "fennel_toolchain", target_tool = ":fennel", extra_tool_files = ["@lua_fennel"])
-"""
+fennel_toolchain(
+    name = "fennel_toolchain",
+    target_tool = ":fennel",
+    extra_tool_files = ["@lua_fennel"],
+)
+""".format(
+        name = rctx.attr.name,
+    )
 
     # Base BUILD file for this repository
     rctx.file("BUILD.bazel", build_content)
@@ -70,15 +76,14 @@ def _fennel_register_toolchains(name, version, **kwargs):
     if version not in FENNEL_VERSIONS:
         fail("Unrecognised fennel version {}".format(version))
 
-    toolchains_repo_name = name + "_fennel_toolchains"
     fennel_repositories(
-        name = name,
+        name = name + "_repositories",
         version = version,
         **kwargs
     )
 
     toolchains_repo(
-        name = "fennel_{}".format(version),
+        name = name,
         user_repository_name = name,
     )
 
@@ -88,11 +93,11 @@ _fennel_tag = tag_class(
     doc = "initialise fennel toolchain",
     attrs = {
         "name": attr.string(
-            default = "fennel",
             doc = "register toolchain repo with this name",
         ),
         "version": attr.string(
             default = "1.2.1",
+            values = FENNEL_VERSIONS.keys(),
             doc = "version of SDK",
         ),
     },
@@ -100,7 +105,7 @@ _fennel_tag = tag_class(
 
 def _fennel_toolchains_extension(mctx):
     def _verify_toolchain_name(mod, expected, name):
-        if name != expected and not mod.is_root:
+        if name != "" and name != expected and not mod.is_root:
             fail("""\
             Only the root module may override the default name for the {} toolchains.
             This prevents conflicting registrations in the global namespace of external repos.
@@ -110,7 +115,8 @@ def _fennel_toolchains_extension(mctx):
         for fennel in mod.tags.fennel:
             _verify_toolchain_name(mod, "fennel", fennel.name)
 
-            _fennel_register_toolchains(mod.name + fennel.name, fennel.version)
+            fennel_name = fennel.name or "fennel_{}".format(fennel.version)
+            _fennel_register_toolchains(fennel_name, fennel.version)
 
 fennel_toolchains = module_extension(
     implementation = _fennel_toolchains_extension,

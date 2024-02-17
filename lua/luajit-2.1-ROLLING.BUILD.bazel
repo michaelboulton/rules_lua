@@ -1,5 +1,13 @@
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "make")
 
+genrule(
+    name = "luajit_relver_generate",
+    outs = ["src/luajit_relver.txt"],
+    cmd = """
+    echo "2" > $@
+    """,
+)
+
 filegroup(
     name = "lua_srcs",
     srcs = glob(["dynasm/*", "src/**", "etc/**", "Makefile"]),

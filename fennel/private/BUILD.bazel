@@ -1,18 +1,6 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
 bzl_library(
-    name = "toolchains_repo",
-    srcs = ["toolchains_repo.bzl"],
-    visibility = ["//fennel:__subpackages__"],
-)
-
-bzl_library(
-    name = "versions",
-    srcs = ["versions.bzl"],
-    visibility = ["//fennel:__subpackages__"],
-)
-
-bzl_library(
     name = "fennel_library",
     srcs = ["fennel_library.bzl"],
     visibility = ["//fennel:__subpackages__"],
@@ -25,18 +13,27 @@ bzl_library(
 )
 
 bzl_library(
-    name = "fennel_test",
-    srcs = ["fennel_test.bzl"],
+    name = "fennel_binary",
+    srcs = ["fennel_binary.bzl"],
     visibility = ["//fennel:__subpackages__"],
     deps = [
+        ":fennel_library",
         "//fennel:providers",
+        "//fennel:toolchain",
+        "//lua:providers",
         "//lua/private:lua_binary",
-        "//lua/private:lua_tests",
+        "@bazel_skylib//lib:paths",
     ],
 )
 
-exports_files([
-    "init_luaunit.lua",
-    "aniseed_preprocessor.sh",
-    "init_aniseed_tests.lua",
-])
+bzl_library(
+    name = "toolchains_repo",
+    srcs = ["toolchains_repo.bzl"],
+    visibility = ["//fennel:__subpackages__"],
+)
+
+bzl_library(
+    name = "versions",
+    srcs = ["versions.bzl"],
+    visibility = ["//fennel:__subpackages__"],
+)

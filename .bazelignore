@@ -1,2 +1,5 @@
 e2e/
 examples/
+luaunit/
+busted/
+aniseed/

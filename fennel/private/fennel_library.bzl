@@ -1,6 +1,7 @@
 load("//lua:providers.bzl", "LuaLibrary")
 load("//fennel:providers.bzl", "FennelLibrary")
 load("@bazel_skylib//lib:paths.bzl", "paths")
+load("//lua/private:lua_binary.bzl", "BASH_RLOCATION_FUNCTION")
 
 def lua_name_from_fnl(f):
     #return paths.replace_extension(f.short_path, ".lua")
@@ -34,6 +35,8 @@ def compile_fennel(ctx, fennel_files, strip_prefix = ""):
     lua_toolchain = ctx.toolchains["//lua:toolchain_type"].lua_info
     fennel_toolchain = ctx.toolchains["//fennel:toolchain_type"].fennel_info
 
+    fennel_executable = fennel_toolchain.target_tool[DefaultInfo].files_to_run.executable
+
     for f in fennel_files:
         lua_output = lua_outputs[lua_name_from_fnl(f)]
         preprocessed_output = preprocessed_outputs[preprocessed_name_from_fnl(f)]
@@ -54,7 +57,11 @@ def compile_fennel(ctx, fennel_files, strip_prefix = ""):
 
         ctx.actions.run_shell(
             outputs = [lua_output],
-            inputs = [f] + [preprocessed_output] + fennel_files + fennel_toolchain.tool_files + lua_toolchain.tool_files + ctx.files.macros,
+            inputs = [f, preprocessed_output] +
+                     fennel_files +
+                     fennel_toolchain.tool_files +
+                     lua_toolchain.tool_files +
+                     ctx.files.macros,
             progress_message = "compiling %{input}",
             command = """
             set -e
@@ -65,20 +72,17 @@ def compile_fennel(ctx, fennel_files, strip_prefix = ""):
                 extra_macro_paths="$extra_macro_paths --add-macro-path $(dirname $(dirname $m))/?.fnl"
             done
 
-            {lua} -- {fennel} \
+            {fennel} \
                 $extra_macro_paths \
                 --compile \
                 {preprocessed_output} > {lua_output}
-
-            # Hack for aniseed
-            sed -i -e '/ANISEED_DELETE_ME/d' {lua_output}
             """.format(
-                lua = paths.join(ctx.var["BINDIR"], ctx.var["lua_BIN"]),
-                fennel = paths.join(ctx.var["BINDIR"], ctx.var["fennel_BIN"]),
+                fennel = fennel_executable.path,
                 preprocessed_output = preprocessed_output.path,
                 lua_output = lua_output.path,
                 macro_paths = " ".join([m.path for m in ctx.files.macros]),
             ),
+            tools = [fennel_executable],
         )
 
     # propagate dependencies
@@ -135,33 +139,16 @@ COMMON_ATTRS = {
     ),
 }
 
-_LIBRARY_RULE_ARGS = {
-    "implementation": _fennel_library_impl,
-    "attrs": dict(
-        strip_prefix = attr.string(
+fennel_library = rule(
+    doc = "Library of fennel, compiled all src files into one big lua file",
+    implementation = _fennel_library_impl,
+    attrs = dict({
+        "strip_prefix": attr.string(
             doc = "Strip prefix from files before compiling",
         ),
-        **COMMON_ATTRS
-    ),
-    "toolchains": [
+    }, **COMMON_ATTRS),
+    toolchains = [
         "//fennel:toolchain_type",
         "//lua:toolchain_type",
     ],
-}
-
-fennel_library = rule(
-    doc = "Library of fennel, compiled all src files into one big lua file",
-    **_LIBRARY_RULE_ARGS
 )
-
-_aniseed_library = rule(
-    doc = "Fennel library with aniseed 'module' semantics",
-    **_LIBRARY_RULE_ARGS
-)
-
-def aniseed_library(macros = [], **kwargs):
-    _aniseed_library(
-        macros = macros + ["@aniseed//:aniseed_macros"],
-        preprocessor = "@com_github_michaelboulton_rules_lua//fennel/private:aniseed_preprocessor.sh",
-        **kwargs
-    )

@@ -1,0 +1,8 @@
+load("@rules_lua//fennel:defs.bzl", "fennel_binary")
+
+fennel_binary(
+    name = "luaunit_runner_fennel",
+    tool = "luaunit_runner.fnl",
+    visibility = ["//:__subpackages__"],
+    deps = ["@lua_luaunit"],
+)

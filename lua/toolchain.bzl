@@ -4,10 +4,12 @@
 LuaInfo = provider(
     doc = "Information about how to invoke the tool executable.",
     fields = {
-        "target_tool_path": "Path to the tool executable for the target platform.",
+        "target_tool": "label of generated lua path. Should prefer this over target_tool_path",
+        "target_tool_path": "absolute path to the tool executable for the target platform. should only be used if using system lua",
         "tool_files": """Files required in runfiles to make the tool executable available.
 
 May be empty if the target_tool_path points to a locally installed tool binary.""",
+        "headers": "Lua header dir",
     },
 )
 
@@ -33,6 +35,11 @@ def _lua_toolchain_impl(ctx):
 
     tool_files.extend(ctx.files.dev_files)
 
+    header_dir = None
+    for file in ctx.files.dev_files:
+        if file.basename == "include" and file.is_directory:
+            header_dir = file
+
     # Make the $(tool_BIN) variable available in places like genrules.
     # See https://docs.bazel.build/versions/main/be/make-variables.html#custom_variables
     template_variables = platform_common.TemplateVariableInfo({
@@ -44,7 +51,9 @@ def _lua_toolchain_impl(ctx):
     )
     lua_info = LuaInfo(
         target_tool_path = target_tool_path,
+        target_tool = ctx.attr.target_tool,
         tool_files = tool_files,
+        headers = header_dir,
     )
 
     # Export all the providers inside our ToolchainInfo

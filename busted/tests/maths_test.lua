@@ -1,0 +1,5 @@
+describe("Adding numbers", function()
+    it("Can add 2", function()
+        assert.are.equal(4, (2+2))
+    end)
+end)

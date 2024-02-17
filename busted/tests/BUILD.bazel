@@ -1,0 +1,8 @@
+load("//:defs.bzl", "busted_test")
+
+busted_test(
+    name = "test_maths",
+    srcs = [
+        ":maths_test.lua",
+    ],
+)

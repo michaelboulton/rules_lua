@@ -36,19 +36,28 @@ bzl_library(
     srcs = ["defs.bzl"],
     visibility = ["//visibility:public"],
     deps = [
+        "//fennel/private:fennel_binary",
         "//fennel/private:fennel_library",
-        "//fennel/private:fennel_test",
     ],
 )
 
 bzl_library(
-    name = "toolchain",
-    srcs = ["toolchain.bzl"],
+    name = "deps",
     visibility = ["//visibility:public"],
+    deps = [
+        "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "@bazel_tools//tools/build_defs/repo:utils.bzl",
+    ],
 )
 
 bzl_library(
     name = "providers",
     srcs = ["providers.bzl"],
+    visibility = ["//visibility:public"],
+)
+
+bzl_library(
+    name = "toolchain",
+    srcs = ["toolchain.bzl"],
     visibility = ["//visibility:public"],
 )

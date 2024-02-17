@@ -1,0 +1,40 @@
+module(
+    name = "rules_lua_luaunit",
+    version = "0.0.1",
+    compatibility_level = 0,
+)
+
+bazel_dep(name = "aspect_bazel_lib", version = "2.4.1")
+bazel_dep(name = "rules_lua", version = "0.0.0")
+local_path_override(
+    module_name = "rules_lua",
+    path = "..",
+)
+
+lua_deps = use_extension("@rules_lua//lua:defs.bzl", "lua_dependency")
+lua_deps.github(
+    dependency = "luaunit",
+    rockspec_path = "luaunit-3.4-1.rockspec",
+    sha256 = "b8aea5826f09749d149efa8ef1b13f81e6a9fc6abfbe4c1cbf87a558a6d4e8d0",
+    tag = "LUAUNIT_V3_4",
+    user = "bluebird75",
+)
+use_repo(lua_deps, "lua_luaunit")
+
+lua_toolchains = use_extension("@rules_lua//lua:repositories.bzl", "lua_toolchains")
+lua_toolchains.lua(
+    name = "lua",
+    version = "v5.4.6",
+)
+use_repo(lua_toolchains, "lua_toolchains")
+
+register_toolchains("@lua_toolchains//:x86_64-unknown-linux-gnu_toolchain")
+
+fennel_toolchains = use_extension("@rules_lua//fennel:repositories.bzl", "fennel_toolchains")
+fennel_toolchains.fennel(
+    name = "fennel",
+    version = "1.2.1",
+)
+use_repo(fennel_toolchains, "fennel_toolchains")
+
+register_toolchains("@fennel_toolchains//:fennel_toolchain")

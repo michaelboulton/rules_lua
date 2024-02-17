@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "f1d1fab97d03e0b58d12ecfa35e8f274d6b1b3e3a8347af73c74b774e587f46b",
+  "moduleFileHash": "1709d3b442eefe63cb86a684ad961f4cc670fb1ab18efcc1021907edbcaa7638",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -23,7 +23,7 @@
       "repoName": "rules_lua",
       "executionPlatformsToRegister": [],
       "toolchainsToRegister": [
-        "@lua_toolchains//:x86_64-unknown-linux-gnu_toolchain",
+        "@luajit_toolchains//:x86_64-unknown-linux-gnu_toolchain",
         "@fennel_toolchains//:fennel_toolchain"
       ],
       "extensionUsages": [
@@ -73,21 +73,20 @@
             "column": 31
           },
           "imports": {
-            "lua_toolchains": "lua_toolchains"
+            "luajit_toolchains": "luajit_toolchains"
           },
           "devImports": [],
           "tags": [
             {
-              "tagName": "lua",
+              "tagName": "luajit",
               "attributeValues": {
-                "name": "lua",
-                "version": "v5.1.1"
+                "version": "v2.1"
               },
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
                 "line": 35,
-                "column": 19
+                "column": 22
               }
             }
           ],
@@ -100,7 +99,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 43,
+            "line": 42,
             "column": 34
           },
           "imports": {
@@ -117,7 +116,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 44,
+                "line": 43,
                 "column": 25
               }
             }
@@ -1690,23 +1689,15 @@
     },
     "//fennel:repositories.bzl%fennel_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "Al0L73XX7tcIQxbCAgv13rmgw1YPr44eSuE0uPzm1lM=",
+        "bzlTransitiveDigest": "yaHBZ56h9nuVk9AatDA0CkzV8WXXpKR69qGXLcQeJ/U=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
-          "fennel": {
-            "bzlFile": "@@//fennel:repositories.bzl",
-            "ruleClassName": "fennel_repositories",
-            "attributes": {
-              "name": "_main~fennel_toolchains~fennel",
-              "version": "1.2.1"
-            }
-          },
-          "lua_fennel": {
+          "lua_fennel_1.2.1": {
             "bzlFile": "@@//lua/private:lua_dependency.bzl",
             "ruleClassName": "luarocks_repository",
             "attributes": {
-              "name": "_main~fennel_toolchains~lua_fennel",
+              "name": "_main~fennel_toolchains~lua_fennel_1.2.1",
               "dependency": "fennel",
               "sha256": "4ab3f10816777b73daa2cf7f0855a86e31315fdf2adc21c894f208c27f0150cf",
               "user": "technomancy",
@@ -1716,12 +1707,20 @@
               ]
             }
           },
+          "fennel_repositories": {
+            "bzlFile": "@@//fennel:repositories.bzl",
+            "ruleClassName": "fennel_repositories",
+            "attributes": {
+              "name": "_main~fennel_toolchains~fennel_repositories",
+              "version": "1.2.1"
+            }
+          },
           "fennel_toolchains": {
             "bzlFile": "@@//fennel/private:toolchains_repo.bzl",
             "ruleClassName": "toolchains_repo",
             "attributes": {
               "name": "_main~fennel_toolchains~fennel_toolchains",
-              "user_repository_name": "fennel"
+              "user_repository_name": "fennel_repositories"
             }
           }
         },
@@ -1742,11 +1741,6 @@
             "bazel_tools"
           ],
           [
-            "",
-            "rules_lua",
-            ""
-          ],
-          [
             "aspect_bazel_lib~2.4.1",
             "bazel_skylib",
             "bazel_skylib~1.5.0"
@@ -1756,52 +1750,72 @@
     },
     "//lua:repositories.bzl%lua_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "vO7TtNQl6/rHflfzxsqkyyjyeFwfhBmW+J2lrWmk4RU=",
+        "bzlTransitiveDigest": "cDcFmwsqfoANl8+C8iYJD433YN8KFTFlc5TCeTdufZI=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
-          "rules_lualua_x86_64-pc-windows-msvc": {
+          "luajit_x86_64-pc-windows-msvc": {
             "bzlFile": "@@//lua:repositories.bzl",
             "ruleClassName": "lua_repositories",
             "attributes": {
-              "lua_workspace_name": "rules_lualua_lua_toolchains",
-              "name": "_main~lua_toolchains~rules_lualua_x86_64-pc-windows-msvc",
-              "platform": "x86_64-pc-windows-msvc"
+              "name": "_main~lua_toolchains~luajit_x86_64-pc-windows-msvc",
+              "platform": "x86_64-pc-windows-msvc",
+              "lua_repository_name": "luajit_src_v2.1"
             }
           },
-          "rules_lualua_x86_64-apple-darwin": {
+          "luajit_x86_64-unknown-linux-gnu": {
             "bzlFile": "@@//lua:repositories.bzl",
             "ruleClassName": "lua_repositories",
             "attributes": {
-              "lua_workspace_name": "rules_lualua_lua_toolchains",
-              "name": "_main~lua_toolchains~rules_lualua_x86_64-apple-darwin",
-              "platform": "x86_64-apple-darwin"
+              "name": "_main~lua_toolchains~luajit_x86_64-unknown-linux-gnu",
+              "platform": "x86_64-unknown-linux-gnu",
+              "lua_repository_name": "luajit_src_v2.1"
             }
           },
-          "rules_lualua_x86_64-unknown-linux-gnu": {
+          "luajit_src_v2.1": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "_main~lua_toolchains~luajit_src_v2.1",
+              "patch_args": [
+                "-p",
+                "1"
+              ],
+              "build_file": "@@//lua:luajit-2.1-ROLLING.BUILD.bazel",
+              "urls": [
+                "https://github.com/LuaJIT/LuaJIT/archive/0d313b243194a0b8d2399d8b549ca5a0ff234db5.zip"
+              ],
+              "sha256": "55c7a00edb7c18233ecf1b3a85ea232c1d7d7e3d5bd94b3d34bae28a61542d93",
+              "strip_prefix": "LuaJIT-0d313b243194a0b8d2399d8b549ca5a0ff234db5",
+              "patches": [
+                "@@//lua:0001-Install-luajit-as-lua-as-well.patch"
+              ]
+            }
+          },
+          "luajit_aarch64-apple-darwin": {
             "bzlFile": "@@//lua:repositories.bzl",
             "ruleClassName": "lua_repositories",
             "attributes": {
-              "lua_workspace_name": "rules_lualua_lua_toolchains",
-              "name": "_main~lua_toolchains~rules_lualua_x86_64-unknown-linux-gnu",
-              "platform": "x86_64-unknown-linux-gnu"
+              "name": "_main~lua_toolchains~luajit_aarch64-apple-darwin",
+              "platform": "aarch64-apple-darwin",
+              "lua_repository_name": "luajit_src_v2.1"
             }
           },
-          "lua_v5.1.1": {
+          "luajit_toolchains": {
             "bzlFile": "@@//lua/private:toolchains_repo.bzl",
             "ruleClassName": "toolchains_repo",
             "attributes": {
-              "name": "_main~lua_toolchains~lua_v5.1.1",
-              "user_repository_name": "rules_lualua"
+              "name": "_main~lua_toolchains~luajit_toolchains",
+              "user_repository_name": "luajit"
             }
           },
-          "rules_lualua_aarch64-apple-darwin": {
+          "luajit_x86_64-apple-darwin": {
             "bzlFile": "@@//lua:repositories.bzl",
             "ruleClassName": "lua_repositories",
             "attributes": {
-              "lua_workspace_name": "rules_lualua_lua_toolchains",
-              "name": "_main~lua_toolchains~rules_lualua_aarch64-apple-darwin",
-              "platform": "aarch64-apple-darwin"
+              "name": "_main~lua_toolchains~luajit_x86_64-apple-darwin",
+              "platform": "x86_64-apple-darwin",
+              "lua_repository_name": "luajit_src_v2.1"
             }
           }
         },

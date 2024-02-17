@@ -39,13 +39,13 @@ use_repo(lua_deps, "lua_luaunit")
 #register_toolchains("@fennel_1.2.1//:fennel_toolchain")
 
 lua_toolchains = use_extension("@rules_lua//lua:repositories.bzl", "lua_toolchains")
-lua_toolchains.lua(
-    name = "lua",
-    #    version = "v2.1",
+lua_toolchains.luajit(
+    name = "luajit",
+    version = "v2.1",
 )
-use_repo(lua_toolchains, "lua_toolchains")
+use_repo(lua_toolchains, "luajit_toolchains")
 
-register_toolchains("@lua_toolchains//:x86_64-unknown-linux-gnu_toolchain")
+register_toolchains("@luajit_toolchains//:x86_64-unknown-linux-gnu_toolchain")
 
 fennel_toolchains = use_extension("@rules_lua//fennel:repositories.bzl", "fennel_toolchains")
 fennel_toolchains.fennel(

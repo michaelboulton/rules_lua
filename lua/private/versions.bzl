@@ -23,7 +23,7 @@ LUA_VERSIONS = {
 
 LUAJIT_VERSIONS = {
     "v2.1": dict(
-        build_file = "@rules_lua//lua:luajit.BUILD.bazel",
+        build_file = "@rules_lua//lua:luajit-2.1-ROLLING.BUILD.bazel",
         urls = ["https://github.com/LuaJIT/LuaJIT/archive/0d313b243194a0b8d2399d8b549ca5a0ff234db5.zip"],
         sha256 = "55c7a00edb7c18233ecf1b3a85ea232c1d7d7e3d5bd94b3d34bae28a61542d93",
         strip_prefix = "LuaJIT-0d313b243194a0b8d2399d8b549ca5a0ff234db5",

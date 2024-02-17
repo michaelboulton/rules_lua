@@ -24,68 +24,12 @@ lua_register_system_toolchain(<a href="#lua_register_system_toolchain-lua_path">
 | <a id="lua_register_system_toolchain-name"></a>name |  <p align="center"> - </p>   |  `"lua"` |
 
 
-<a id="lua_register_toolchains"></a>
-
-## lua_register_toolchains
-
-<pre>
-lua_register_toolchains(<a href="#lua_register_toolchains-name">name</a>, <a href="#lua_register_toolchains-version">version</a>, <a href="#lua_register_toolchains-kwargs">kwargs</a>)
-</pre>
-
-Convenience macro for users which does typical setup.
-
-- create a repository for each built-in platform like "lua_linux_amd64" -
-  this repository is lazily fetched when node is needed for that platform.
-- TODO: create a convenience repository for the host platform like "lua_host"
-- create a repository exposing toolchains for each platform like "lua_platforms"
-- register a toolchain pointing at each platform
-Users can avoid this macro and do these steps themselves, if they want more control.
-
-
-**PARAMETERS**
-
-
-| Name  | Description | Default Value |
-| :------------- | :------------- | :------------- |
-| <a id="lua_register_toolchains-name"></a>name |  base name for all created repos, like "lua1_14"   |  `"lua"` |
-| <a id="lua_register_toolchains-version"></a>version |  <p align="center"> - </p>   |  `"v5.1.1"` |
-| <a id="lua_register_toolchains-kwargs"></a>kwargs |  passed to each node_repositories call   |  none |
-
-
-<a id="luajit_register_toolchains"></a>
-
-## luajit_register_toolchains
-
-<pre>
-luajit_register_toolchains(<a href="#luajit_register_toolchains-name">name</a>, <a href="#luajit_register_toolchains-version">version</a>, <a href="#luajit_register_toolchains-kwargs">kwargs</a>)
-</pre>
-
-Convenience macro for users which does typical setup.
-
-- create a repository for each built-in platform like "lua_linux_amd64" -
-  this repository is lazily fetched when node is needed for that platform.
-- TODO: create a convenience repository for the host platform like "lua_host"
-- create a repository exposing toolchains for each platform like "lua_platforms"
-- register a toolchain pointing at each platform
-Users can avoid this macro and do these steps themselves, if they want more control.
-
-
-**PARAMETERS**
-
-
-| Name  | Description | Default Value |
-| :------------- | :------------- | :------------- |
-| <a id="luajit_register_toolchains-name"></a>name |  base name for all created repos, like "lua1_14"   |  `"lua"` |
-| <a id="luajit_register_toolchains-version"></a>version |  <p align="center"> - </p>   |  `"v2.1"` |
-| <a id="luajit_register_toolchains-kwargs"></a>kwargs |  passed to each node_repositories call   |  none |
-
-
 <a id="lua_repositories"></a>
 
 ## lua_repositories
 
 <pre>
-lua_repositories(<a href="#lua_repositories-name">name</a>, <a href="#lua_repositories-platform">platform</a>, <a href="#lua_repositories-repo_mapping">repo_mapping</a>)
+lua_repositories(<a href="#lua_repositories-name">name</a>, <a href="#lua_repositories-lua_repository_name">lua_repository_name</a>, <a href="#lua_repositories-platform">platform</a>, <a href="#lua_repositories-repo_mapping">repo_mapping</a>)
 </pre>
 
 Fetch external tools needed for lua toolchain
@@ -96,6 +40,7 @@ Fetch external tools needed for lua toolchain
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="lua_repositories-name"></a>name |  A unique name for this repository.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
+| <a id="lua_repositories-lua_repository_name"></a>lua_repository_name |  -   | String | required |  |
 | <a id="lua_repositories-platform"></a>platform |  -   | String | required |  |
 | <a id="lua_repositories-repo_mapping"></a>repo_mapping |  In `WORKSPACE` context only: a dictionary from local repository name to global repository name. This allows controls over workspace dependency resolution for dependencies of this repository.<br><br>For example, an entry `"@foo": "@bar"` declares that, for any time this repository depends on `@foo` (such as a dependency on `@foo//some:target`, it should actually resolve that dependency within globally-declared `@bar` (`@bar//some:target`).<br><br>This attribute is _not_ supported in `MODULE.bazel` context (when invoking a repository rule inside a module extension's implementation function).   | <a href="https://bazel.build/rules/lib/dict">Dictionary: String -> String</a> | optional |  |
 
@@ -124,8 +69,8 @@ lua_system_repositories(<a href="#lua_system_repositories-name">name</a>, <a hre
 
 <pre>
 lua_toolchains = use_extension("@rules_lua//lua:repositories.bzl", "lua_toolchains")
-lua_toolchains.lua(<a href="#lua_toolchains.lua-version">version</a>)
-lua_toolchains.luajit(<a href="#lua_toolchains.luajit-version">version</a>)
+lua_toolchains.lua(<a href="#lua_toolchains.lua-name">name</a>, <a href="#lua_toolchains.lua-version">version</a>)
+lua_toolchains.luajit(<a href="#lua_toolchains.luajit-name">name</a>, <a href="#lua_toolchains.luajit-version">version</a>)
 </pre>
 
 
@@ -141,7 +86,8 @@ initialise lua toolchain
 
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
-| <a id="lua_toolchains.lua-version"></a>version |  version of SDK   | String | optional |  `"v5.1.1"`  |
+| <a id="lua_toolchains.lua-name"></a>name |  register toolchain repo with this name   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | optional |  `"lua"`  |
+| <a id="lua_toolchains.lua-version"></a>version |  version of lua SDK   | String | optional |  `"v5.1.1"`  |
 
 <a id="lua_toolchains.luajit"></a>
 
@@ -153,6 +99,7 @@ initialise luajit toolchain
 
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
-| <a id="lua_toolchains.luajit-version"></a>version |  version of SDK   | String | optional |  `"v2.1"`  |
+| <a id="lua_toolchains.luajit-name"></a>name |  register toolchain repo with this name   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | optional |  `"luajit"`  |
+| <a id="lua_toolchains.luajit-version"></a>version |  version of luajit SDK   | String | optional |  `"v2.1"`  |
 
 

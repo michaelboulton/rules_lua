@@ -5,31 +5,6 @@ Declare runtime dependencies
 These are needed for local dev, and users must install them as well.
 See https://docs.bazel.build/versions/main/skylark/deploying.html#dependencies
 
-<a id="fennel_register_toolchains"></a>
-
-## fennel_register_toolchains
-
-<pre>
-fennel_register_toolchains(<a href="#fennel_register_toolchains-name">name</a>, <a href="#fennel_register_toolchains-version">version</a>, <a href="#fennel_register_toolchains-kwargs">kwargs</a>)
-</pre>
-
-Convenience macro for users which does typical setup.
-
-- create a repository exposing toolchains for each platform like "fennel_platforms"
-- register a toolchain pointing at each platform
-Users can avoid this macro and do these steps themselves, if they want more control.
-
-
-**PARAMETERS**
-
-
-| Name  | Description | Default Value |
-| :------------- | :------------- | :------------- |
-| <a id="fennel_register_toolchains-name"></a>name |  base name for all created repos, like "fennel1_14"   |  none |
-| <a id="fennel_register_toolchains-version"></a>version |  <p align="center"> - </p>   |  `"1.2.1"` |
-| <a id="fennel_register_toolchains-kwargs"></a>kwargs |  passed to each node_repositories call   |  none |
-
-
 <a id="fennel_repositories"></a>
 
 ## fennel_repositories
@@ -56,7 +31,7 @@ Fetch external tools needed for fennel toolchain
 
 <pre>
 fennel_toolchains = use_extension("@rules_lua//fennel:repositories.bzl", "fennel_toolchains")
-fennel_toolchains.fennel(<a href="#fennel_toolchains.fennel-version">version</a>)
+fennel_toolchains.fennel(<a href="#fennel_toolchains.fennel-name">name</a>, <a href="#fennel_toolchains.fennel-version">version</a>)
 </pre>
 
 
@@ -72,6 +47,7 @@ initialise fennel toolchain
 
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
+| <a id="fennel_toolchains.fennel-name"></a>name |  register toolchain repo with this name   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | optional |  `"fennel"`  |
 | <a id="fennel_toolchains.fennel-version"></a>version |  version of SDK   | String | optional |  `"1.2.1"`  |
 
 

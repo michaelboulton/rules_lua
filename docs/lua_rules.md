@@ -116,7 +116,7 @@ luarocks_dependency(<a href="#luarocks_dependency-dependency">dependency</a>, <a
 lua_dependency = use_extension("@rules_lua//lua:defs.bzl", "lua_dependency")
 lua_dependency.luarocks(<a href="#lua_dependency.luarocks-name">name</a>, <a href="#lua_dependency.luarocks-deps">deps</a>, <a href="#lua_dependency.luarocks-dependency">dependency</a>, <a href="#lua_dependency.luarocks-extra_cflags">extra_cflags</a>, <a href="#lua_dependency.luarocks-out_binaries">out_binaries</a>, <a href="#lua_dependency.luarocks-sha256">sha256</a>, <a href="#lua_dependency.luarocks-user">user</a>, <a href="#lua_dependency.luarocks-version">version</a>)
 lua_dependency.github(<a href="#lua_dependency.github-name">name</a>, <a href="#lua_dependency.github-deps">deps</a>, <a href="#lua_dependency.github-dependency">dependency</a>, <a href="#lua_dependency.github-extra_cflags">extra_cflags</a>, <a href="#lua_dependency.github-extra_fmt_vars">extra_fmt_vars</a>, <a href="#lua_dependency.github-out_binaries">out_binaries</a>,
-                      <a href="#lua_dependency.github-rockspec_path">rockspec_path</a>, <a href="#lua_dependency.github-sha256">sha256</a>, <a href="#lua_dependency.github-tag">tag</a>, <a href="#lua_dependency.github-user">user</a>)
+                      <a href="#lua_dependency.github-rockspec_path">rockspec_path</a>, <a href="#lua_dependency.github-sha256">sha256</a>, <a href="#lua_dependency.github-tag">tag</a>, <a href="#lua_dependency.github-user">user</a>, <a href="#lua_dependency.github-version">version</a>)
 </pre>
 
 
@@ -161,5 +161,6 @@ Fetch a dependency from a url. Expects there to be a .rockspec file in the top l
 | <a id="lua_dependency.github-sha256"></a>sha256 |  expected hash   | String | optional |  `""`  |
 | <a id="lua_dependency.github-tag"></a>tag |  tag on github   | String | required |  |
 | <a id="lua_dependency.github-user"></a>user |  username on github that uploaded the dependency   | String | required |  |
+| <a id="lua_dependency.github-version"></a>version |  version of actual underlying lua dependency   | String | optional |  `""`  |
 
 

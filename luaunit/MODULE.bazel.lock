@@ -4124,6 +4124,110 @@
         ]
       }
     },
+    "@@rules_lua~override//lua:repositories.bzl%lua_toolchains": {
+      "general": {
+        "bzlTransitiveDigest": "Qy9SuABB3Pmg3MH0BlNLUeQXNgjvjGJpYQJpkkx+8Jo=",
+        "accumulatedFileDigests": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "luajit_x86_64-pc-windows-msvc": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~luajit_x86_64-pc-windows-msvc",
+              "platform": "x86_64-pc-windows-msvc",
+              "lua_workspace_name": "luajit_luajit_toolchains"
+            }
+          },
+          "lua_aarch64-apple-darwin": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "lua_workspace_name": "lua_lua_toolchains",
+              "name": "rules_lua~override~lua_toolchains~lua_aarch64-apple-darwin",
+              "platform": "aarch64-apple-darwin"
+            }
+          },
+          "lua_x86_64-pc-windows-msvc": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "lua_workspace_name": "lua_lua_toolchains",
+              "name": "rules_lua~override~lua_toolchains~lua_x86_64-pc-windows-msvc",
+              "platform": "x86_64-pc-windows-msvc"
+            }
+          },
+          "luajit_x86_64-unknown-linux-gnu": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~luajit_x86_64-unknown-linux-gnu",
+              "platform": "x86_64-unknown-linux-gnu",
+              "lua_workspace_name": "luajit_luajit_toolchains"
+            }
+          },
+          "luajit_aarch64-apple-darwin": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~luajit_aarch64-apple-darwin",
+              "platform": "aarch64-apple-darwin",
+              "lua_workspace_name": "luajit_luajit_toolchains"
+            }
+          },
+          "lua_lua_toolchains": {
+            "bzlFile": "@@rules_lua~override//lua/private:toolchains_repo.bzl",
+            "ruleClassName": "toolchains_repo",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~lua_lua_toolchains",
+              "user_repository_name": "lua"
+            }
+          },
+          "lua_x86_64-unknown-linux-gnu": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "lua_workspace_name": "lua_lua_toolchains",
+              "name": "rules_lua~override~lua_toolchains~lua_x86_64-unknown-linux-gnu",
+              "platform": "x86_64-unknown-linux-gnu"
+            }
+          },
+          "luajit_luajit_toolchains": {
+            "bzlFile": "@@rules_lua~override//lua/private:toolchains_repo.bzl",
+            "ruleClassName": "toolchains_repo",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~luajit_luajit_toolchains",
+              "user_repository_name": "luajit"
+            }
+          },
+          "luajit_x86_64-apple-darwin": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "name": "rules_lua~override~lua_toolchains~luajit_x86_64-apple-darwin",
+              "platform": "x86_64-apple-darwin",
+              "lua_workspace_name": "luajit_luajit_toolchains"
+            }
+          },
+          "lua_x86_64-apple-darwin": {
+            "bzlFile": "@@rules_lua~override//lua:repositories.bzl",
+            "ruleClassName": "lua_repositories",
+            "attributes": {
+              "lua_workspace_name": "lua_lua_toolchains",
+              "name": "rules_lua~override~lua_toolchains~lua_x86_64-apple-darwin",
+              "platform": "x86_64-apple-darwin"
+            }
+          }
+        },
+        "recordedRepoMappingEntries": [
+          [
+            "rules_lua~override",
+            "bazel_tools",
+            "bazel_tools"
+          ]
+        ]
+      }
+    },
     "@@rules_python~0.20.0//python:extensions.bzl%internal_deps": {
       "general": {
         "bzlTransitiveDigest": "kTOKv8hSe4NRjosgwpqhseALSytk/O68HlBjFwL53Qk=",

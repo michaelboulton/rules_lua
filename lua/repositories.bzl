@@ -48,11 +48,6 @@ def _lua_register_toolchains(name, version, **kwargs):
         fail("Unknown lua version {}".format(version))
 
     toolchains_repo_name = name + "_lua_toolchains"
-    toolchains_repo(
-        name = toolchains_repo_name,
-        user_repository_name = name,
-    )
-
     for platform in PLATFORMS.keys():
         lua_repositories(
             lua_workspace_name = toolchains_repo_name,
@@ -60,6 +55,11 @@ def _lua_register_toolchains(name, version, **kwargs):
             platform = platform,
             **kwargs
         )
+
+    toolchains_repo(
+        name = "lua_{}".format(version),
+        user_repository_name = name,
+    )
 
 def _luajit_register_toolchains(name = "lua", version = "v2.1", **kwargs):
     if version not in LUAJIT_VERSIONS:
@@ -75,7 +75,7 @@ def _luajit_register_toolchains(name = "lua", version = "v2.1", **kwargs):
         )
 
     toolchains_repo(
-        name = toolchains_repo_name,
+        name = "luajit_{}".format(version),
         user_repository_name = name,
     )
 
@@ -143,12 +143,12 @@ def _lua_toolchains_extension(mctx):
         for lua in mod.tags.lua:
             _verify_toolchain_name(mod, "lua", lua.name)
 
-            _lua_register_toolchains(lua.name, lua.version)
+            _lua_register_toolchains(mod.name + lua.name, lua.version)
 
         for luajit in mod.tags.luajit:
             _verify_toolchain_name(mod, "luajit", luajit.name)
 
-            _luajit_register_toolchains(luajit.name, luajit.version)
+            _luajit_register_toolchains(mod.name + luajit.name, luajit.version)
 
 lua_toolchains = module_extension(
     implementation = _lua_toolchains_extension,

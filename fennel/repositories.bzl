@@ -11,12 +11,26 @@ load("//fennel/private:versions.bzl", "FENNEL_VERSIONS")
 ########
 # Remaining content of the file is only used to support toolchains.
 ########
-_DOC = "Fetch external tools needed for fennel toolchain"
-_ATTRS = {
-    "version": attr.string(mandatory = True, values = FENNEL_VERSIONS.keys()),
-}
 
 def _fennel_repo_impl(rctx):
+    workspace_content = """
+load("@rules_lua//lua:defs.bzl", "luarocks_dependency")
+load("@rules_lua//fennel/private:versions.bzl", "FENNEL_VERSIONS")
+
+luarocks_dependency(
+    name = "{name}_lua_fennel",
+    sha256 = FENNEL_VERSIONS["{version}"],
+    dependency = "fennel",
+    user = "technomancy",
+    version = "{version}-1",
+    out_binaries = ["fennel"],
+)
+""".format(
+        name = rctx.attr.name,
+        version = rctx.attr.version,
+    )
+    rctx.file("WORKSPACE")
+
     build_content = """
 package(default_visibility = ["//visibility:public"])
 
@@ -43,38 +57,20 @@ fennel_toolchain(name = "fennel_toolchain", target_tool = ":fennel", extra_tool_
 
 fennel_repositories = repository_rule(
     _fennel_repo_impl,
-    doc = _DOC,
-    attrs = _ATTRS,
+    doc = "Fetch external tools needed for fennel toolchain",
+    attrs = {
+        "version": attr.string(
+            mandatory = True,
+            values = FENNEL_VERSIONS.keys(),
+        ),
+    },
 )
 
 def _fennel_register_toolchains(name, version, **kwargs):
     if version not in FENNEL_VERSIONS:
         fail("Unrecognised fennel version {}".format(version))
 
-    #    fmt_vars = dict(
-    #        version = version,
-    #        rockspec_release = FENNEL_VERSIONS[version],
-    #    )
-
-    #    github_dependency(
-    #        name = "lua_fennel",
-    #        dependency = "fennel",
-    #        tag = "{version}".format(**fmt_vars),
-    #        user = "bakpakin",
-    #        external_dependency_strip_template = "Fennel-{version}".format(**fmt_vars),
-    #        version = "{version}-{rockspec_release}".format(**fmt_vars),
-    #        rockspec_path = "rockspecs/fennel-{version}-{rockspec_release}.rockspec".format(**fmt_vars),
-    #    )
-
-    luarocks_dependency(
-        name = "lua_fennel",
-        sha256 = FENNEL_VERSIONS[version],
-        dependency = "fennel",
-        user = "technomancy",
-        version = "{}-1".format(version),
-        out_binaries = ["fennel"],
-    )
-
+    toolchains_repo_name = name + "_fennel_toolchains"
     fennel_repositories(
         name = name,
         version = version,
@@ -82,7 +78,7 @@ def _fennel_register_toolchains(name, version, **kwargs):
     )
 
     toolchains_repo(
-        name = name + "_toolchains",
+        name = "fennel_{}".format(version),
         user_repository_name = name,
     )
 
@@ -114,7 +110,7 @@ def _fennel_toolchains_extension(mctx):
         for fennel in mod.tags.fennel:
             _verify_toolchain_name(mod, "fennel", fennel.name)
 
-            _fennel_register_toolchains(fennel.name, fennel.version)
+            _fennel_register_toolchains(mod.name + fennel.name, fennel.version)
 
 fennel_toolchains = module_extension(
     implementation = _fennel_toolchains_extension,

@@ -1689,7 +1689,7 @@
     },
     "//fennel:repositories.bzl%fennel_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "z+AkOO76c59/4+0GbdVPElOWV0Gb972JZS8G17Wr5CM=",
+        "bzlTransitiveDigest": "zKT+Y3ofZeE4zpwEmpt+3g3Z5j3dSoRQkBkOk3NaXnE=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {

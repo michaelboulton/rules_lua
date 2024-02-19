@@ -1,6 +1,5 @@
+load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
 load("//lua:providers.bzl", "LuaLibrary")
-load("@bazel_skylib//lib:paths.bzl", "paths")
-load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain", "use_cpp_toolchain")
 
 GITHUB_TEMPLATE = "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz"
 GITHUB_PREFIX_TEMPLATE = "{dependency}-{short_tag}"
@@ -126,16 +125,14 @@ def _luarocks_repository_impl(rctx):
             srcrock_path = srcrock_path,
             **fmt_vars
         ),
-        allow_fail = True,
         output = rock_path,
         sha256 = rctx.attr.sha256,
     )
 
-    if result.success:
-        if rctx.attr.sha256 == "":
-            print("""HINT: Add 'sha256 = "{sha256}"' to the luarocks_dependency for {user}/{dependency} to get a reproducible download""".format(sha256 = result.sha256, **fmt_vars))
+    if rctx.attr.sha256 == "":
+        print("""HINT: Add 'sha256 = "{sha256}"' to the luarocks_dependency for {user}/{dependency} to get a reproducible download""".format(sha256 = result.sha256, **fmt_vars))
 
-        build_content = """
+    build_content = """
 package(default_visibility = ["//visibility:public"])
 
 load("@rules_lua//lua:defs.bzl", "luarocks_library")
@@ -158,13 +155,11 @@ alias(
     actual = "{name}",
 )
 """.format(
-            srcrock_path = srcrock_path,
-            deps = str([str(i) for i in rctx.attr.deps]),
-            out_binaries = ", ".join(['"{}"'.format(c) for c in rctx.attr.out_binaries]),
-            **fmt_vars
-        )
-    else:
-        fail("luarocks_dependency can only be used for dependencies which have a .src.rock file available. Use github_dependency, external_dependnecy, or download the file yourself in the WORKSPACE and use luarocks_dependency directly.")
+        srcrock_path = srcrock_path,
+        deps = str([str(i) for i in rctx.attr.deps]),
+        out_binaries = ", ".join(['"{}"'.format(c) for c in rctx.attr.out_binaries]),
+        **fmt_vars
+    )
 
     build_content = _append_output_binaries(rctx, fmt_vars, build_content, rctx.attr.out_binaries)
 

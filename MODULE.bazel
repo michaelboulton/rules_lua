@@ -33,6 +33,7 @@ http_archive(
 
 lua_toolchains = use_extension("@rules_lua//lua:repositories.bzl", "lua_toolchains")
 lua_toolchains.luajit(
+    name = "luajit",
     version = "v2.1",
 )
 use_repo(lua_toolchains, "luajit_toolchains")
@@ -42,7 +43,7 @@ register_toolchains("@luajit_toolchains//:x86_64-unknown-linux-gnu_toolchain")
 fennel_toolchains = use_extension("@rules_lua//fennel:repositories.bzl", "fennel_toolchains")
 fennel_toolchains.fennel(
     name = "fennel",
-    version = "1.2.1",
+    version = "1.4.0",
 )
 use_repo(fennel_toolchains, "fennel_toolchains")
 

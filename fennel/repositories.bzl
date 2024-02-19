@@ -4,10 +4,9 @@ These are needed for local dev, and users must install them as well.
 See https://docs.bazel.build/versions/main/skylark/deploying.html#dependencies
 """
 
-load("//lua:defs.bzl", "luarocks_dependency")
 load("//fennel/private:toolchains_repo.bzl", "toolchains_repo")
 load("//fennel/private:versions.bzl", "FENNEL_VERSIONS")
-load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load("//lua:defs.bzl", "luarocks_dependency")
 
 ########
 # Remaining content of the file is only used to support toolchains.
@@ -76,7 +75,7 @@ _fennel_tag = tag_class(
             doc = "register toolchain repo with this name",
         ),
         "version": attr.string(
-            default = "1.2.1",
+            default = "1.4.0",
             values = FENNEL_VERSIONS.keys(),
             doc = "version of SDK",
         ),

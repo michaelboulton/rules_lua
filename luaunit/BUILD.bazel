@@ -1,4 +1,3 @@
-load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("@rules_lua//fennel:defs.bzl", "fennel_binary")
 
 fennel_binary(
@@ -6,16 +5,4 @@ fennel_binary(
     tool = "luaunit_runner.fnl",
     visibility = ["//:__subpackages__"],
     deps = ["@lua_luaunit"],
-)
-
-bzl_library(
-    name = "defs",
-    srcs = ["defs.bzl"],
-    visibility = ["//visibility:public"],
-    deps = [
-        "@aspect_bazel_lib//lib:paths",
-        "@rules_lua//fennel/private:fennel_library",
-        "@rules_lua//lua:providers",
-        "@rules_lua//lua/private:lua_binary",
-    ],
 )

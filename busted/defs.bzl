@@ -1,6 +1,6 @@
-load("@rules_lua//lua:providers.bzl", "LuaLibrary")
-load("@rules_lua//lua/private:lua_binary.bzl", "BASH_RLOCATION_FUNCTION")
 load("@aspect_bazel_lib//lib:paths.bzl", "to_rlocation_path")
+load("@rules_lua//lua:defs.bzl", "BASH_RLOCATION_FUNCTION")
+load("@rules_lua//lua:providers.bzl", "LuaLibrary")
 
 def busted_test_impl(ctx, srcs):
     out_executable = ctx.actions.declare_file(ctx.attr.name + "_test")

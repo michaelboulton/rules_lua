@@ -1,7 +1,8 @@
-load("//lua:providers.bzl", "LuaLibrary")
-load("//fennel:providers.bzl", "FennelLibrary")
+"""Compiling fennel files to lua"""
+
 load("@bazel_skylib//lib:paths.bzl", "paths")
-load("//lua/private:lua_binary.bzl", "BASH_RLOCATION_FUNCTION")
+load("//fennel:providers.bzl", "FennelLibrary")
+load("//lua:providers.bzl", "LuaLibrary")
 
 def lua_name_from_fnl(f):
     #return paths.replace_extension(f.short_path, ".lua")
@@ -12,6 +13,16 @@ def preprocessed_name_from_fnl(f):
     return paths.join(paths.dirname(f.short_path.replace(f.dirname + "/", "")), paths.replace_extension(f.basename, ".p.fnl"))
 
 def compile_fennel(ctx, fennel_files, strip_prefix = ""):
+    """Takes fennel files and returns preprocessed fennel files and lua files compiled with any macros applied
+
+    Args:
+        ctx: rule context
+        fennel_files: list of fennel File objects
+        strip_prefix: if present, remove this prefix from the output files
+
+    Returns:
+        tuple of DefaultInfo, LuaLibrary, FennelLibrary, runfiles
+    """
     if strip_prefix:
         stripped_files = []
         for file in fennel_files:

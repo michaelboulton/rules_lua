@@ -58,14 +58,29 @@
 
 (tset package.preload :runfiles (fn [] {: rlocation}))
 
+(lambda get_resolved_name [module_name]
+  (let [real_module_name (module_name:gsub "[.].+" "")
+        with_prefix (.. :lua_ real_module_name)
+        relevant (read_lua_mappings)]
+    (if (. relevant real_module_name)
+        (module_name:gsub real_module_name
+                          (-> relevant (. real_module_name) (. 2)))
+        (if (. relevant with_prefix)
+            (-> relevant (. with_prefix) (. 2))))))
+
+(lambda search_for_module [module_name]
+  (-?> (get_resolved_name module_name) require))
+
 (lambda add_runfiles_to_path [runfiles_dir]
+  (let [loaders (or package.searchers package.loaders)]
+    (table.insert loaders search_for_module))
   (add_to_path (.. runfiles_dir :/?.lua))
   (add_to_path (.. runfiles_dir :/?/init.lua))
   (each [_ v (pairs (read_lua_mappings))]
     (let [root (.. runfiles_dir "/" (. v 2) "/" (. v 2))]
-      (add_to_path (.. root "/share/lua/" lua_numeric_ver "/?.lua"))
-      (add_to_path (.. root "/share/lua/" lua_numeric_ver "/?/init.lua"))
-      (add_to_cpath (.. root "/lib/lua/" lua_numeric_ver "/?.so")))))
+      (add_to_path (.. root :/share/lua/ lua_numeric_ver :/?.lua))
+      (add_to_path (.. root :/share/lua/ lua_numeric_ver :/?/init.lua))
+      (add_to_cpath (.. root :/lib/lua/ lua_numeric_ver :/?.so)))))
 
 (-?> (os.getenv :RUNFILES_DIR)
      (add_runfiles_to_path))

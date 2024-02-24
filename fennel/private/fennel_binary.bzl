@@ -1,5 +1,4 @@
-load("//lua/private:lua_binary.bzl", "BASH_RLOCATION_FUNCTION", "lua_binary")
-load(":fennel_library.bzl", "COMMON_ATTRS")
+load("//lua/private:lua_binary.bzl", "BASH_RLOCATION_FUNCTION")
 load("//lua:providers.bzl", "LuaLibrary")
 load("//fennel:providers.bzl", "FennelLibrary")
 load("@aspect_bazel_lib//lib:paths.bzl", "to_rlocation_path")

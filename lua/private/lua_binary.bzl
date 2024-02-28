@@ -1,6 +1,5 @@
-load("//lua:providers.bzl", "LuaLibrary")
-load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@aspect_bazel_lib//lib:paths.bzl", "to_rlocation_path", _default_location_function = "BASH_RLOCATION_FUNCTION")
+load("//lua:providers.bzl", "LuaLibrary")
 
 # Bash helper function for looking up runfiles.
 # See windows_utils.bzl for the cmd.exe equivalent.

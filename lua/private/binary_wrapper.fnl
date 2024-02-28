@@ -72,8 +72,7 @@
   (-?> (get_resolved_name module_name) require))
 
 (lambda add_runfiles_to_path [runfiles_dir]
-  (let [loaders (or package.searchers package.loaders)]
-    (table.insert loaders search_for_module))
+  (table.insert (or package.searchers package.loaders) search_for_module)
   (add_to_path (.. runfiles_dir :/?.lua))
   (add_to_path (.. runfiles_dir :/?/init.lua))
   (each [_ v (pairs (read_lua_mappings))]

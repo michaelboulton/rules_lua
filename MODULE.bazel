@@ -18,7 +18,7 @@ bazel_dep(name = "bazel_skylib_gazelle_plugin", version = "1.5.0", dev_dependenc
 
 bazel_dep(name = "platforms", version = "0.0.8")
 bazel_dep(name = "bazel_skylib", version = "1.5.0")
-bazel_dep(name = "rules_foreign_cc", version = "0.10.1")
+bazel_dep(name = "rules_foreign_cc", version = "0.13.0")
 bazel_dep(name = "aspect_bazel_lib", version = "2.4.1")
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -26,9 +26,9 @@ http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "ht
 http_archive(
     name = "luarocks",
     build_file = "//lua:luarocks.BUILD.bazel",
-    sha256 = "bca6e4ecc02c203e070acdb5f586045d45c078896f6236eb46aa33ccd9b94edb",
-    strip_prefix = "luarocks-3.9.2",
-    urls = ["https://luarocks.org/releases/luarocks-3.9.2.tar.gz"],
+    sha256 = "a37e4a3faa835d1b6437ab2d9e2271909664ab614595cb7df1b67ddafe4e2193",
+    strip_prefix = "luarocks-3.11.1",
+    urls = ["https://github.com/luarocks/luarocks/archive/refs/tags/v3.11.1.tar.gz"],
 )
 
 lua_toolchains = use_extension("@rules_lua//lua:repositories.bzl", "lua_toolchains")

@@ -337,11 +337,15 @@ variables = {{
    LUA_INCDIR = "$(realpath {lua_headers}/*)",
    LUA_LIBDIR = "$(realpath {lua_headers}/../lib)",
    LUA_DIR = "$(realpath {lua_headers}/..)",
+   ROCKS_TREE = "$(dirname {luarocks}/..)",
 }}
+
+rocks_dir = "$(dirname {luarocks}/..)"
 EOF
 export LUAROCKS_CONFIG=$tmpcfg
+export LUA_PATH="$LUA_PATH;$(realpath {lua_headers}/..)/?.lua"
 
-{luarocks} init --output .
+{luarocks} init --output . --tree .
 # FIXME does this need to be a toolchain too?
 {luarocks} config --scope project variables.UNZIP /bin/unzip
 {luarocks} config --scope project variables.MD5SUM /bin/md5sum
@@ -527,8 +531,6 @@ _github_tag = tag_class(
 )
 
 def _lua_dependency_impl(mctx):
-    deps = []
-
     # TODO: There should be something which parses rockspecs use luarocks, or recursively, instead of defining all of these
     #  https://bazel.build/external/migration#integrate-package-manager
     for mod in mctx.modules:

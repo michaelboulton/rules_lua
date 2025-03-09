@@ -1,11 +1,25 @@
+load("@bazel_skylib//lib:versions.bzl", "versions")
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
 load("//lua:providers.bzl", "LuaLibrary")
 
 GITHUB_TEMPLATE = "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz"
 GITHUB_PREFIX_TEMPLATE = "{dependency}-{short_tag}"
 
-def _shorten_name(cacnonical_name):
-    return cacnonical_name.split("~")[-1]
+def _shorten_name(canonical_name):
+    if "~" in canonical_name:
+        separator = "~"
+    elif "+" in canonical_name:
+        separator = "+"
+    else:
+        print("unable to determine separator - assuming based on bazel version")
+        bazel_version = versions.get()
+
+        if versions.parse(bazel_version) < (8, 0, 0):
+            separator = "~"
+        else:
+            separator = "+"
+
+    return canonical_name.split(separator)[-1]
 
 def _append_output_binaries(ctx, fmt_vars, build_content, out_binaries):
     build_content += """load("@rules_lua//lua:defs.bzl", "lua_binary")"""

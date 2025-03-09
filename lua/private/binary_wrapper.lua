@@ -80,8 +80,8 @@ local function add_to_cpath(s)
 end
 
 local function is_relevant(repo_name)
-    local is_lua_dependency = string.match(repo_name, "~lua_dependency~")
-    local is_repo_rules = string.match(repo_name, "~_repo_rules~")
+    local is_lua_dependency = string.match(repo_name, "~lua_dependency~") or string.match(repo_name, "+lua_dependency+")
+    local is_repo_rules = string.match(repo_name, "~_repo_rules~") or string.match(repo_name, "+_repo_rules+")
 
     return is_lua_dependency or is_repo_rules
 end

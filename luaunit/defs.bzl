@@ -22,7 +22,7 @@ def luaunit_test_impl(ctx, srcs):
         BASH_RLOCATION_FUNCTION + """
 set -e
 export TEST_FILES={srcs}
-$(rlocation {runner}) $@
+$(rlocation {runner}) "$@"
             """.format(
             runner = to_rlocation_path(ctx, ctx.file._runner),
             srcs = ",".join([to_rlocation_path(ctx, i) for i in srcs]),

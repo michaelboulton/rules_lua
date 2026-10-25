@@ -7,7 +7,7 @@ load("//lua:providers.bzl", "LuaLibrary")
 # See windows_utils.bzl for the cmd.exe equivalent.
 # Vendored from
 # https://github.com/bazelbuild/bazel/blob/master/tools/bash/runfiles/runfiles.bash
-BASH_RLOCATION_FUNCTION = _default_location_function + r"""
+BASH_RLOCATION_FUNCTION = "#!/usr/bin/env bash" + _default_location_function + r"""
 function alocation {
   local P=$1
   if [[ "${P:0:1}" == "/" ]]; then
@@ -30,7 +30,7 @@ def _lua_binary_impl(ctx):
 set -e
 set +u
 export LUA_PATH="$LUA_PATH;$(alocation $(dirname $(rlocation {wrapper})))/?.lua"
-$(rlocation {lua_rloc}) -l binary_wrapper $(rlocation {tool}) $@
+$(rlocation {lua_rloc}) -l binary_wrapper $(rlocation {tool}) "$@"
         """.format(
             lua_rloc = to_rlocation_path(ctx, lua_executable),
             tool = to_rlocation_path(ctx, ctx.file.tool),

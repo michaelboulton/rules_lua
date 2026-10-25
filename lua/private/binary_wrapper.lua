@@ -125,6 +125,10 @@ if os.getenv("RUNFILES_DIR") then
     local relevant = read_lua_mappings()
     local runfiles_dir = os.getenv("RUNFILES_DIR")
 
+    -- "?.lua" above only finds main repo modules when the working directory is <runfiles>/_main
+    add_to_path(runfiles_dir .. "/_main/?.lua")
+    add_to_path(runfiles_dir .. "/_main/?/init.lua")
+
     for k, v in pairs(relevant) do
         add_to_path(runfiles_dir .. "/?.lua")
         add_to_path(runfiles_dir .. "/?/init.lua")
@@ -194,6 +198,8 @@ elseif os.getenv("RUNFILES_MANIFEST_FILE") then
         inverted[v[1]] = k
     end
 
+    local manifest = {}
+
     for line in io.lines(os.getenv("RUNFILES_MANIFEST_FILE")) do
         local t = {}
         -- // a manifest file that maps logical runfile paths to absolute paths paths for the real files in Bazel's cache.
@@ -219,6 +225,7 @@ elseif os.getenv("RUNFILES_MANIFEST_FILE") then
         for str in string.gmatch(line, "([^ ]+)") do
             table.insert(t, str)
         end
+        manifest[t[1]] = t[2]
 
         local folder_name = string.gsub(t[1], "/.*", "")
         if inverted[folder_name] and is_relevant(folder_name) then
@@ -227,6 +234,20 @@ elseif os.getenv("RUNFILES_MANIFEST_FILE") then
             add_to_path(root .. "/share/lua/" .. lua_numeric_ver .. "/" .. "?.lua")
         end
     end
+
+    -- Main repo modules are split between the source tree and bazel-bin, so no package.path entry covers them
+    local loaders = package.searchers or package.loaders
+    table.insert(loaders, 2, function(module_name)
+        local base = "_main/" .. module_name:gsub("[.]", "/")
+        for _, candidate in ipairs({ base .. ".lua", base .. "/init.lua" }) do
+            local resolved = manifest[candidate]
+            if resolved then
+                return assert(loadfile(resolved)), resolved
+            end
+        end
+
+        return "\n\tno entry '" .. base .. ".lua' in runfiles manifest"
+    end)
 else
     error("unable to find runfiles")
 end

@@ -20,7 +20,7 @@ def _fennel_binary_impl(ctx):
 set -e
 set +u
 export LUA_PATH="$LUA_PATH;$(alocation $(dirname $(rlocation {wrapper})))/?.lua"
-$(rlocation {lua_rloc}) -l binary_wrapper $(rlocation {fennel_rloc}) $(rlocation {tool}) $@
+$(rlocation {lua_rloc}) -l binary_wrapper $(rlocation {fennel_rloc}) $(rlocation {tool}) "$@"
         """.format(
             lua_rloc = to_rlocation_path(ctx, lua_executable),
             fennel_rloc = to_rlocation_path(ctx, fennel_executable),

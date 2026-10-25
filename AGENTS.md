@@ -23,6 +23,7 @@ prek run --files <files>                           # buildifier, buildifier-lint
 
 - `.bazelversion` pins Bazel 9.3.1; `examples/.bazelversion` is a symlink to it. Bazel 8 must also keep working: test with `USE_BAZEL_VERSION=8.1.0 bazel test //...`. On Bazel 8, `//docs:update_2_test` and `//docs:update_6_test` fail because Bazel 8 adds a `repo_mapping` attr to repository rule docs; the checked-in docs match Bazel 9.
 - Never edit any `MODULE.bazel.lock` by hand; let Bazel rewrite it.
+- After changing a patch file (e.g. `lua/*.patch`), run `bazel shutdown` before rebuilding. Bazel does not re-fetch the patched repo until the server restarts.
 - Commit messages are checked by commitizen (Conventional Commits).
 
 ## Architecture

@@ -1,3 +1,5 @@
+"""Providers for fennel rules"""
+
 FennelLibrary = provider(
     doc = "fennel libs",
     fields = {

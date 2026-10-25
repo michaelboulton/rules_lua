@@ -1,7 +1,9 @@
-load("//lua/private:lua_binary.bzl", "BASH_RLOCATION_FUNCTION")
-load("//lua:providers.bzl", "LuaLibrary")
-load("//fennel:providers.bzl", "FennelLibrary")
+"""Implementation of fennel_binary"""
+
 load("@aspect_bazel_lib//lib:paths.bzl", "to_rlocation_path")
+load("//fennel:providers.bzl", "FennelLibrary")
+load("//lua:providers.bzl", "LuaLibrary")
+load("//lua/private:lua_binary.bzl", "BASH_RLOCATION_FUNCTION")
 
 def _fennel_binary_impl(ctx):
     out_executable = ctx.actions.declare_file(ctx.attr.name + "_exec")

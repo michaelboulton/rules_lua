@@ -1,3 +1,5 @@
+"""Implementation of lua_library"""
+
 load("//lua:providers.bzl", "LuaLibrary")
 
 def _lua_library_impl(ctx):

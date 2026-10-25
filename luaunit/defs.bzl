@@ -1,9 +1,20 @@
+"""Rules for running luaunit tests"""
+
+load("@aspect_bazel_lib//lib:paths.bzl", "to_rlocation_path")
+load("@rules_lua//fennel/private:fennel_library.bzl", "compile_fennel", FENNEL_ATTRS = "COMMON_ATTRS")
 load("@rules_lua//lua:providers.bzl", "LuaLibrary")
 load("@rules_lua//lua/private:lua_binary.bzl", "BASH_RLOCATION_FUNCTION")
-load("@rules_lua//fennel/private:fennel_library.bzl", "compile_fennel", FENNEL_ATTRS = "COMMON_ATTRS")
-load("@aspect_bazel_lib//lib:paths.bzl", "to_rlocation_path")
 
 def luaunit_test_impl(ctx, srcs):
+    """Write a launcher that runs the luaunit runner on the given test files.
+
+    Args:
+        ctx: rule context
+        srcs: lua test files
+
+    Returns:
+        list of providers for the test rule
+    """
     out_executable = ctx.actions.declare_file(ctx.attr.name + "_test")
 
     ctx.actions.write(
@@ -71,7 +82,7 @@ luaunit_test = rule(
 def _fennel_luaunit_test_impl(ctx):
     # Do this to ensure fennel is valid, and to get the runfiles in a nice format
     # We don't use the defaultinfo
-    _, lua_provider, _, runfiles = compile_fennel(
+    _, lua_provider, _, _ = compile_fennel(
         ctx,
         ctx.files.srcs,
     )

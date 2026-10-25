@@ -15,9 +15,14 @@ repos:
   # Check formatting and lint for starlark code
   - repo: https://github.com/keith/pre-commit-buildifier
     rev: 6.4.0
+    # require_serial: parallel batches race to download the buildifier binary on a cold cache
     hooks:
       - id: buildifier
+        require_serial: true
       - id: buildifier-lint
+        require_serial: true
+        # LuaLibrary/FennelLibrary are public API, and luaunit/fennel load //lua/private on purpose
+        args: ["-warnings=-name-conventions,-bzl-visibility"]
   # Enforce that commit messages allow for later changelog generation
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v3.15.0

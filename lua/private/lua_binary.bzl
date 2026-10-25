@@ -1,3 +1,5 @@
+"""Implementation of lua_binary"""
+
 load("@aspect_bazel_lib//lib:paths.bzl", "to_rlocation_path", _default_location_function = "BASH_RLOCATION_FUNCTION")
 load("//lua:providers.bzl", "LuaLibrary")
 

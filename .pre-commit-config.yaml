@@ -18,6 +18,8 @@ repos:
     hooks:
       - id: buildifier
       - id: buildifier-lint
+        # LuaLibrary/FennelLibrary are public API, and luaunit/fennel load //lua/private on purpose
+        args: ["-warnings=-name-conventions,-bzl-visibility"]
   # Enforce that commit messages allow for later changelog generation
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v3.15.0

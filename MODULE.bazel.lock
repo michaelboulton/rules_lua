@@ -294,7 +294,7 @@
   "moduleExtensions": {
     "//fennel:repositories.bzl%fennel_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "fLEm/mHxdwtFH1k01rYaXcllNyiga2DrzBChmv0pqPc=",
+        "bzlTransitiveDigest": "RAQhfZyd702GAN//auQ2qbueUbI+Gb4On52TsK7698I=",
         "usagesDigest": "QY7RI/hzhtcQ0ukhlBAlQahalci51yANMWBckvVbR+M=",
         "recordedInputs": [
           "REPO_MAPPING:,aspect_bazel_lib aspect_bazel_lib+",

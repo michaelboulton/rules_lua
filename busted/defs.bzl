@@ -1,8 +1,19 @@
+"""Rules for running busted tests"""
+
 load("@aspect_bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@rules_lua//lua:defs.bzl", "BASH_RLOCATION_FUNCTION")
 load("@rules_lua//lua:providers.bzl", "LuaLibrary")
 
 def busted_test_impl(ctx, srcs):
+    """Write a launcher that runs busted on the given test files.
+
+    Args:
+        ctx: rule context
+        srcs: lua test files
+
+    Returns:
+        list of providers for the test rule
+    """
     out_executable = ctx.actions.declare_file(ctx.attr.name + "_test")
 
     ctx.actions.write(

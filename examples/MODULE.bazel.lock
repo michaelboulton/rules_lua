@@ -321,7 +321,7 @@
     },
     "@@rules_lua+//fennel:repositories.bzl%fennel_toolchains": {
       "general": {
-        "bzlTransitiveDigest": "fLEm/mHxdwtFH1k01rYaXcllNyiga2DrzBChmv0pqPc=",
+        "bzlTransitiveDigest": "RAQhfZyd702GAN//auQ2qbueUbI+Gb4On52TsK7698I=",
         "usagesDigest": "AaPeEFABASgi89ywqhqIpG0D7KrQeFM9vEmaZ8TQBvM=",
         "recordedInputs": [
           "REPO_MAPPING:aspect_bazel_lib+,bazel_skylib bazel_skylib+",
@@ -367,7 +367,7 @@
     },
     "@@rules_lua+//lua:defs.bzl%lua_dependency": {
       "general": {
-        "bzlTransitiveDigest": "oAHsq4IW9mLJStL8TA0bo/Q4TEh42koWeNdmGavcSns=",
+        "bzlTransitiveDigest": "WuTbStJXheaH5kSdt7sd0bmu2uwhqG3adUZO9WIm84M=",
         "usagesDigest": "dwEeHFgGi854dDEZYSa/789mSpzGnxdN50iekSzRPYk=",
         "recordedInputs": [
           "REPO_MAPPING:aspect_bazel_lib+,bazel_skylib bazel_skylib+",

@@ -11,13 +11,6 @@ May be empty if the target_tool_path points to a locally installed tool binary."
     },
 )
 
-# Avoid using non-normalized paths (workspace/../other_workspace/path)
-def _to_manifest_path(ctx, file):
-    if file.short_path.startswith("../"):
-        return "external/" + file.short_path[3:]
-    else:
-        return ctx.workspace_name + "/" + file.short_path
-
 def _fennel_toolchain_impl(ctx):
     tool_files = ctx.attr.target_tool.files.to_list() + ctx.files.extra_tool_files
     target_tool = ctx.attr.target_tool

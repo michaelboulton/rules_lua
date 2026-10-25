@@ -180,8 +180,10 @@ if os.getenv("RUNFILES_DIR") then
         return load_resolved(mapping[2] .. "." .. module_name:gsub(real_module_toplevel_name, mapping[2]))
     end)
 elseif os.getenv("RUNFILES_MANIFEST_FILE") then
+    local manifest = {}
+
     local function rlocation(workspace_relative)
-        error("not implemented")
+        return manifest["_main/" .. workspace_relative]
     end
 
     package.preload["runfiles"] = function()
@@ -197,8 +199,6 @@ elseif os.getenv("RUNFILES_MANIFEST_FILE") then
         -- This gets the 'canonical name of the source repo' which is probably correct
         inverted[v[1]] = k
     end
-
-    local manifest = {}
 
     for line in io.lines(os.getenv("RUNFILES_MANIFEST_FILE")) do
         local t = {}

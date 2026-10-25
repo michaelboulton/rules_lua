@@ -1,5 +1,6 @@
 load("@rules_lua//lua:defs.bzl", "lua_library")
 load("@rules_lua_busted//:defs.bzl", "busted_test")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
 
 lua_library(
     name = "maths",
@@ -9,7 +10,15 @@ lua_library(
 busted_test(
     name = "test_maths",
     srcs = [
+        ":maths_more_test.lua",
         ":maths_test.lua",
     ],
     deps = [":maths"],
+)
+
+sh_test(
+    name = "test_maths_runs_all_files",
+    srcs = ["runs_all_files_test.sh"],
+    args = ["$(rootpath :test_maths)"],
+    data = [":test_maths"],
 )

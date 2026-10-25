@@ -9,6 +9,7 @@ fennel_library(
 
 fennel_binary(
     name = "main",
+    data = ["data.txt"],
     tool = "main.fnl",
     deps = [":example"],
 )

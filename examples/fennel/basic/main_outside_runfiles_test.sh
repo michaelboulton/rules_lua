@@ -10,8 +10,8 @@ cd "$TEST_TMPDIR"
 
 out=$("$bin")
 echo "runfiles tree: $out"
-[[ "$out" == 4 ]]
+[[ "$out" == $'4\nfrom data' ]]
 
 out=$(env -u RUNFILES_DIR RUNFILES_MANIFEST_FILE="$TEST_TMPDIR/MANIFEST" "$bin")
 echo "manifest only: $out"
-[[ "$out" == 4 ]]
+[[ "$out" == $'4\nfrom data' ]]

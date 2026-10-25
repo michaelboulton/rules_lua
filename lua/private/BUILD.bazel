@@ -19,8 +19,8 @@ bzl_library(
     srcs = ["lua_dependency.bzl"],
     visibility = ["//lua:__subpackages__"],
     deps = [
-        "@bazel_skylib//lib:paths",
-        "@bazel_tools//tools/cpp:toolchain_utils.bzl",
+        "//lua:providers",
+        "@rules_cc//cc:find_cc_toolchain_bzl",
     ],
 )
 

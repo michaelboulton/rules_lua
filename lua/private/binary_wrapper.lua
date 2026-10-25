@@ -82,8 +82,10 @@ end
 local function is_relevant(repo_name)
     local is_lua_dependency = string.match(repo_name, "~lua_dependency~") or string.match(repo_name, "+lua_dependency+")
     local is_repo_rules = string.match(repo_name, "~_repo_rules~") or string.match(repo_name, "+_repo_rules+")
+    -- Bazel 9 names repo rule repos after the rule, e.g. rules_lua++http_archive+luarocks or +git_repository+lua_luassert
+    local _, plus_count = string.gsub(repo_name, "%+", "")
 
-    return is_lua_dependency or is_repo_rules
+    return is_lua_dependency or is_repo_rules or plus_count >= 2
 end
 
 local function read_lua_mappings()
@@ -140,33 +142,7 @@ if os.getenv("RUNFILES_DIR") then
         loaders = package.loaders
     end
 
-    table.insert(loaders, function(module_name)
-        local real_module_toplevel_name = module_name:gsub("[.].+", "")
-
-        --print("Trying to load " .. module_name)
-        --for i, v in pairs(relevant) do
-        --    print(i)
-        --    print(v)
-        --end
-        --print(package.path)
-        --print(package.cpath)
-
-        local resolved
-        if relevant[real_module_toplevel_name] then
-            -- If there is a mapping
-            resolved = module_name:gsub(real_module_toplevel_name, relevant[real_module_toplevel_name][2])
-        else
-            local with_prefix = "lua_" .. real_module_toplevel_name
-            -- See if theres a dep with the lua_ prefix
-            if not relevant[with_prefix] then
-                -- no hope of a match
-                return nil
-            end
-
-            resolved = relevant[with_prefix][2] .. "." .. module_name:gsub(real_module_toplevel_name, relevant[with_prefix][2])
-            --resolved = relevant[with_prefix][2] ..".".. real_module_toplevel_name
-        end
-
+    local function load_resolved(resolved)
         local loaded = require(resolved)
         if loaded == nil then
             return nil
@@ -175,6 +151,29 @@ if os.getenv("RUNFILES_DIR") then
         return function()
             return loaded
         end
+    end
+
+    -- A repo whose apparent name is the module's top level name (eg luarocks) is tried straight after preload,
+    -- so runfiles win over host paths that luarocks adds to package.path
+    table.insert(loaders, 2, function(module_name)
+        local real_module_toplevel_name = module_name:gsub("[.].+", "")
+        local mapping = relevant[real_module_toplevel_name]
+        if not mapping then
+            return nil
+        end
+
+        return load_resolved((module_name:gsub(real_module_toplevel_name, mapping[2])))
+    end)
+
+    -- A dep with the lua_ prefix (eg lua_luaunit for luaunit) is a last resort after package.path
+    table.insert(loaders, function(module_name)
+        local real_module_toplevel_name = module_name:gsub("[.].+", "")
+        local mapping = relevant["lua_" .. real_module_toplevel_name]
+        if not mapping then
+            return nil
+        end
+
+        return load_resolved(mapping[2] .. "." .. module_name:gsub(real_module_toplevel_name, mapping[2]))
     end)
 elseif os.getenv("RUNFILES_MANIFEST_FILE") then
     local function rlocation(workspace_relative)

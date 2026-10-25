@@ -7,8 +7,6 @@ See https://docs.bazel.build/versions/main/skylark/deploying.html#dependencies
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("//lua/private:toolchains_repo.bzl", "PLATFORMS", "system_toolchains_repo", "toolchains_repo")
 load("//lua/private:versions.bzl", "LUAJIT_VERSIONS", "LUA_VERSIONS")
-load("//lua:toolchain.bzl", "lua_toolchain")
-load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
 ########
 # Remaining content of the file is only used to support toolchains.
@@ -44,33 +42,16 @@ lua_repositories = repository_rule(
     },
 )
 
-def _lua_register_toolchains(name, version, lua_repository_name, **kwargs):
-    toolchains_repo_name = name + "_toolchains"
+def _register_toolchains(name, lua_repository_name):
     for platform in PLATFORMS.keys():
         lua_repositories(
+            name = name + "_" + platform,
+            platform = platform,
             lua_repository_name = lua_repository_name,
-            name = name + "_" + platform,
-            platform = platform,
-            **kwargs
         )
 
     toolchains_repo(
-        name = toolchains_repo_name,
-        user_repository_name = name,
-    )
-
-def _luajit_register_toolchains(name, version, luajit_repository_name, **kwargs):
-    toolchains_repo_name = name + "_toolchains"
-    for platform in PLATFORMS.keys():
-        lua_repositories(
-            name = name + "_" + platform,
-            platform = platform,
-            lua_repository_name = luajit_repository_name,
-            **kwargs
-        )
-
-    toolchains_repo(
-        name = toolchains_repo_name,
+        name = name + "_toolchains",
         user_repository_name = name,
     )
 
@@ -136,39 +117,38 @@ def _lua_toolchains_extension(mctx):
             This prevents conflicting registrations in the global namespace of external repos.
             """.format(expected))
 
+    # version -> toolchain name
     lua_versions = {}
     luajit_versions = {}
     for mod in mctx.modules:
         for lua in mod.tags.lua:
             _verify_toolchain_name(mod, "lua", lua.name)
-            lua_versions[lua.version] = None
+            lua_versions[lua.version] = lua.name
         for luajit in mod.tags.luajit:
             _verify_toolchain_name(mod, "luajit", luajit.name)
-            luajit_versions[luajit.version] = None
+            luajit_versions[luajit.version] = luajit.name
 
-    for luajit_version in luajit_versions:
-        luajit_repository_name = "luajit_src_{version}".format(version = luajit_version)
+    for version, name in luajit_versions.items():
+        luajit_repository_name = "luajit_src_{version}".format(version = version)
 
         http_archive(
             name = luajit_repository_name,
             patch_args = ["-p", "1"],
-            **LUAJIT_VERSIONS[luajit_version]
+            **LUAJIT_VERSIONS[version]
         )
 
-        _verify_toolchain_name(mod, "luajit", luajit.name)
+        _register_toolchains(name, luajit_repository_name)
 
-        _luajit_register_toolchains(luajit.name, luajit.version, luajit_repository_name)
-
-    for lua_version in lua_versions:
-        lua_repository_name = "lua_src_{version}".format(version = lua_version)
+    for version, name in lua_versions.items():
+        lua_repository_name = "lua_src_{version}".format(version = version)
 
         http_archive(
             name = lua_repository_name,
             patch_args = ["-p", "1"],
-            **LUA_VERSIONS[lua_version]
+            **LUA_VERSIONS[version]
         )
 
-        _lua_register_toolchains(lua.name, lua.version, lua_repository_name)
+        _register_toolchains(name, lua_repository_name)
 
 lua_toolchains = module_extension(
     implementation = _lua_toolchains_extension,

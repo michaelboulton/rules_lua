@@ -7,6 +7,8 @@ Public API re-exports
 ## fennel_binary
 
 <pre>
+load("@rules_lua//fennel:defs.bzl", "fennel_binary")
+
 fennel_binary(<a href="#fennel_binary-name">name</a>, <a href="#fennel_binary-deps">deps</a>, <a href="#fennel_binary-data">data</a>, <a href="#fennel_binary-tool">tool</a>)
 </pre>
 
@@ -28,6 +30,8 @@ Fennel binary target. Will run the given tool with the registered fennel toolcha
 ## fennel_library
 
 <pre>
+load("@rules_lua//fennel:defs.bzl", "fennel_library")
+
 fennel_library(<a href="#fennel_library-name">name</a>, <a href="#fennel_library-deps">deps</a>, <a href="#fennel_library-srcs">srcs</a>, <a href="#fennel_library-macros">macros</a>, <a href="#fennel_library-preprocessor">preprocessor</a>, <a href="#fennel_library-strip_prefix">strip_prefix</a>)
 </pre>
 

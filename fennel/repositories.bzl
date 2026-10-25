@@ -28,7 +28,7 @@ genrule(
     name = "fennel_binary",
     srcs = [":fennel_binary_group"],
     outs = ["fennel"],
-    cmd = "set -ex; find .; cp $(locations fennel_binary_group) $@",
+    cmd = "cp $< $@",
 )
 
 fennel_toolchain(
@@ -36,10 +36,7 @@ fennel_toolchain(
     target_tool = ":fennel",
     extra_tool_files = ["@lua_fennel_{version}"],
 )
-""".format(
-        name = rctx.attr.name,
-        version = rctx.attr.version,
-    )
+""".format(version = rctx.attr.version)
 
     # Base BUILD file for this repository
     rctx.file("BUILD.bazel", build_content)
@@ -90,13 +87,14 @@ def _fennel_toolchains_extension(mctx):
             This prevents conflicting registrations in the global namespace of external repos.
             """.format(expected))
 
+    # version -> toolchain name
     versions = {}
     for mod in mctx.modules:
         for fennel in mod.tags.fennel:
             _verify_toolchain_name(mod, "fennel", fennel.name)
-            versions[fennel.version] = None
+            versions[fennel.version] = fennel.name
 
-    for version in versions:
+    for version, name in versions.items():
         luarocks_dependency(
             name = "lua_fennel_{version}".format(version = version),
             sha256 = FENNEL_VERSIONS[version],
@@ -106,7 +104,7 @@ def _fennel_toolchains_extension(mctx):
             out_binaries = ["fennel"],
         )
 
-        _fennel_register_toolchains(fennel.name, fennel.version)
+        _fennel_register_toolchains(name, version)
 
 fennel_toolchains = module_extension(
     implementation = _fennel_toolchains_extension,

@@ -7,6 +7,8 @@ This module implements the language-specific toolchain rule.
 ## fennel_toolchain
 
 <pre>
+load("@rules_lua//fennel:toolchain.bzl", "fennel_toolchain")
+
 fennel_toolchain(<a href="#fennel_toolchain-name">name</a>, <a href="#fennel_toolchain-extra_tool_files">extra_tool_files</a>, <a href="#fennel_toolchain-target_tool">target_tool</a>)
 </pre>
 
@@ -29,13 +31,14 @@ For usage see https://docs.bazel.build/versions/main/toolchains.html#defining-to
 ## FennelInfo
 
 <pre>
+load("@rules_lua//fennel:toolchain.bzl", "FennelInfo")
+
 FennelInfo(<a href="#FennelInfo-target_tool">target_tool</a>, <a href="#FennelInfo-tool_files">tool_files</a>)
 </pre>
 
 Information about how to invoke the tool executable.
 
 **FIELDS**
-
 
 | Name  | Description |
 | :------------- | :------------- |

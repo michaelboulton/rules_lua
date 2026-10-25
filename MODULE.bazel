@@ -8,18 +8,29 @@
 module(
     name = "rules_lua",
     version = "0.0.1",
-    compatibility_level = 0,
 )
 
-bazel_dep(name = "rules_go", version = "0.45.1", dev_dependency = True)
-bazel_dep(name = "gazelle", version = "0.35.0", dev_dependency = True, repo_name = "bazel_gazelle")
-bazel_dep(name = "stardoc", version = "0.6.2", dev_dependency = True)
-bazel_dep(name = "bazel_skylib_gazelle_plugin", version = "1.5.0", dev_dependency = True)
+bazel_dep(name = "rules_go", version = "0.65.0", dev_dependency = True)
+bazel_dep(name = "gazelle", version = "0.54.0", dev_dependency = True, repo_name = "bazel_gazelle")
+bazel_dep(name = "stardoc", version = "0.8.1", dev_dependency = True)
+bazel_dep(name = "protobuf", version = "33.4", dev_dependency = True)
+bazel_dep(name = "bazel_skylib_gazelle_plugin", version = "1.9.2", dev_dependency = True)
+bazel_dep(name = "hermetic_cc_toolchain", version = "4.3.0", dev_dependency = True)
 
-bazel_dep(name = "platforms", version = "0.0.8")
-bazel_dep(name = "bazel_skylib", version = "1.5.0")
-bazel_dep(name = "rules_foreign_cc", version = "0.13.0")
-bazel_dep(name = "aspect_bazel_lib", version = "2.4.1")
+toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains", dev_dependency = True)
+use_repo(toolchains, "zig_sdk")
+
+register_toolchains(
+    "@zig_sdk//toolchain/...",
+    "@zig_sdk//libc_aware/toolchain/...",
+    dev_dependency = True,
+)
+
+bazel_dep(name = "platforms", version = "1.1.0")
+bazel_dep(name = "bazel_skylib", version = "1.9.2")
+bazel_dep(name = "rules_cc", version = "0.2.27")
+bazel_dep(name = "rules_foreign_cc", version = "0.17.0")
+bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -38,7 +49,7 @@ lua_toolchains.luajit(
 )
 use_repo(lua_toolchains, "luajit_toolchains")
 
-register_toolchains("@luajit_toolchains//:x86_64-unknown-linux-gnu_toolchain")
+register_toolchains("@luajit_toolchains//:all")
 
 fennel_toolchains = use_extension("@rules_lua//fennel:repositories.bzl", "fennel_toolchains")
 fennel_toolchains.fennel(

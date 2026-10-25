@@ -21,7 +21,11 @@ make(
     visibility = ["//visibility:public"],
     out_binaries = ["lua"],
     out_data_dirs = ["share"],
-    args = ["-j10"],
+    # -e: the Makefile hardcodes CC=gcc, which would ignore the cc toolchain's CC env var
+    args = [
+        "-e",
+        "-j10",
+    ],
     targets = ["", "install"],
     out_static_libs = ["libluajit-5.1.a"],
     out_shared_libs = ["libluajit-5.1.so.2.1.0"],

@@ -23,10 +23,10 @@ set -e
 $(rlocation {runner}) \
     --verbose \
     -Xoutput --color --output=utfTerminal \
-    $(rlocation {srcs}) $@
+    {srcs} "$@"
             """.format(
             runner = to_rlocation_path(ctx, ctx.file._busted),
-            srcs = " ".join([to_rlocation_path(ctx, i) for i in srcs]),
+            srcs = " ".join(['"$(rlocation {})"'.format(to_rlocation_path(ctx, i)) for i in srcs]),
         ),
         is_executable = True,
     )

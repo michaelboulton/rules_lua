@@ -38,7 +38,6 @@ def _resolved_toolchain_impl(ctx):
 resolved_toolchain = rule(
     implementation = _resolved_toolchain_impl,
     toolchains = ["@rules_lua//fennel:toolchain_type"],
-    incompatible_use_toolchain_transition = True,
 )
 """
     repository_ctx.file("defs.bzl", starlark_content)

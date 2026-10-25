@@ -7,6 +7,8 @@ This module implements the language-specific toolchain rule.
 ## lua_toolchain
 
 <pre>
+load("@rules_lua//lua:toolchain.bzl", "lua_toolchain")
+
 lua_toolchain(<a href="#lua_toolchain-name">name</a>, <a href="#lua_toolchain-dev_files">dev_files</a>, <a href="#lua_toolchain-target_tool">target_tool</a>, <a href="#lua_toolchain-target_tool_path">target_tool_path</a>)
 </pre>
 
@@ -30,13 +32,14 @@ For usage see https://docs.bazel.build/versions/main/toolchains.html#defining-to
 ## LuaInfo
 
 <pre>
+load("@rules_lua//lua:toolchain.bzl", "LuaInfo")
+
 LuaInfo(<a href="#LuaInfo-target_tool">target_tool</a>, <a href="#LuaInfo-target_tool_path">target_tool_path</a>, <a href="#LuaInfo-tool_files">tool_files</a>, <a href="#LuaInfo-headers">headers</a>)
 </pre>
 
 Information about how to invoke the tool executable.
 
 **FIELDS**
-
 
 | Name  | Description |
 | :------------- | :------------- |

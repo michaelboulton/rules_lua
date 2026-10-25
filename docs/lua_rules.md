@@ -7,6 +7,8 @@ Public API re-exports
 ## lua_binary
 
 <pre>
+load("@rules_lua//lua:defs.bzl", "lua_binary")
+
 lua_binary(<a href="#lua_binary-name">name</a>, <a href="#lua_binary-deps">deps</a>, <a href="#lua_binary-data">data</a>, <a href="#lua_binary-tool">tool</a>)
 </pre>
 
@@ -28,6 +30,8 @@ Lua binary target. Will run the given tool with the registered lua toolchain.
 ## lua_library
 
 <pre>
+load("@rules_lua//lua:defs.bzl", "lua_library")
+
 lua_library(<a href="#lua_library-name">name</a>, <a href="#lua_library-deps">deps</a>, <a href="#lua_library-srcs">srcs</a>, <a href="#lua_library-strip_prefix">strip_prefix</a>)
 </pre>
 
@@ -49,6 +53,8 @@ lua_library(<a href="#lua_library-name">name</a>, <a href="#lua_library-deps">de
 ## luarocks_library
 
 <pre>
+load("@rules_lua//lua:defs.bzl", "luarocks_library")
+
 luarocks_library(<a href="#luarocks_library-name">name</a>, <a href="#luarocks_library-deps">deps</a>, <a href="#luarocks_library-data">data</a>, <a href="#luarocks_library-extra_cflags">extra_cflags</a>, <a href="#luarocks_library-out_binaries">out_binaries</a>, <a href="#luarocks_library-srcrock">srcrock</a>)
 </pre>
 
@@ -72,20 +78,26 @@ install a luarocks dependency from a rockspec or .src.rock file
 ## github_dependency
 
 <pre>
-github_dependency(<a href="#github_dependency-dependency">dependency</a>, <a href="#github_dependency-tag">tag</a>, <a href="#github_dependency-name">name</a>, <a href="#github_dependency-kwargs">kwargs</a>)
+load("@rules_lua//lua:defs.bzl", "github_dependency")
+
+github_dependency(<a href="#github_dependency-dependency">dependency</a>, <a href="#github_dependency-tag">tag</a>, <a href="#github_dependency-name">name</a>, <a href="#github_dependency-kwargs">**kwargs</a>)
 </pre>
 
-
+Fetch a dependency from a GitHub release tarball.
 
 **PARAMETERS**
 
 
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
-| <a id="github_dependency-dependency"></a>dependency |  <p align="center"> - </p>   |  none |
-| <a id="github_dependency-tag"></a>tag |  <p align="center"> - </p>   |  none |
-| <a id="github_dependency-name"></a>name |  <p align="center"> - </p>   |  `None` |
-| <a id="github_dependency-kwargs"></a>kwargs |  <p align="center"> - </p>   |  none |
+| <a id="github_dependency-dependency"></a>dependency |  name of the GitHub repository   |  none |
+| <a id="github_dependency-tag"></a>tag |  release tag to download   |  none |
+| <a id="github_dependency-name"></a>name |  repository name, defaults to lua_<dependency>   |  `None` |
+| <a id="github_dependency-kwargs"></a>kwargs |  passed to external_repository   |  none |
+
+**RETURNS**
+
+the repository name
 
 
 <a id="luarocks_dependency"></a>
@@ -93,7 +105,9 @@ github_dependency(<a href="#github_dependency-dependency">dependency</a>, <a hre
 ## luarocks_dependency
 
 <pre>
-luarocks_dependency(<a href="#luarocks_dependency-dependency">dependency</a>, <a href="#luarocks_dependency-name">name</a>, <a href="#luarocks_dependency-kwargs">kwargs</a>)
+load("@rules_lua//lua:defs.bzl", "luarocks_dependency")
+
+luarocks_dependency(<a href="#luarocks_dependency-dependency">dependency</a>, <a href="#luarocks_dependency-name">name</a>, <a href="#luarocks_dependency-kwargs">**kwargs</a>)
 </pre>
 
 
@@ -155,7 +169,7 @@ Fetch a dependency from a url. Expects there to be a .rockspec file in the top l
 | <a id="lua_dependency.github-deps"></a>deps |  lua deps   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="lua_dependency.github-dependency"></a>dependency |  name of dependency   | String | required |  |
 | <a id="lua_dependency.github-extra_cflags"></a>extra_cflags |  extra CFLAGS to pass to compilation   | List of strings | optional |  `[]`  |
-| <a id="lua_dependency.github-extra_fmt_vars"></a>extra_fmt_vars |  any extra things to pass to format external_dependency_template.   | <a href="https://bazel.build/rules/lib/dict">Dictionary: String -> String</a> | optional |  `{}`  |
+| <a id="lua_dependency.github-extra_fmt_vars"></a>extra_fmt_vars |  any extra things to pass to format external_dependency_template.   | <a href="https://bazel.build/rules/lib/core/dict">Dictionary: String -> String</a> | optional |  `{}`  |
 | <a id="lua_dependency.github-out_binaries"></a>out_binaries |  binaries to produce   | List of strings | optional |  `[]`  |
 | <a id="lua_dependency.github-rockspec_path"></a>rockspec_path |  Possible sub-path to rockspec path in the downloaded content. Defaults to the top level   | String | optional |  `""`  |
 | <a id="lua_dependency.github-sha256"></a>sha256 |  expected hash   | String | optional |  `""`  |

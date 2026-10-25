@@ -1,10 +1,9 @@
 module(
     name = "rules_lua_luaunit",
     version = "0.0.1",
-    compatibility_level = 0,
 )
 
-bazel_dep(name = "aspect_bazel_lib", version = "2.4.1")
+bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "rules_lua", version = "0.0.0")
 local_path_override(
     module_name = "rules_lua",
@@ -28,7 +27,7 @@ lua_toolchains.lua(
 )
 use_repo(lua_toolchains, "lua_toolchains")
 
-register_toolchains("@lua_toolchains//:x86_64-unknown-linux-gnu_toolchain")
+register_toolchains("@lua_toolchains//:all")
 
 fennel_toolchains = use_extension("@rules_lua//fennel:repositories.bzl", "fennel_toolchains")
 fennel_toolchains.fennel(

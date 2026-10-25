@@ -7,13 +7,14 @@
 ## LuaLibrary
 
 <pre>
+load("@rules_lua//lua:providers.bzl", "LuaLibrary")
+
 LuaLibrary(<a href="#LuaLibrary-lua_files">lua_files</a>)
 </pre>
 
 Collection of lua files
 
 **FIELDS**
-
 
 | Name  | Description |
 | :------------- | :------------- |

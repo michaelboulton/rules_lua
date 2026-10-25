@@ -1,5 +1,3 @@
 try-import %workspace%/.bazelrc.user
 
 build --incompatible_disallow_empty_glob
-
-common --enable_bzlmod

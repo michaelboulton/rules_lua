@@ -1,27 +1,16 @@
-load("@bazel_skylib//lib:versions.bzl", "versions")
-load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
+"""Repository rules, module extension and luarocks_library rule for fetching and building lua dependencies"""
+
+load("@rules_cc//cc:find_cc_toolchain.bzl", "find_cpp_toolchain", "use_cc_toolchain")
 load("//lua:providers.bzl", "LuaLibrary")
 
 GITHUB_TEMPLATE = "https://github.com/{user}/{dependency}/archive/refs/tags/{tag}.tar.gz"
 GITHUB_PREFIX_TEMPLATE = "{dependency}-{short_tag}"
 
 def _shorten_name(canonical_name):
-    if "~" in canonical_name:
-        separator = "~"
-    elif "+" in canonical_name:
-        separator = "+"
-    else:
-        print("unable to determine separator - assuming based on bazel version")
-        bazel_version = versions.get()
+    # Canonical names are separated by ~ before Bazel 8 and + after
+    return canonical_name.replace("~", "+").split("+")[-1]
 
-        if versions.parse(bazel_version) < (8, 0, 0):
-            separator = "~"
-        else:
-            separator = "+"
-
-    return canonical_name.split(separator)[-1]
-
-def _append_output_binaries(ctx, fmt_vars, build_content, out_binaries):
+def _append_output_binaries(fmt_vars, build_content, out_binaries):
     build_content += """load("@rules_lua//lua:defs.bzl", "lua_binary")"""
 
     out_binary_content = """
@@ -107,7 +96,7 @@ alias(
         **fmt_vars
     )
 
-    build_content = _append_output_binaries(rctx, fmt_vars, build_content, out_binaries)
+    build_content = _append_output_binaries(fmt_vars, build_content, out_binaries)
 
     return build_content
 
@@ -144,6 +133,7 @@ def _luarocks_repository_impl(rctx):
     )
 
     if rctx.attr.sha256 == "":
+        # buildifier: disable=print
         print("""HINT: Add 'sha256 = "{sha256}"' to the luarocks_dependency for {user}/{dependency} to get a reproducible download""".format(sha256 = result.sha256, **fmt_vars))
 
     build_content = """
@@ -175,7 +165,7 @@ alias(
         **fmt_vars
     )
 
-    build_content = _append_output_binaries(rctx, fmt_vars, build_content, rctx.attr.out_binaries)
+    build_content = _append_output_binaries(fmt_vars, build_content, rctx.attr.out_binaries)
 
     rctx.file("BUILD.bazel", build_content)
 
@@ -294,6 +284,17 @@ def external_dependency(dependency, name = None, **kwargs):
     )
 
 def github_dependency(dependency, tag, name = None, **kwargs):
+    """Fetch a dependency from a GitHub release tarball.
+
+    Args:
+        dependency: name of the GitHub repository
+        tag: release tag to download
+        name: repository name, defaults to lua_<dependency>
+        **kwargs: passed to external_repository
+
+    Returns:
+        the repository name
+    """
     if not name:
         name = "lua_{}".format(dependency)
 
@@ -320,6 +321,10 @@ def github_dependency(dependency, tag, name = None, **kwargs):
 
     return name
 
+def _abs_path(path):
+    # luarocks runs the compiler from inside the unpacked rock, so execroot-relative paths break
+    return path if path.startswith("/") else "$PWD/" + path
+
 def _luarocks_library_impl(ctx):
     lua_files = ctx.actions.declare_directory(ctx.attr.name)
     lua_toolchain = ctx.toolchains["@rules_lua//lua:toolchain_type"].lua_info
@@ -335,11 +340,10 @@ def _luarocks_library_impl(ctx):
 
     ctx.actions.run_shell(
         outputs = [lua_files] + all_out_binaries,
-        inputs = [ctx.file.srcrock] +
-                 ctx.files.data +
-                 ctx.files.deps +
-                 lua_toolchain.tool_files +
-                 cc_toolchain.all_files.to_list(),
+        inputs = depset(
+            [ctx.file.srcrock] + ctx.files.data + ctx.files.deps + lua_toolchain.tool_files,
+            transitive = [cc_toolchain.all_files],
+        ),
         command =
             """
 set -e
@@ -360,9 +364,8 @@ export LUAROCKS_CONFIG=$tmpcfg
 export LUA_PATH="$LUA_PATH;$(realpath {lua_headers}/..)/?.lua"
 
 {luarocks} init --output . --tree .
-# FIXME does this need to be a toolchain too?
-{luarocks} config --scope project variables.UNZIP /bin/unzip
-{luarocks} config --scope project variables.MD5SUM /bin/md5sum
+{luarocks} config --scope project variables.UNZIP $(command -v unzip)
+{luarocks} config --scope project variables.MD5SUM $(command -v md5sum)
 {luarocks} config --scope project variables.CC {compiler}
 {luarocks} config --scope project variables.LD {linker}
 {luarocks} config --scope project gcc_rpath 'false'
@@ -386,8 +389,8 @@ done
                 name = ctx.attr.name,
                 lexec = ctx.executable._luarocks.path,
                 src = ctx.file.srcrock.path,
-                compiler = cc_toolchain.compiler_executable,
-                linker = cc_toolchain.ld_executable,
+                compiler = _abs_path(cc_toolchain.compiler_executable),
+                linker = _abs_path(cc_toolchain.ld_executable),
                 luarocks = ctx.executable._luarocks.path,
                 outpath = lua_files.path,
                 out_binaries_paths = " ".join([o.path for o in all_out_binaries]),
@@ -448,17 +451,11 @@ luarocks_library = rule(
             cfg = "exec",
             executable = True,
         ),
-        "_cc_toolchain": attr.label(
-            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
-        ),
         "extra_cflags": attr.string_list(
             doc = "extra CFLAGS to pass to compilation",
         ),
     },
-    toolchains = [
-        "@rules_lua//lua:toolchain_type",
-        "@bazel_tools//tools/cpp:toolchain_type",
-    ],
+    toolchains = ["@rules_lua//lua:toolchain_type"] + use_cc_toolchain(),
     doc = "install a luarocks dependency from a rockspec or .src.rock file",
 )
 

@@ -7,13 +7,14 @@
 ## FennelLibrary
 
 <pre>
+load("@rules_lua//fennel:providers.bzl", "FennelLibrary")
+
 FennelLibrary(<a href="#FennelLibrary-fennel_files">fennel_files</a>, <a href="#FennelLibrary-macro_paths">macro_paths</a>)
 </pre>
 
 fennel libs
 
 **FIELDS**
-
 
 | Name  | Description |
 | :------------- | :------------- |

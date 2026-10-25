@@ -38,6 +38,12 @@ PLATFORMS = {
             "@platforms//cpu:x86_64",
         ],
     ),
+    "aarch64-unknown-linux-gnu": struct(
+        compatible_with = [
+            "@platforms//os:linux",
+            "@platforms//cpu:aarch64",
+        ],
+    ),
     "x86_64-pc-windows-msvc": struct(
         compatible_with = [
             "@platforms//os:windows",
@@ -67,7 +73,6 @@ def _resolved_toolchain_impl(ctx):
 resolved_toolchain = rule(
     implementation = _resolved_toolchain_impl,
     toolchains = ["@rules_lua//lua:toolchain_type"],
-    incompatible_use_toolchain_transition = True,
 )
 """
     repository_ctx.file("defs.bzl", starlark_content)
@@ -135,7 +140,6 @@ def _resolved_toolchain_impl(ctx):
 resolved_toolchain = rule(
     implementation = _resolved_toolchain_impl,
     toolchains = ["@rules_lua//lua:toolchain_type"],
-    incompatible_use_toolchain_transition = True,
 )
 """
     repository_ctx.file("defs.bzl", starlark_content)
